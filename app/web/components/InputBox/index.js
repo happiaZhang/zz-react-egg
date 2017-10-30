@@ -1,49 +1,48 @@
+import styles from './index.scss';
 import React from 'react';
 import Input from '../../components/Input';
-import styles from './index.scss';
+import validate from '../../utils/validate';
 
 export default class InputBox extends React.Component {
+  static defaultProps = {
+    style: {},
+    inputStyle: {},
+    inputPlaceholder: '',
+    inputRequired: false,
+    inputWarning: false,
+    inputValue: ''
+  };
   // 构造方法
   constructor(props) {
     super(props);
 
     this.state = {
-      inputValue: props.value || '',
-      inputValueValid: props.valueValid || false
+      inputValue: props.inputValue,
+      inputWarning: props.inputWarning
     };
   }
 
-  // 接收新数据
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      inputValue: nextProps.value,
-      inputValueValid: nextProps.valueValid
-    });
-  }
+  handleChange = (inputValue) => {
+    this.setState({inputValue});
+  };
 
   // 页面渲染
   render() {
-    let {required, label, tips, style, inputPlaceholder, inputStyle, callback} = this.props;
-    let {inputValue, inputValueValid} = this.state;
-    let fromTipsShowClass = inputValueValid ? '' : styles.show;
+    let {style, label, inputStyle, inputPlaceholder, inputRequired} = this.props;
+    let {inputValue, inputWarning} = this.state;
 
     return (
-      <div className={styles.inputBox} style={style || {}}>
-        <div className={styles.label}><span>{label || ''}</span></div>
+      <div className={styles.inputBox} style={style}>
+        {validate.isNil(label) ? null : <label>{label}</label>}
         <div>
           <Input
             value={inputValue}
-            style={inputStyle || {}}
-            placeholder={inputPlaceholder || ''}
-            required={required || false}
-            warning={inputValueValid}
-            callback={(value, escape) => {
-              callback && callback(value, escape);
-            }}
+            warning={inputWarning}
+            style={inputStyle}
+            placeholder={inputPlaceholder}
+            required={inputRequired}
+            onChange={this.handleChange}
           />
-        </div>
-        <div className={`${styles.formTips} ${fromTipsShowClass}`}>
-          <span><i>*</i> {tips || ''}</span>
         </div>
       </div>
     );

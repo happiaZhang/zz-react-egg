@@ -5,13 +5,13 @@ This project is aimed at managing ICP licence relevant information.
 Getting started
 ---------------
 
-Install necessary dependencies using npm.
+### Install necessary dependencies using npm.
 
 ```shell
 npm install
 ```
 
-Start at Development Environment
+### Start at Development Environment
 
 ```shell
 $ npm run dev  // start up server based on EGG
