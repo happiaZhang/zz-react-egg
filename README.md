@@ -1,22 +1,19 @@
-# bss-icp-admin-node
-BSS ICP备案后台管理系统
+bss-icp-admin-node
+====================================
+This project is aimed at managing ICP licence relevant information.
 
-### 本地开发
+Getting started
+---------------
 
-```bash
-$ npm install
-$ npm run dev
-$ npm run web
+Install necessary dependencies using npm.
+
+```shell
+npm install
 ```
 
-### 部署
+Start at Development Environment
 
-```bash
-$ npm start
-$ npm stop
+```shell
+$ npm run dev  // start up server based on EGG
+$ npm run web  // start up webpack dev server
 ```
-
-### 内置指令
-
-- 使用 `npm run lint` 来做代码风格检查。
-- 使用 `npm test` 来执行单元测试。
