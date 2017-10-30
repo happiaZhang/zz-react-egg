@@ -1,0 +1,16 @@
+.breadcrumbContainer {
+  line-height: 18px;
+}
+
+.breadcrumbItem {
+  .breadcrumbTitle {
+    a {
+      color: #3d70b2;
+      text-decoration: none;
+    }
+  }
+  .breadcrumbSeparator {
+    color: #3d70b2;
+    margin-left: 10px;
+  }
+}

@@ -1,0 +1,21 @@
+.inputText {
+    width: 300px;
+    height: 40px;
+    box-sizing: border-box;
+    position: relative;
+    background-color: rgba(61, 112, 178, 0.1);
+    border: none;
+    outline: none;
+    color: rgba(0, 0, 0, 0.87);
+    font-size: 14px;
+    padding-left: 16px;
+    border: 1px solid rgba(0, 0, 0, 0);
+}
+
+.inputText.focusing {
+    border: 1px solid #3d70b2;
+}
+
+.inputText.warning {
+    border-bottom: 2px solid #e63246;
+}

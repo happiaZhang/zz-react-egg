@@ -1,0 +1,76 @@
+.tooltip {
+    display: inline-block;
+    position: relative;
+    font-size: 14px;
+    height: 20px;
+    color: #152935;
+    cursor: default;
+    .title:after {
+        content: " ";
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        background: url(../../images/wdc_icon_info.png) no-repeat center center;
+        background-size: cover;
+        position: relative;
+        top: 2px;
+        left: 5px;
+    }
+}
+
+.tooltip:hover {
+    .title:after {
+        content: " ";
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        background: url(../../images/wdc_icon_info_hover.png) no-repeat center center;
+        background-size: cover;
+        position: relative;
+        top: 2px;
+        left: 5px;
+    }
+    .tipContent {
+        display: block;
+    }
+}
+
+.tipContent {
+    display: none;
+    position: absolute;
+    right: -128px;
+    top: 23px;
+    width: 260px;
+    padding: 20px;
+    border: solid 1px #8c9ba5;
+    background-color: #fff;
+    box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.2);
+    .text {
+        font-size: 14px;
+        color: #152935;
+    }
+}
+
+.tipContent:before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid #8c9ba5;
+}
+
+.tipContent:after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid #fff;
+}

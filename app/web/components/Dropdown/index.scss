@@ -1,0 +1,31 @@
+.dropdownWrap {
+  position: relative;
+}
+
+.dropdownContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  max-height: 175px;
+  background-color: #ffffff;
+  overflow-x: hidden;
+  overflow-y: auto;
+  z-index: 10;
+}
+
+.dropdownItem {
+  padding: 0 8px;
+  font-size: 14px;
+  line-height: 24px;
+  color: #5a6872;
+  cursor: pointer;
+  &:hover {
+    background-color: #E0DEDE;
+  }
+}
+
+.big {
+  .dropdownItem {
+    padding: 6px 16px 5px;
+  }
+}

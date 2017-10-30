@@ -1,0 +1,19 @@
+.infoContainer {
+  position: relative;
+  line-height: 34px;
+  border-bottom: 1px solid #dfe3e6;
+  &:after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+  label {
+    float: left;
+  }
+  .infoContent {
+    padding-right: 20px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+}

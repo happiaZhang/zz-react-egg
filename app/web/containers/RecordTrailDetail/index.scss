@@ -1,0 +1,21 @@
+.recordTrailDetail {
+  .hostFrame,
+  .websiteFrame {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    margin-left: 10px;
+    li + li {
+      margin-top: 10px;
+    }
+  }
+  .toolBar {
+    margin-top: 35px;
+    button + button {
+      margin-left: 15px;
+    }
+  }
+  .reason {
+    margin-top: 35px;
+  }
+}

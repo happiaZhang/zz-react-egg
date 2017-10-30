@@ -1,0 +1,32 @@
+.headerBox {
+    height: 50px;
+    background-color: #152935;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    .logo {
+        padding-top: 11px;
+        padding-left: 22px;
+        img {
+            height: 26px;
+        }
+    }
+    .user {
+        flex: 1;
+        text-align: right;
+        font-size: 14px;
+        color: #ffffff;
+        line-height: 50px;
+        a {
+            display: inline-block;
+            padding: 0 20px;
+            color: #ffffff;
+            text-decoration: none;
+            transition: background-color 0.5s;
+        }
+        a:hover {
+            text-decoration: underline;
+            background-color: rgba(68, 84, 93, 0.45);
+        }
+    }
+}

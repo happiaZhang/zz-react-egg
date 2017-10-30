@@ -1,0 +1,25 @@
+span.checkbox {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    cursor: pointer;
+    i {
+        display: inline-block;
+        box-sizing: border-box;
+        width: 18px;
+        height: 18px;
+        border: solid 2px #8c9ba5;
+    }
+}
+
+span.checked {
+    i {
+        background-image: url(./icon_yes.png);
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: 90%;
+        background-color: #3d70b2;
+        border: solid 2px #3d70b2;
+    }
+}

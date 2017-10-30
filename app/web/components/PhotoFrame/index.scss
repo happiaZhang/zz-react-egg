@@ -1,0 +1,26 @@
+.frameContainer {
+  position: relative;
+  background-color: rgba(61, 112, 178, 0.1);
+  &:before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    width: 0;
+    vertical-align: middle;
+  }
+  .frameShade {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    color: #8c9ba5;
+  }
+  .frameDownload {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 42px;
+    height: 24px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+}

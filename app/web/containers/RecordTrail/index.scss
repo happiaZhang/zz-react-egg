@@ -1,0 +1,42 @@
+.tableOperation {
+    margin-top: 20px;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    .left {
+        flex: 1;
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: flex-start;
+    }
+}
+
+.uploadBtnBox {
+    margin-left: 15px;
+    display: inline-block;
+    position: relative;
+    width: 120px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    font-size: 14px;
+    background-color: #3d70b2;
+    color: #ffffff;
+    overflow: hidden;
+    cursor: pointer;
+    .fileInput {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        bottom: 0px;
+        cursor: pointer;
+        opacity: 0;
+    }
+}
+
+.uploadBtnBox:hover {
+    background-color: #5596e6;
+}
+

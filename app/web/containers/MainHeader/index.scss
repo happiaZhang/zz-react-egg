@@ -1,0 +1,23 @@
+.content {
+    padding-top: 20px;
+    .title {
+        font-size: 28px;
+        line-height: 40px;
+        text-align: left;
+        color: #5a6872;
+    }
+    .backLink {
+        font-size: 14px;
+        color: #3d70b2;
+        line-height: 1.25;
+        padding-bottom: 5px;
+        .link {
+            color: #3d70b2;
+            text-decoration: none;
+            transition: color 0.25s;
+        }
+        .link:hover {
+            color: #5596e6;
+        }
+    }
+}

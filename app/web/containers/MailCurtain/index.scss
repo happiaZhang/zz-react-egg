@@ -1,0 +1,10 @@
+.tableOperation {
+    margin-top: 20px;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    .left{
+        flex: 1;
+    }
+}
