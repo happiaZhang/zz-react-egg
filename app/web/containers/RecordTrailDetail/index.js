@@ -43,19 +43,7 @@ const WEBSITE_INFO_LIST = [
   {key: 'webSiteBasicInfoDto.verifiedDomain', label: '已验证域名'},
   {
     key: 'webSiteBasicInfoDto.auditContent',
-    label: '前置或专项审批内容',
-    content: (result, key) => {
-      // const kv = validate.formatData(result, key);
-      return '';
-      /*
-      try {
-        return JSON.parse(kv).value;
-      } catch {
-        console.log(`failed to parse auditContent: ${kv}`);
-        return '';
-      }
-      */
-    }
+    label: '前置或专项审批内容'
   },
   /* {key: '5', label: <i>&nbsp;</i>, content: ''}, */
   {key: 'webSiteBasicInfoDto.serviceContent', label: '网站服务内容'},
@@ -158,8 +146,8 @@ class RecordTrailDetail extends React.Component {
 
   setRejectReason = () => {
     const FIELD_MAP = {
-      hostUnitFullDto: {name: 'hostInfo'},
-      hostUnitManagerDto: {name: 'hostInfo'},
+      hostUnitFullDto: {name: 'hostUnit'},
+      hostUnitManagerDto: {name: 'hostUnitManager'},
       webSiteBasicInfoDto: {name: 'websiteInfo', multiple: true},
       webSiteManagerInfoDto: {name: 'websiteInfo', multiple: true}
     };

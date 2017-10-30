@@ -11,11 +11,6 @@ module.exports = app => {
     app.get('/api/admin/get', 'admin.action');
 
     /**
-     * ICP备案信息
-     */
-    app.all(/^\/api\/icp(?:\/|$)/, 'icp.action');
-
-    /**
      * ICP备案后台信息
      */
     app.all(/^\/api\/icp-admin(?:\/|$)/, 'icpAdmin.action');

@@ -9,6 +9,6 @@
     "object-curly-spacing": ["error", "never"],
     "array-bracket-spacing": ["error", "never"],
     "prefer-promise-reject-errors": [0],
-    "no-eval": ["error", {"allowIndirect": true}]
+    "no-eval": [0]
   }
 }

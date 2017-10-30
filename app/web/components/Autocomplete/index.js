@@ -4,6 +4,7 @@ import Input from '../Input';
 import Dropdown from '../Dropdown';
 import validate from '../../utils/validate';
 
+/*
 const mockData = [
   {value: '邮政EMS'},
   {value: '顺丰速递'},
@@ -13,13 +14,14 @@ const mockData = [
   {value: '圆通公司'},
   {value: '天天快递'}
 ];
+*/
 
 class Autocomplete extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       dataSource: []
-    }
+    };
   }
 
   onInputChange = (v) => {

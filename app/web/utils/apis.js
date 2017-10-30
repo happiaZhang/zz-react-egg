@@ -40,7 +40,7 @@ const getAdminInfo = function() {
 // 获取主体信息
 const getHostInfoByID = function(id) {
   const payload = {
-    url: `/api/icp/filing/host-info/${id}`
+    url: `/api/icp-admin/filing-admin/host-info/${id}`
   };
   return genPromise(payload, 'getHostInfoByID');
 };
@@ -48,7 +48,7 @@ const getHostInfoByID = function(id) {
 // 获取网站信息
 const getWebsiteInfoByID = function(id) {
   const payload = {
-    url: `/api/icp/filing/all-website-info/${id}`
+    url: `/api/icp-admin/filing-admin/all-website-info/${id}`
   };
   return genPromise(payload, 'getWebsiteInfoByID');
 };

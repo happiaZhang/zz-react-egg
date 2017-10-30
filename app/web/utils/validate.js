@@ -76,7 +76,7 @@ export default {
     return typeof v === 'function';
   },
   formatData(data, key) {
-    return this.isNil(data) ? '' : (window.eval(`data.${key}` || ''));
+    return this.isNil(data) ? '' : (eval(`data.${key}`) || '');
   },
   encode(obj) {
     const kvList = [];
@@ -89,7 +89,7 @@ export default {
     let timeId = null;
     return () => {
       timeId && clearTimeout(timeId);
-      timeId = setTimeout(func, delay)
+      timeId = setTimeout(func, delay);
     };
   }
 };

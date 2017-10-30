@@ -138,7 +138,7 @@ class MailCurtain extends React.Component {
           pageNumber={pageNumber}
           totalSize={totalSize}
           onPageNumberSwitch={this.changePageNumber} />
-        <Modal>
+        <Modal showState>
           <InputBox label='快递公司' inputPlaceholder='请填写快递公司，如顺丰速运' valueValid />
         </Modal>
       </div>
