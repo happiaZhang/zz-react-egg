@@ -92,8 +92,13 @@ class CheckPhoto extends React.Component {
 
   };
 
-  onRowOperation = () => {
-
+  onRowOperation = (type) => {
+    const {history} = this.props;
+    switch (type) {
+      case 'LOOK':
+        history.push(`/check/detail/1`);
+        break;
+    }
   };
 
   render() {

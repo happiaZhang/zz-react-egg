@@ -24,7 +24,7 @@ const THEAD_DATA = [
   {text: '备案主体', value: 'hostname'},
   {text: '最近更新时间', value: 'updateTime'},
   {text: '状态', value: 'operStatus'},
-  {text: '操作', value: 'OPERATION_COLUMN', width: 40}
+  {text: '操作', value: 'OPERATION_COLUMN', width: 60}
 ];
 
 class RecordTrail extends React.Component {

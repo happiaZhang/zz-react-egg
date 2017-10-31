@@ -18,4 +18,11 @@
   .reason {
     margin-top: 35px;
   }
+  .curtainFrame {
+    display: flex;
+    margin-top: 25px;
+    li + li {
+      margin-left: 25px;
+    }
+  }
 }

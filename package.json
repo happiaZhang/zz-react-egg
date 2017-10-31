@@ -63,7 +63,7 @@
         "node": ">=6.0.0"
     },
     "scripts": {
-        "start": "EGG_SERVER_ENV=prod egg-scripts start",
+        "start": "cross-env EGG_SERVER_ENV=prod egg-scripts start",
         "stop": "egg-scripts stop",
         "dev": "cross-env EGG_SERVER_ENV=local egg-bin dev",
         "debug": "egg-bin debug",
