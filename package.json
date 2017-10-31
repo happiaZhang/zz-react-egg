@@ -73,7 +73,7 @@
         "ci": "npm run lint && npm run cov",
         "autod": "autod",
         "web": "cross-env NODE_ENV=development webpack-dev-server --open",
-        "build": "rm -rf ./app/public/ && NODE_ENV=production webpack --config ./webpack.production.config.js --progress"
+        "build": "cross-env NODE_ENV=production webpack --config ./webpack.production.config.js --progress"
     },
     "ci": {
         "version": "6, 8"
