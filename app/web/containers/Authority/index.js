@@ -6,10 +6,10 @@ import Search from '../../components/Search';
 import Pagination from '../../components/Pagination';
 import Table from '../../components/Table';
 
-const MAIL_STATUS = [
+const AUTHORITY_STATUS = [
   {value: '', text: '全部'},
-  {value: 'readyToMail', text: '待寄送'},
-  {value: 'haveMailed', text: '已寄送'}
+  {value: 'readyToAuthority', text: '待管局审核'},
+  {value: 'finished', text: '已完成'}
 ];
 const THEAD_DATA = [
   {text: '申请ID', value: 'operId'},
@@ -29,8 +29,8 @@ const MOCK_DATA = [
     recordType: '首次备案',
     hostname: '万达云计算有限公司',
     updateTime: '2017-08-08 13:44',
-    operStatus: '待初审',
-    operations: [{type: 'LOOK', text: '查看'}]
+    operStatus: '待管局审核',
+    operations: [{type: 'LOOK', text: '填写备案号'}]
   },
   {
     operId: 263636,
@@ -39,8 +39,8 @@ const MOCK_DATA = [
     recordType: '新增接入',
     hostname: '万达云计算有限公司',
     updateTime: '2017-08-08 13:44',
-    operStatus: '待初审',
-    operations: [{type: 'LOOK', text: '查看'}]
+    operStatus: '待管局审核',
+    operations: [{type: 'LOOK', text: '填写备案号'}]
   },
   {
     operId: 363636,
@@ -49,8 +49,8 @@ const MOCK_DATA = [
     recordType: '新增网站',
     hostname: '万达云计算有限公司',
     updateTime: '2017-08-08 13:44',
-    operStatus: '已通过',
-    operations: [{type: 'LOOK', text: '查看'}]
+    operStatus: '备案完成',
+    operations: [{type: 'LOOK', text: '填写备案号'}]
   },
   {
     operId: 253086,
@@ -59,12 +59,12 @@ const MOCK_DATA = [
     recordType: '首次备案',
     hostname: '万达云计算有限公司',
     updateTime: '2017-08-08 13:44',
-    operStatus: '已驳回',
-    operations: [{type: 'LOOK', text: '查看'}]
+    operStatus: '备案完成',
+    operations: [{type: 'LOOK', text: '填写备案号'}]
   }
 ];
 
-class CheckPhoto extends React.Component {
+class Authority extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -92,8 +92,13 @@ class CheckPhoto extends React.Component {
 
   };
 
-  onRowOperation = () => {
-
+  onRowOperation = (type) => {
+    const {history} = this.props;
+    switch (type) {
+      case 'LOOK':
+        history.push(`/authority/detail/1`);
+        break;
+    }
   };
 
   render() {
@@ -101,13 +106,13 @@ class CheckPhoto extends React.Component {
 
     return (
       <div>
-        <MainHeader title='审核幕布照片' />
+        <MainHeader title='管局审核' />
         <div className={styles.tableOperation}>
           <div className={styles.left}>
             <Select
               style={{width: 140}}
               showLines={3}
-              data={MAIL_STATUS}
+              data={AUTHORITY_STATUS}
               value={status}
               onChangeValue={this.changeStatus} />
           </div>
@@ -141,4 +146,4 @@ class CheckPhoto extends React.Component {
   }
 }
 
-export default CheckPhoto;
+export default Authority;
