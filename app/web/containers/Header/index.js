@@ -17,7 +17,7 @@ export default class Header extends React.Component {
   // 组件加载完成以后
   componentDidMount() {
     // 获取管理员信息
-    this.getAdminInfo();
+    // this.getAdminInfo();
   }
 
   // 获取管理员信息

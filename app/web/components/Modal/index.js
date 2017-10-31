@@ -5,20 +5,14 @@ import Button from '../Button';
 class Modal extends React.Component {
   static defaultProps = {
     title: '填写快递单号',
-    showState: false
+    showState: false,
+    width: 500
   };
   // 关闭点击处理
   handleCloseClick = () => {
     const {onCloseClick} = this.props;
 
     onCloseClick && onCloseClick();
-  };
-
-  // 取消点击处理
-  handleCancelClick = () => {
-    let {onCancelClick} = this.props;
-
-    onCancelClick && onCancelClick();
   };
 
   // 确认点击处理
@@ -30,12 +24,13 @@ class Modal extends React.Component {
 
   // 页面渲染
   render() {
-    let {title, children, showState} = this.props;
+    let {title, children, showState, width} = this.props;
     if (!showState) return null;
+    const style = {width};
 
     return (
       <div className={styles.modalWrap}>
-        <div className={styles.modalContainer}>
+        <div className={styles.modalContainer} style={style}>
           <div className={styles.modalHeader}>
             <h4>{title}</h4>
             <a className={styles.iconClose} onClick={this.handleCloseClick}>&times;</a>
@@ -46,7 +41,7 @@ class Modal extends React.Component {
               text={'取消'}
               type={'default'}
               style={{width: 80, height: 36}}
-              onClick={this.handleCancelClick} />
+              onClick={this.handleCloseClick} />
             <Button
               text={'确定'}
               type={'primary'}

@@ -7,6 +7,8 @@ import Pagination from '../../components/Pagination';
 import Table from '../../components/Table';
 import Modal from '../../components/Modal';
 import InputBox from '../../components/InputBox';
+import Card from '../../components/Card';
+import Info from '../../components/Info';
 
 const MAIL_STATUS = [
   {value: '', text: '全部'},
@@ -65,6 +67,13 @@ const MOCK_DATA = [
     operations: [{type: 'LOOK', text: '填写快递单号'}]
   }
 ];
+const MAIL_INFOS = [
+  {label: '幕布邮寄地址', content: '上海市浦东新区杨高南路729号1号楼33楼'},
+  {label: '邮政编码', content: '200000'},
+  {label: '联系人姓名', content: '王彬彬'},
+  {label: '手机号码', content: '1801767879'},
+  {label: '电话号码', content: '021-76765676-9'}
+];
 
 class MailCurtain extends React.Component {
   constructor(props) {
@@ -74,7 +83,8 @@ class MailCurtain extends React.Component {
       searchText: '',
       pageSize: 10,
       pageNumber: 1,
-      totalSize: 1
+      totalSize: 1,
+      showModal: false
     };
   }
 
@@ -94,12 +104,40 @@ class MailCurtain extends React.Component {
 
   };
 
-  onRowOperation = () => {
+  onRowOperation = (type) => {
+    switch (type) {
+      case 'LOOK':
+        this.setState({showModal: true});
+        break;
+    }
+  };
 
+  onClose = () => {
+    this.setState({showModal: false});
+  };
+
+  renderModal = () => {
+    return (
+      <Modal width={720} showState onCloseClick={this.onClose}>
+        <div style={{display: 'flex', marginBottom: 10}}>
+          <InputBox label='快递公司' inputPlaceholder='请填写快递公司，如顺丰速运' />
+          <InputBox label='快递单号' inputPlaceholder='请填写准确的快递单号' style={{marginLeft: 20}} />
+        </div>
+        <Card>{this.renderInfoList()}</Card>
+      </Modal>
+    );
+  };
+
+  renderInfoList = () => {
+    const infoList = [];
+    MAIL_INFOS.forEach((props, i) => {
+      infoList.push(<Info {...props} key={i} />);
+    });
+    return infoList;
   };
 
   render() {
-    const {status, searchText, pageSize, pageNumber, totalSize} = this.state;
+    const {status, searchText, pageSize, pageNumber, totalSize, showModal} = this.state;
 
     return (
       <div>
@@ -138,10 +176,7 @@ class MailCurtain extends React.Component {
           pageNumber={pageNumber}
           totalSize={totalSize}
           onPageNumberSwitch={this.changePageNumber} />
-        <Modal showState>
-          <InputBox label='快递公司' inputPlaceholder='请填写快递公司，如顺丰速运' />
-          <InputBox label='快递单号' inputPlaceholder='请填写准确的快递单号' />
-        </Modal>
+        {showModal ? this.renderModal() : ''}
       </div>
     );
   }
