@@ -6,14 +6,14 @@
 module.exports = app => {
   return class AdminController extends app.Controller {
     constructor(ctx) {
-    super(ctx);
-    this.host = this.config.adminHost;
+      super(ctx);
+      this.host = this.config.adminHost;
     }
 
     async action() {
       const {ctx} = this;
 
-      //获取用户的信息
+      // 获取用户的信息
       const res = await app.curl(`${this.host}/userrest/view`, {
         method: 'GET',
         dataType: 'json',

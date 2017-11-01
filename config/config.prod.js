@@ -4,19 +4,17 @@
  * 生产环境配置
  */
 module.exports = {
+  // api host
+  adminHost: 'http://10.214.169.111:32730',
+  icpAdminHost: 'http://10.214.169.111:32356',
 
-    // apiHost
-    adminHost: 'admin-management-rest-svc:8884',
-    adminInvoiceHost: 'wandacloud-invoice-admin-svc:8889',
-
-    //redis
-    redis: {
-        client: {
-            port: 6379,
-            host: 'redis-primary.default',
-            password: '',
-            db: 0
-        }
-    },
-
+  // redis
+  redis: {
+    client: {
+      port: 6379,
+      host: 'redis-primary.default',
+      password: '',
+      db: 0
+    }
+  }
 };
