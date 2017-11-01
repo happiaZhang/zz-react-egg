@@ -26,18 +26,6 @@ const regex = {
   // 金额验证
   amount: /^(?!0+(?:\.0+)?$)(?:[1-9]\d*|0)(?:\.\d{1,2})?$/
 };
-const stringifyPrimitive = (v) => {
-  switch (typeof v) {
-    case 'string':
-      return v;
-    case 'boolean':
-      return v ? 'true' : 'false';
-    case 'number':
-      return isFinite(v) ? v : '';
-    default:
-      return '';
-  }
-};
 
 export default {
 
@@ -81,15 +69,18 @@ export default {
   encode(obj) {
     const kvList = [];
     Object.keys(obj).forEach(k => {
-      kvList.push(`${k}=${stringifyPrimitive(obj[k])}`);
+      let kv = obj[k];
+      if (typeof kv === 'boolean') {
+        kv = kv ? 'true' : 'false';
+        kvList.push(`${k}=${kv}`);
+      } else if (kv instanceof Array) {
+        kv.forEach(v => {
+          kvList.push(`${k}=${v}`);
+        });
+      } else {
+        kvList.push(`${k}=${kv}`);
+      }
     });
     return kvList.join('&');
-  },
-  debounce(func, delay) {
-    let timeId = null;
-    return () => {
-      timeId && clearTimeout(timeId);
-      timeId = setTimeout(func, delay);
-    };
   }
 };

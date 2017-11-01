@@ -1,6 +1,5 @@
 import styles from './index.scss';
 import React from 'react';
-import {connect} from 'react-redux';
 import MainHeader from '../MainHeader';
 import Select from '../../components/Select';
 import Search from '../../components/Search';
@@ -22,7 +21,14 @@ const THEAD_DATA = [
   {text: '备案类型', value: 'recordType', render: () => ('首次备案')},
   {text: '备案主体', value: 'hostname'},
   {text: '最近更新时间', value: 'updateTime'},
-  {text: '状态', value: 'operStatus'},
+  {
+    text: '状态',
+    value: 'operStatus',
+    render: (value, item) => {
+      const status = TRAIL_STATUS.find(s => s.value === item[value]);
+      return status.text;
+    }
+  },
   {text: '操作', value: 'OPERATION_COLUMN', width: 60}
 ];
 
@@ -38,7 +44,17 @@ class RecordTrail extends React.Component {
       pageNumber: 1,
       elements: []
     };
+    this.selectAll = this.setSelectAll();
   }
+
+  // 设置下拉框为全部时，status所应取的值
+  setSelectAll = () => {
+    const all = [];
+    TRAIL_STATUS.forEach(({value}) => {
+      if (!validate.isEmpty(value)) all.push(value);
+    });
+    return all;
+  };
 
   // 组件渲染完成
   componentDidMount() {
@@ -51,7 +67,7 @@ class RecordTrail extends React.Component {
     this.searchTimer && clearTimeout(this.searchTimer);
   }
 
-  //  改变备案类型
+  //  改变初审状态
   changeStatus = (status) => {
     this.getRecordTrailList({status});
   };
@@ -86,24 +102,12 @@ class RecordTrail extends React.Component {
     }
   };
 
-  //  获取备案初审列表
-  getRecordTrailList = (other = {}) => {
+  //  获取初审列表
+  getRecordTrailList = (newState = {}) => {
     const {pageSize, pageNumber, status} = this.state;
+    const params = {operId: '', status, pageSize, pageNumber, ...newState};
 
-    if (!validate.isNumber('' + pageNumber)) {
-      console.log('页码格式错误！');
-      return;
-    }
-
-    const params = {
-      operId: '',
-      status,
-      pageSize,
-      pageNumber,
-      ...other
-    };
-
-    apis.getRecordTrailList(params).then(res => {
+    apis.getRecordTrailList(this.convertParams(params)).then(res => {
       const {elements, totalSize} = res;
       this.setState({
         totalSize,
@@ -118,6 +122,11 @@ class RecordTrail extends React.Component {
     });
   };
 
+  convertParams = (params) => {
+    if (validate.isEmpty(params.status)) return {...params, status: this.selectAll};
+    return params;
+  };
+
   setTbodyData = () => {
     const {elements} = this.state;
     if (elements.length === 0) return elements;
@@ -129,13 +138,7 @@ class RecordTrail extends React.Component {
 
   //  页面渲染
   render() {
-    const {
-      status,
-      searchText,
-      pageSize,
-      pageNumber,
-      totalSize
-    } = this.state;
+    const {status, searchText, pageSize, pageNumber, totalSize} = this.state;
 
     return (
       <div>
@@ -144,7 +147,6 @@ class RecordTrail extends React.Component {
           <div className={styles.left}>
             <Select
               style={{width: 140}}
-              showLines={4}
               data={TRAIL_STATUS}
               value={status}
               onChangeValue={this.changeStatus} />
@@ -159,7 +161,6 @@ class RecordTrail extends React.Component {
           pageSize={pageSize}
           pageNumber={pageNumber}
           totalSize={totalSize}
-          onPageSizeSwitch={this.changePageSize}
           onPageNumberSwitch={this.changePageNumber} />
         <Table
           theadData={THEAD_DATA}
@@ -173,10 +174,11 @@ class RecordTrail extends React.Component {
           pageSize={pageSize}
           pageNumber={pageNumber}
           totalSize={totalSize}
+          onPageSizeSwitch={this.changePageSize}
           onPageNumberSwitch={this.changePageNumber} />
       </div>
     );
   }
 }
 
-export default connect()(RecordTrail);
+export default RecordTrail;
