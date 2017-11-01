@@ -28,5 +28,5 @@ module.exports = app => {
       // 成功返回
       ctx.helper.json(0, 'success', res.data);
     }
-  }
+  };
 };

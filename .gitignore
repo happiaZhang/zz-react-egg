@@ -1,9 +1,5 @@
-coverage/
 logs/
 node_modules/
 run/
-test/
-.travis.yml
-appveyor.yml
 npm-debug.log
 .idea/

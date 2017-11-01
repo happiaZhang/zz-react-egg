@@ -68,9 +68,9 @@
         "dev": "cross-env EGG_SERVER_ENV=local egg-bin dev",
         "debug": "egg-bin debug",
         "test": "EGG_SERVER_ENV=test egg-bin test",
-        "cov": "EGG_SERVER_ENV=test egg-bin cov",
+        "cov": "cross-env EGG_SERVER_ENV=test egg-bin cov",
         "lint": "eslint app/web/.",
-        "ci": "npm run lint && npm run cov",
+        "ci": "npm run lint",
         "autod": "autod",
         "web": "cross-env NODE_ENV=development webpack-dev-server --open",
         "build": "cross-env NODE_ENV=production webpack --config ./webpack.production.config.js --progress"
