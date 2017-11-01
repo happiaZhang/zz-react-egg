@@ -1,5 +1,9 @@
+coverage/
 logs/
 node_modules/
 run/
 npm-debug.log
 .idea/
+/.travis.yml
+/appveyor.yml
+/sonar-project.properties
