@@ -12,7 +12,6 @@ import message from '../../components/Message';
 import apis from '../../utils/apis';
 import validate from '../../utils/validate';
 
-const HOST_ID = 0;
 const ROUTES = [
   {key: 'recordTrail', to: '/', text: '备案初审'}
 ];
@@ -45,7 +44,6 @@ const WEBSITE_INFO_LIST = [
     key: 'webSiteBasicInfoDto.auditContent',
     label: '前置或专项审批内容'
   },
-  /* {key: '5', label: <i>&nbsp;</i>, content: ''}, */
   {key: 'webSiteBasicInfoDto.serviceContent', label: '网站服务内容'},
   {key: 'webSiteBasicInfoDto.language', label: '网站语言'},
   {key: 'webSiteManagerInfoDto.name', label: '网站负责人姓名'},
@@ -111,8 +109,7 @@ class RecordTrailDetail extends React.Component {
 
   handleChange = (k, id) => {
     return (v) => {
-      // without manager
-      if (validate.isNil(id)) return;
+      if (validate.isEmpty(id)) return;
       if (!this.model.hasOwnProperty(id)) this.model[id] = [];
       if (v) {
         this.model[id].push(k);
@@ -129,29 +126,33 @@ class RecordTrailDetail extends React.Component {
     };
   };
 
-  onReject = () => {
+  // 处理初审驳回或初审通过
+  handleTrail = (isResolved) => {
     const {history} = this.props;
     const data = {
       operId: this.getOperID(),
-      rejectReason: JSON.stringify(this.setRejectReason()),
-      filingStatus: 10060
+      filingStatus: isResolved ? 10050 : 10060
     };
-
-    apis.setInitVerify(data).then(() => {
-      history.push('/');
-    }).catch(() => {
-      message.error('初审验证失败，请刷新重试');
-    });
+    const errMsg = `初审${isResolved ? '通过' : '驳回'}失败，请刷新重试`;
+    return () => {
+      if (!isResolved) data.rejectReason = JSON.stringify(this.setRejectModel());
+      apis.setInitVerify(data).then(() => {
+        history.push('/');
+      }).catch(() => {
+        message.error(errMsg);
+      });
+    };
   };
 
-  setRejectReason = () => {
+  // 设置驳回数据模型
+  setRejectModel = () => {
     const FIELD_MAP = {
       hostUnitFullDto: {name: 'hostUnit'},
       hostUnitManagerDto: {name: 'hostUnitManager'},
       webSiteBasicInfoDto: {name: 'websiteInfo', multiple: true},
-      webSiteManagerInfoDto: {name: 'websiteInfo', multiple: true}
+      webSiteManagerInfoDto: {name: 'webSiteManagerInfo', multiple: true}
     };
-    const reason = {};
+    const reason = {hostInfo: {}};
 
     Object.keys(this.model).forEach(id => {
       const series = this.model[id];
@@ -163,8 +164,13 @@ class RecordTrailDetail extends React.Component {
           const {name, multiple} = FIELD_MAP[ks[0]];
           const v = ks[ks.length - 1];
           key = name;
-          if (!reason.hasOwnProperty(name)) reason[key] = [];
-          multiple ? warnItems.push(v) : reason[key].push(v);
+          if (multiple) {
+            if (!reason.hasOwnProperty(name)) reason[key] = [];
+            warnItems.push(v);
+          } else {
+            if (!reason.hostInfo.hasOwnProperty(name)) reason.hostInfo[key] = [];
+            reason.hostInfo[key].push(v);
+          }
         });
       } else {
         reason[id] = series;
@@ -175,7 +181,8 @@ class RecordTrailDetail extends React.Component {
     return reason;
   };
 
-  initModel = () => {
+  // 初始化驳回数据模型
+  initRejectModel = () => {
     const {checkMode} = this.state;
     this.model = checkMode ? {rejectReason: '信息有误，请重新填写'} : null;
   };
@@ -192,27 +199,25 @@ class RecordTrailDetail extends React.Component {
     return <ul className={className}>{frames}</ul>;
   };
 
-  renderInfoList = (data, result, hasId = false) => {
+  renderInfoList = (infoList, data) => {
     const {checkMode} = this.state;
-    const infoList = [];
-    data.forEach(d => {
-      const {key, label, content} = d;
+    const list = [];
+    infoList.forEach(info => {
+      const {key, label, content} = info;
       const props = {key, label, checkMode};
-      if (!validate.isNil(result)) {
-        props.onChange = this.handleChange(key, hasId ? this.getID(result, key) : HOST_ID);
-      }
-      props.content = validate.isNil(content)
-        ? validate.formatData(result, key)
-        : (typeof content === 'function' ? content(result, key) : content);
-      infoList.push(<Info {...props} />);
+      props.onChange = this.handleChange(key, this.getDtoId(data, key));
+      props.content = content ? content(data, key) : validate.formatData(data, key);
+      list.push(<Info {...props} />);
     });
-    return infoList;
+    return list;
   };
 
-  getID = (result, key) => {
+  getDtoId = (data, key) => {
     const ks = key.split('.');
-    ks[1] = 'id';
-    return validate.formatData(result, ks.join('.'));
+    ks.length = 1;
+    if (ks[0] === 'hostUnitFullDto' || ks[0] === 'hostUnitManagerDto') return ks[0];
+    ks.push('id');
+    return validate.formatData(data, ks.join('.'));
   };
 
   renderTextarea = () => {
@@ -230,10 +235,10 @@ class RecordTrailDetail extends React.Component {
     const {checkMode} = this.state;
     const btnGroup = checkMode ? [
       {key: 'cancel', text: '取消', type: 'default', onClick: this.onCheckMode(false)},
-      {key: 'confirm', text: '确认驳回', onClick: this.onReject}
+      {key: 'confirm', text: '确认驳回', onClick: this.handleTrail(false)}
     ] : [
       {key: 'reject', text: '初审驳回', type: 'default', onClick: this.onCheckMode(true)},
-      {key: 'resolve', text: '初审通过'}
+      {key: 'resolve', text: '初审通过', onClick: this.handleTrail(true)}
     ];
     return (
       <div className={styles.toolBar}>
@@ -252,9 +257,9 @@ class RecordTrailDetail extends React.Component {
     return `${defaultTitle} - ${suffix}`;
   };
 
-  renderWebsiteInfos = () => {
+  renderWebsiteInfoList = () => {
     const {listWebSiteInfo} = this.state;
-    const websiteInfos = [];
+    const websiteList = [];
     listWebSiteInfo && listWebSiteInfo.forEach((websiteInfo, i) => {
       const props = {
         key: i,
@@ -264,19 +269,19 @@ class RecordTrailDetail extends React.Component {
       };
       if (i === 0) props.classID = 'website';
 
-      websiteInfos.push(
+      websiteList.push(
         <Card {...props}>
-          {this.renderInfoList(WEBSITE_INFO_LIST, websiteInfo, true)}
+          {this.renderInfoList(WEBSITE_INFO_LIST, websiteInfo)}
         </Card>
       );
     });
 
-    return websiteInfos;
+    return websiteList;
   };
 
   render() {
     const {hostInfo} = this.state;
-    this.initModel();
+    this.initRejectModel();
     return (
       <div className={styles.recordTrailDetail}>
         <Breadcrumb routes={ROUTES} style={{marginTop: 15}} />
@@ -291,7 +296,7 @@ class RecordTrailDetail extends React.Component {
           >
             {this.renderInfoList(HOST_INFO_LIST, hostInfo)}
           </Card>
-          {this.renderWebsiteInfos()}
+          {this.renderWebsiteInfoList()}
         </div>
         {this.renderTextarea()}
         {this.renderButtons()}

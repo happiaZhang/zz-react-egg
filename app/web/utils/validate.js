@@ -64,7 +64,21 @@ export default {
     return typeof v === 'function';
   },
   formatData(data, key) {
-    return this.isNil(data) ? '' : (eval(`data.${key}`) || '');
+    if (this.isNil(data)) return '';
+    const ks = key.split('.');
+    let result = null;
+    let d = {...data};
+    for (const k of ks) {
+      if (this.isNil(d[k])) {
+        result = '';
+        break;
+      } else if (typeof d[k] === 'string') {
+        result = d[k];
+      } else {
+        d = {...d[k]};
+      }
+    }
+    return result;
   },
   encode(obj) {
     const kvList = [];

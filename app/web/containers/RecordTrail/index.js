@@ -118,7 +118,7 @@ class RecordTrail extends React.Component {
         searchText: params.operId
       });
     }).catch(() => {
-      message.error('获取备案初审列表失败，请刷新重试');
+      message.error('获取初审列表失败，请刷新重试');
     });
   };
 
