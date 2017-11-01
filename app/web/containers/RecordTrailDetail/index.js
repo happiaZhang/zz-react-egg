@@ -42,7 +42,12 @@ const WEBSITE_INFO_LIST = [
   {key: 'webSiteBasicInfoDto.verifiedDomain', label: '已验证域名'},
   {
     key: 'webSiteBasicInfoDto.auditContent',
-    label: '前置或专项审批内容'
+    label: '前置或专项审批内容',
+    content: (data, key) => {
+      let cnt = validate.formatData(data, key);
+      if (!validate.isEmpty(cnt)) cnt = JSON.parse(cnt).value;
+      return cnt;
+    }
   },
   {key: 'webSiteBasicInfoDto.serviceContent', label: '网站服务内容'},
   {key: 'webSiteBasicInfoDto.language', label: '网站语言'},
