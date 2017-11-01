@@ -10,10 +10,9 @@ import message from '../../components/Message';
 import apis from '../../utils/apis';
 import validate from '../../utils/validate';
 
-const OPER_STATUS = [
+const TRAIL_STATUS = [
   {value: '', text: '全部'},
   {value: 10040, text: '待初审'},
-  {value: 10100, text: '已通过'},
   {value: 10060, text: '已驳回'}
 ];
 const THEAD_DATA = [
@@ -146,7 +145,7 @@ class RecordTrail extends React.Component {
             <Select
               style={{width: 140}}
               showLines={4}
-              data={OPER_STATUS}
+              data={TRAIL_STATUS}
               value={status}
               onChangeValue={this.changeStatus} />
           </div>

@@ -5,8 +5,7 @@ class Select extends React.Component {
   static defaultProps = {
     style: {},
     data: [],
-    value: '',
-    showLines: 5
+    value: ''
   };
   // 构造方法
   constructor(props) {
@@ -63,14 +62,12 @@ class Select extends React.Component {
 
   // 页面渲染
   render() {
-    let {type, style, data, value, showLines} = this.props;
+    let {type, style, data, value} = this.props;
     let {listShowState} = this.state;
 
     let currentValue = this.getCurrentValue(data, value); // 获取当前显示值
     let typeClass = type ? styles[type] : '';
     let focusingClass = listShowState ? styles.focusing : '';
-    let listLineHeight = type === 'small' ? 24 : 35;
-    let listHeight = data.length > showLines ? listLineHeight * showLines : listLineHeight * data.length;
 
     return (
       <div
@@ -78,7 +75,7 @@ class Select extends React.Component {
         style={style}
         onMouseLeave={this.handleMouseLeave}>
         <p className={styles.text} onClick={this.handleTextClick}>{currentValue}</p>
-        <ul className={styles.list} style={{height: listHeight}}>
+        <ul className={styles.list}>
           {this.renderOptions(data)}
         </ul>
       </div>
