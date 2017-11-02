@@ -63,8 +63,8 @@ const setInitVerify = function(data) {
   return genPromise(payload, 'setInitVerify');
 };
 
-// 获取备案初审列表
-const getRecordTrailList = function(params) {
+// 获取表格数据
+const getTableData = function(params) {
   const qs = {...params};
   const operId = qs.operId;
   const isEmpty = validate.isEmpty(operId.trim());
@@ -73,7 +73,7 @@ const getRecordTrailList = function(params) {
   const payload = {
     url: `/api/icp-admin/filing-admin/info-summary?${queryString}`
   };
-  return genPromise(payload, 'getRecordTrailList');
+  return genPromise(payload, 'getTableData');
 };
 
 export default {
@@ -81,6 +81,6 @@ export default {
   getHostInfoByID,
   getWebsiteInfoByID,
   setInitVerify,
-  getRecordTrailList,
-  getDispatch
+  getDispatch,
+  getTableData
 };
