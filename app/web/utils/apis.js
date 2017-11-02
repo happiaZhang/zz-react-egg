@@ -76,11 +76,22 @@ const getTableData = function(params) {
   return genPromise(payload, 'getTableData');
 };
 
+// 邮寄幕布
+const setCurtainDelivery = function(data) {
+  const payload = {
+    url: '/api/icp-admin/filing-admin/curtain-delivery-info',
+    method: 'POST',
+    data
+  };
+  return genPromise(payload, 'setCurtainDelivery');
+};
+
 export default {
   getAdminInfo,
   getHostInfoByID,
   getWebsiteInfoByID,
   setInitVerify,
   getDispatch,
-  getTableData
+  getTableData,
+  setCurtainDelivery
 };

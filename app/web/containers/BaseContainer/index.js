@@ -28,6 +28,7 @@ class BaseContainer extends React.Component {
       pageNumber: 1,
       totalSize: 0,
       showModal: false,
+      modalId: '',
       elements: []
     };
   }
@@ -130,7 +131,7 @@ class BaseContainer extends React.Component {
     const {operId} = data;
     switch (type) {
       case 'EXPRESS':
-        this.setState({showModal: true});
+        this.setState({showModal: true, modalId: operId});
         break;
       case 'TRAIL':
         history.push(`/trail/detail/${operId}`);
@@ -143,7 +144,7 @@ class BaseContainer extends React.Component {
   };
 
   render() {
-    const {status, searchText, pageSize, pageNumber, totalSize, showModal} = this.state;
+    const {status, searchText, pageSize, pageNumber, totalSize, showModal, modalId} = this.state;
 
     return (
       <div>
@@ -181,7 +182,7 @@ class BaseContainer extends React.Component {
           totalSize={totalSize}
           onPageSizeSwitch={this.changePageSize}
           onPageNumberSwitch={this.changePageNumber} />
-        {showModal ? this.renderModal() : ''}
+        {showModal ? this.renderModal(modalId) : ''}
       </div>
     );
   }

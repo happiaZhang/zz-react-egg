@@ -26,6 +26,11 @@ export default class InputBox extends React.Component {
     this.setState({inputValue});
   };
 
+  handleBlur = (inputValue) => {
+    const {onBlur} = this.props;
+    onBlur && onBlur(inputValue);
+  };
+
   // 页面渲染
   render() {
     let {style, label, inputStyle, inputPlaceholder, inputRequired} = this.props;
@@ -42,6 +47,7 @@ export default class InputBox extends React.Component {
             placeholder={inputPlaceholder}
             required={inputRequired}
             onChange={this.handleChange}
+            onBlur={this.handleBlur}
           />
         </div>
       </div>
