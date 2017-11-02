@@ -58,7 +58,7 @@ const WEBSITE_INFO_LIST = [
   {key: 'webSiteManagerInfoDto.email', label: '电子邮箱'}
 ];
 const HOST_FRAMES = [
-  {shadeText: '工商营业执照', download: true},
+  {shadeText: '工商营业执照'},
   {shadeText: '身份证（正面）'},
   {shadeText: '身份证（反面）'}
 ];
@@ -123,6 +123,10 @@ class RecordTrailDetail extends React.Component {
         this.model[id].splice(i, 1);
       }
     };
+  };
+
+  onChecked = (v) => {
+    console.log(v);
   };
 
   onCheckMode = (checkMode) => {
@@ -196,9 +200,8 @@ class RecordTrailDetail extends React.Component {
     const {checkMode} = this.state;
     const frames = [];
     data.forEach((d, i) => {
-      const {shadeText, download = false} = d;
-      const props = {shadeText, download, checkMode};
-      if (checkMode) props.download = false;
+      const {shadeText} = d;
+      const props = {shadeText, checkMode, onChange: this.onChecked};
       frames.push(<li key={i}><PhotoFrame {...props} /></li>);
     });
     return <ul className={className}>{frames}</ul>;

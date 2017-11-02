@@ -86,6 +86,14 @@ const setCurtainDelivery = function(data) {
   return genPromise(payload, 'setCurtainDelivery');
 };
 
+// 获取幕布邮寄信息
+const getCurtainInfo = (id) => {
+  const payload = {
+    url: `/api/icp-admin/filing-admin/curtain-info/${id}`
+  };
+  return genPromise(payload, 'getCurtainInfo');
+};
+
 export default {
   getAdminInfo,
   getHostInfoByID,
@@ -93,5 +101,6 @@ export default {
   setInitVerify,
   getDispatch,
   getTableData,
-  setCurtainDelivery
+  setCurtainDelivery,
+  getCurtainInfo
 };

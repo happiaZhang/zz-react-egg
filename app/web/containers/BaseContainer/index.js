@@ -136,7 +136,9 @@ class BaseContainer extends React.Component {
     const {operId} = data;
     switch (type) {
       case 'EXPRESS':
-        this.setState({showModal: true, modalId: operId});
+        this.loadCurtainMail(operId, () => {
+          this.setState({showModal: true, modalId: operId});
+        });
         break;
       case 'TRAIL':
         history.push(`/trail/detail/${operId}`);
@@ -144,10 +146,17 @@ class BaseContainer extends React.Component {
     }
   };
 
-  onClose = () => {
-    this.setState({showModal: false});
+  // 关闭模态框
+  onClose = (reload = false) => {
+    this.setState({showModal: false}, () => {
+      if (reload) {
+        const {history} = this.props;
+        history.push('/mail');
+      }
+    });
   };
 
+  // 页面渲染
   render() {
     const {status, searchText, pageSize, pageNumber, totalSize, showModal, modalId} = this.state;
 

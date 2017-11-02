@@ -6,17 +6,18 @@ import Card from '../../components/Card';
 import Info from '../../components/Info';
 import message from '../../components/Message';
 import apis from '../../utils/apis';
+import validate from '../../utils/validate';
 
 const MAIL_STATUS = [
   {value: '', text: '全部'},
   {value: 10050, text: '待寄送'}
 ];
-const EXPRESS_INFO = [
-  {key: 'address', label: '幕布邮寄地址', content: '上海市浦东新区杨高南路729号1号楼33楼'},
-  {key: 'postCode', label: '邮政编码', content: '200000'},
-  {key: 'name', label: '联系人姓名', content: '王彬彬'},
-  {key: 'mobile', label: '手机号码', content: '1801767879'},
-  {key: 'fixedPhone', label: '电话号码', content: '021-76765676-9'}
+const MAIL_INFO = [
+  {key: 'address', label: '幕布邮寄地址'},
+  {key: 'postCode', label: '邮政编码'},
+  {key: 'name', label: '联系人姓名'},
+  {key: 'mobile', label: '手机号码'},
+  {key: 'fixedPhone', label: '电话号码'}
 ];
 
 class MailCurtain extends BaseContainer {
@@ -27,13 +28,24 @@ class MailCurtain extends BaseContainer {
     this.errorMsg = '获取邮寄幕布列表失败，请刷新重试';
     this.operations = [{type: 'EXPRESS', text: '填写快递单号'}];
     this.param = {};
+    this.loadCurtainMail = this.loadCurtainMail;
   }
+
+  // 加载幕布邮寄信息
+  loadCurtainMail = (id, cb) => {
+    apis.getCurtainInfo(id).then((res) => {
+      this.curtainMailDto = res.curtainMailDto;
+      if (cb) cb();
+    }).catch(() => {
+      message.error('获取幕布邮寄信息失败，请刷新重试');
+    });
+  };
 
   // 邮寄幕布
   onConfirm = () => {
-    apis.setCurtainDelivery(this.param).then(res => {
-      console.log(res);
+    apis.setCurtainDelivery(this.param).then(() => {
       message.success('快递单号填写完成，已标记为已寄送，请尽快寄送');
+      this.onClose(true);
     }).catch(() => {
       message.error('邮寄幕布失败，请刷新重试');
     });
@@ -86,8 +98,9 @@ class MailCurtain extends BaseContainer {
   // 渲染邮寄人信息
   renderInfoList = () => {
     const infoList = [];
-    EXPRESS_INFO.forEach((props, i) => {
-      infoList.push(<Info {...props} key={i} />);
+    MAIL_INFO.forEach(props => {
+      const content = validate.formatData(this.curtainMailDto, props.key);
+      infoList.push(<Info {...props} content={content} />);
     });
     return infoList;
   };
