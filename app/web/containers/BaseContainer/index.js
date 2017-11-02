@@ -51,7 +51,18 @@ class BaseContainer extends React.Component {
   // 加载表格数据
   loadTableData = (newState) => {
     const {pageSize, pageNumber, status} = this.state;
-    const params = {operId: '', status, pageSize, pageNumber, ...newState};
+    const params = {
+      filingType: '',
+      hostname: '',
+      website: '',
+      startTime: '',
+      endTime: '',
+      operId: '',
+      status,
+      pageSize,
+      pageNumber,
+      ...newState
+    };
 
     // 获取表格数据
     apis.getTableData(this.convertParams(params)).then(res => {

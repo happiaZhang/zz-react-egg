@@ -58,14 +58,14 @@ const WEBSITE_INFO_LIST = [
   {key: 'webSiteManagerInfoDto.email', label: '电子邮箱'}
 ];
 const HOST_FRAMES = [
-  {shadeText: '工商营业执照'},
-  {shadeText: '身份证（正面）'},
-  {shadeText: '身份证（反面）'}
+  {key: 'hostBusinessLicensePhotoPath', shadeText: '工商营业执照'},
+  {key: 'hostManagerIDPhotoFrontPath', shadeText: '身份证（正面）'},
+  {key: 'hostManagerIDPhotoBackPath', shadeText: '身份证（反面）'}
 ];
 const WEBSITE_FRAMES = [
-  {shadeText: '身份证（正面）'},
-  {shadeText: '身份证（反面）'},
-  {shadeText: '核验单'},
+  {key: 'webSiteIDPhotoFrontPath', shadeText: '身份证（正面）'},
+  {key: 'webSiteIDPhotoBackPath', shadeText: '身份证（反面）'},
+  {key: 'webSiteFilingVerifyPhotoPath', shadeText: '核验单'},
   {shadeText: '前置审批文件'}
 ];
 
@@ -140,7 +140,8 @@ class RecordTrailDetail extends React.Component {
     const {history} = this.props;
     const data = {
       operId: this.getOperID(),
-      filingStatus: isResolved ? 10050 : 10060
+      filingStatus: isResolved ? 10050 : 10060,
+      checkPerson: 'ZhangZheng'
     };
     const errMsg = `初审${isResolved ? '通过' : '驳回'}失败，请刷新重试`;
     return () => {
