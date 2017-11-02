@@ -9,15 +9,6 @@ import message from '../../components/Message';
 import apis from '../../utils/apis';
 import validate from '../../utils/validate';
 
-// 设置下拉框为全部时status的值
-export const setSelectAll = (selectOptions) => {
-  const all = [];
-  selectOptions.forEach(({value}) => {
-    if (!validate.isEmpty(value)) all.push(value);
-  });
-  return all;
-};
-
 class BaseContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -31,6 +22,20 @@ class BaseContainer extends React.Component {
       modalId: '',
       elements: []
     };
+  }
+
+  // 组件即将挂载
+  componentWillMount() {
+    this.selectAll = this.setSelectAll();
+  }
+
+  // 设置下拉框为全部时status的值
+  setSelectAll = () => {
+    const all = [];
+    this.selectOptions.forEach(({value}) => {
+      if (!validate.isEmpty(value)) all.push(value);
+    });
+    return all;
   }
 
   // 组件初次挂载

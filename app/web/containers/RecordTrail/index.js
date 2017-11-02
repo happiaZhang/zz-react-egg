@@ -1,4 +1,4 @@
-import BaseContainer, {setSelectAll} from '../BaseContainer';
+import BaseContainer from '../BaseContainer';
 
 const TRAIL_STATUS = [
   {value: '', text: '全部'},
@@ -12,7 +12,6 @@ class RecordTrail extends BaseContainer {
     super(props);
     this.title = '备案初审';
     this.selectOptions = TRAIL_STATUS;
-    this.selectAll = setSelectAll(TRAIL_STATUS);
     this.errorMsg = '获取初审列表失败，请刷新重试';
     this.operations = [{type: 'TRAIL', text: '查看'}];
   }

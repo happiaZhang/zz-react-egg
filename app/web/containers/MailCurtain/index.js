@@ -1,5 +1,5 @@
 import React from 'react';
-import BaseContainer, {setSelectAll} from '../BaseContainer';
+import BaseContainer from '../BaseContainer';
 import Modal from '../../components/Modal';
 import InputBox from '../../components/InputBox';
 import Card from '../../components/Card';
@@ -12,11 +12,11 @@ const MAIL_STATUS = [
   {value: 10050, text: '待寄送'}
 ];
 const EXPRESS_INFO = [
-  {label: '幕布邮寄地址', content: '上海市浦东新区杨高南路729号1号楼33楼'},
-  {label: '邮政编码', content: '200000'},
-  {label: '联系人姓名', content: '王彬彬'},
-  {label: '手机号码', content: '1801767879'},
-  {label: '电话号码', content: '021-76765676-9'}
+  {key: 'address', label: '幕布邮寄地址', content: '上海市浦东新区杨高南路729号1号楼33楼'},
+  {key: 'postCode', label: '邮政编码', content: '200000'},
+  {key: 'name', label: '联系人姓名', content: '王彬彬'},
+  {key: 'mobile', label: '手机号码', content: '1801767879'},
+  {key: 'fixedPhone', label: '电话号码', content: '021-76765676-9'}
 ];
 
 class MailCurtain extends BaseContainer {
@@ -24,7 +24,6 @@ class MailCurtain extends BaseContainer {
     super(props);
     this.title = '邮寄幕布';
     this.selectOptions = MAIL_STATUS;
-    this.selectAll = setSelectAll(MAIL_STATUS);
     this.errorMsg = '获取邮寄幕布列表失败，请刷新重试';
     this.operations = [{type: 'EXPRESS', text: '填写快递单号'}];
     this.param = {};
