@@ -2,7 +2,7 @@ import BaseContainer from '../BaseContainer';
 
 const AUTHORITY_STATUS = [
   {value: '', text: '全部'},
-  {value: 10900, text: '待管局审核'},
+  {value: 10090, text: '待管局审核'},
   {value: 10100, text: '备案完成'}
 ];
 

@@ -155,10 +155,10 @@ class BaseContainer extends React.Component {
         history.push(`/trail/detail/${operId}`);
         break;
       case 'CHECK':
-        history.push(`/check/detail/1`);
+        history.push(`/check/detail/${operId}`);
         break;
-      case 'AUTHORITY':
-        history.push(`/authority/detail/1`);
+      case 'AUTHORITY_RESOLVE':
+        history.push(`/authority/detail/${operId}`);
         break;
     }
   };
