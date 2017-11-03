@@ -94,7 +94,7 @@ class CheckPhotoDetail extends React.Component {
       {key: 'confirm', text: '确认驳回', onClick: this.onReject}
     ] : [
       {key: 'reject', text: '审核驳回', type: 'default', onClick: this.onCheckMode(true)},
-      {key: 'resolve', text: '审核通过'}
+      {key: 'resolve', text: '审核通过', onClick: this.onResolved}
     ];
     return (
       <div className={styles.toolBar}>
@@ -113,16 +113,34 @@ class CheckPhotoDetail extends React.Component {
     return match.params.id;
   };
 
+  // 跳转到列表页
+  refresh = () => {
+    const {history} = this.props;
+    history.push('/check');
+  };
+
   // 向后台发送驳回申请
   onReject = () => {
     const operId = this.getOperId();
     this.model.operId = operId;
     this.model.checkPerson = 'ZhangZheng';
     apis.setCurtainRejection(this.model).then(() => {
-      const {history} = this.props;
-      history.push('/check');
+      this.refresh();
     }).catch(() => {
       message.error('申请幕布驳回失败，请刷新重试');
+    });
+  }
+
+  // 向后台发送审核通过消息
+  onResolved = () => {
+    const filingStatus = 10090;
+    const operId = this.getOperId();
+    const checkPerson = 'ZhangZheng';
+
+    apis.setInitVerify({filingStatus, operId, checkPerson}).then(() => {
+      this.refresh();
+    }).catch(() => {
+      message.error('审核通过失败，请刷新重试');
     });
   }
 
