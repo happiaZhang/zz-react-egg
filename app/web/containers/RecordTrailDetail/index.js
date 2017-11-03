@@ -65,8 +65,7 @@ const HOST_FRAMES = [
 const WEBSITE_FRAMES = [
   {key: 'webSiteIDPhotoFrontPath', shadeText: '身份证（正面）'},
   {key: 'webSiteIDPhotoBackPath', shadeText: '身份证（反面）'},
-  {key: 'webSiteFilingVerifyPhotoPath', shadeText: '核验单'},
-  {shadeText: '前置审批文件'}
+  {key: 'webSiteFilingVerifyPhotoPath', shadeText: '核验单'}
 ];
 
 class RecordTrailDetail extends React.Component {
@@ -75,7 +74,8 @@ class RecordTrailDetail extends React.Component {
     this.state = {
       checkMode: false,
       hostInfo: null,
-      listWebSiteInfo: null
+      listWebSiteInfo: null,
+      materialInfo: null
     };
   }
 
@@ -99,6 +99,13 @@ class RecordTrailDetail extends React.Component {
       this.setState({listWebSiteInfo});
     }).catch(() => {
       message.error('获取网站信息失败，请刷新重试');
+    });
+
+    // 获取主体资料信息
+    apis.getHostMaterial(id).then(materialInfo => {
+      this.setState({materialInfo});
+    }).catch(() => {
+      message.error('获取主体资料信息失败，请刷新重试');
     });
   }
 
@@ -197,15 +204,16 @@ class RecordTrailDetail extends React.Component {
     this.model = checkMode ? {rejectReason: '信息有误，请重新填写'} : null;
   };
 
-  renderFrames = (className, data) => {
+  // 渲染资料
+  renderFrames = (className, frames, data) => {
     const {checkMode} = this.state;
-    const frames = [];
-    data.forEach((d, i) => {
-      const {shadeText} = d;
-      const props = {shadeText, checkMode, onChange: this.onChecked};
-      frames.push(<li key={i}><PhotoFrame {...props} /></li>);
+    const list = [];
+    frames.forEach((d, i) => {
+      const {shadeText, key} = d;
+      const props = {shadeText, checkMode, onChange: this.onChecked, src: validate.formatData(data, key)};
+      list.push(<li key={i}><PhotoFrame {...props} /></li>);
     });
-    return <ul className={className}>{frames}</ul>;
+    return <ul className={className}>{list}</ul>;
   };
 
   renderInfoList = (infoList, data) => {
@@ -267,14 +275,17 @@ class RecordTrailDetail extends React.Component {
   };
 
   renderWebsiteInfoList = () => {
-    const {listWebSiteInfo} = this.state;
+    const {listWebSiteInfo, materialInfo} = this.state;
     const websiteList = [];
     listWebSiteInfo && listWebSiteInfo.forEach((websiteInfo, i) => {
+      const {webSiteManagerMaterialList} = materialInfo;
+      const webSiteId = websiteInfo.webSiteBasicInfoDto.id;
+      const webSiteMaterial = webSiteManagerMaterialList.filter(webSite => (webSite.id === webSiteId));
       const props = {
         key: i,
         title: this.setCardTitle(websiteInfo, 'webSiteBasicInfoDto.name', '网站信息'),
         style: {marginTop: 50},
-        suffix: this.renderFrames(styles.websiteFrame, WEBSITE_FRAMES)
+        suffix: this.renderFrames(styles.websiteFrame, WEBSITE_FRAMES, webSiteMaterial)
       };
       if (i === 0) props.classID = 'website';
 
@@ -289,7 +300,7 @@ class RecordTrailDetail extends React.Component {
   };
 
   render() {
-    const {hostInfo} = this.state;
+    const {hostInfo, materialInfo} = this.state;
     this.initRejectModel();
     return (
       <div className={styles.recordTrailDetail}>
@@ -301,7 +312,7 @@ class RecordTrailDetail extends React.Component {
             classID='host'
             title={this.setCardTitle(hostInfo, 'hostUnitFullDto.hostUnitName', '主体信息')}
             style={{marginTop: 20}}
-            suffix={this.renderFrames(styles.hostFrame, HOST_FRAMES)}
+            suffix={this.renderFrames(styles.hostFrame, HOST_FRAMES, materialInfo)}
           >
             {this.renderInfoList(HOST_INFO_LIST, hostInfo)}
           </Card>

@@ -28,9 +28,11 @@ const regex = {
 };
 
 export default {
-
   regex,
-
+  // url验证
+  isURL(str) {
+    return regex.uri.test(str);
+  },
   // 空字符串
   isEmpty(str) {
     if (str.length === 0 || str === '') return true;

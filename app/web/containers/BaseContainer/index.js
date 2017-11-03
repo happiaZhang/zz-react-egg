@@ -194,10 +194,12 @@ class BaseContainer extends React.Component {
             onChangeValue={this.onSearch} />
         </div>
         <Pagination
+          type='simple'
           style={{marginTop: 12}}
           pageSize={pageSize}
           pageNumber={pageNumber}
           totalSize={totalSize}
+          onPageSizeSwitch={this.changePageSize}
           onPageNumberSwitch={this.changePageNumber} />
         <Table
           theadData={this.setTheadData()}
@@ -207,11 +209,9 @@ class BaseContainer extends React.Component {
           totalSize={totalSize}
           onItemOperationClick={this.onRowOperation} />
         <Pagination
-          type='simple'
           pageSize={pageSize}
           pageNumber={pageNumber}
           totalSize={totalSize}
-          onPageSizeSwitch={this.changePageSize}
           onPageNumberSwitch={this.changePageNumber} />
         {showModal ? this.renderModal(modalId) : ''}
       </div>

@@ -14,14 +14,19 @@ class PhotoFrame extends React.Component {
     super(props);
     this.state = {
       checked: false,
-      checkMode: false
+      checkMode: false,
+      showImg: false
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    const {checkMode} = nextProps;
+    const {checkMode, src} = nextProps;
     if (checkMode !== this.props.checkMode) {
       this.setState({checkMode});
+    }
+    if (src !== this.props.src) {
+      const showImg = validate.isURL(src);
+      this.setState({showImg});
     }
   }
 
@@ -37,8 +42,8 @@ class PhotoFrame extends React.Component {
   };
 
   render() {
-    const {className, width, height, shadeText} = this.props;
-    const {checked, checkMode} = this.state;
+    const {className, width, height, shadeText, src} = this.props;
+    const {checked, checkMode, showImg} = this.state;
     const style = {width, height};
     const checkboxStyle = {
       position: 'absolute',
@@ -48,7 +53,7 @@ class PhotoFrame extends React.Component {
     };
     return (
       <div className={`${styles.frameContainer} ${className}`} style={style}>
-        <span className={styles.frameShade}>{shadeText}</span>
+        {showImg ? <img src={src} alt={shadeText} /> : <span className={styles.frameShade}>{shadeText}</span>}
         {checkMode ? '' : <Button className={styles.frameDownload} text='下载' />}
         {checkMode ? <Checkbox style={checkboxStyle} checked={checked} onClick={this.handleClick} /> : ''}
       </div>

@@ -104,6 +104,14 @@ const setCurtainRejection = (data) => {
   return genPromise(payload, 'setCurtainRejection');
 };
 
+// 获取主体资料信息
+const getHostMaterial = function(id) {
+  const payload = {
+    url: `/api/icp-admin/filing-admin/host-info-material/${id}`
+  };
+  return genPromise(payload, 'getHostMaterial');
+};
+
 export default {
   getAdminInfo,
   getHostInfoByID,
@@ -113,5 +121,6 @@ export default {
   getTableData,
   setCurtainDelivery,
   getCurtainInfo,
-  setCurtainRejection
+  setCurtainRejection,
+  getHostMaterial
 };
