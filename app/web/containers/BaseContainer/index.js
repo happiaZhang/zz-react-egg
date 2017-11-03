@@ -112,7 +112,7 @@ class BaseContainer extends React.Component {
     const {elements} = this.state;
     if (elements.length === 0) return elements;
     return elements.map(elm => {
-      elm.operations = this.operations;
+      elm.operations = typeof this.operations === 'function' ? this.operations(elm) : this.operations;
       return elm;
     });
   };

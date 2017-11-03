@@ -12,7 +12,19 @@ class Authority extends BaseContainer {
     this.title = '管局审核';
     this.selectOptions = AUTHORITY_STATUS;
     this.errorMsg = '获取管局审核列表失败，请刷新重试';
-    this.operations = [{type: 'AUTHORITY', text: '通过，填写备案号'}];
+    this.operations = this.setOperations;
+  }
+
+  setOperations = (elm) => {
+    const {operStatus} = elm;
+    if (operStatus === 10100) {
+      return [{type: 'AUTHORITY_QUERY', text: '查看'}];
+    } else {
+      return [
+        {type: 'AUTHORITY_RESOLVE', text: '通过，填写备案号'},
+        {type: 'AUTHORITY_REJECT', text: '驳回'}
+      ];
+    }
   }
 }
 

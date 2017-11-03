@@ -94,6 +94,16 @@ const getCurtainInfo = (id) => {
   return genPromise(payload, 'getCurtainInfo');
 };
 
+// 审核幕布驳回
+const setCurtainRejection = (data) => {
+  const payload = {
+    url: '/api/icp-admin/filing-admin/curtain-rejection',
+    method: 'POST',
+    data
+  };
+  return genPromise(payload, 'setCurtainRejection');
+};
+
 export default {
   getAdminInfo,
   getHostInfoByID,
@@ -102,5 +112,6 @@ export default {
   getDispatch,
   getTableData,
   setCurtainDelivery,
-  getCurtainInfo
+  getCurtainInfo,
+  setCurtainRejection
 };
