@@ -1,4 +1,4 @@
-import * as types from '../constants/types';
+import * as types from '../utils/constants';
 export default [
   {
     key: 'loader.loading',
@@ -22,7 +22,9 @@ export default [
       const {loading} = state.loading;
       const i = loading.findIndex(key => (key === action.payload));
       loading.splice(i, 1);
-      return {};
+      return {
+        loading: [...loading]
+      };
     }
   }
 ];

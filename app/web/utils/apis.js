@@ -1,6 +1,6 @@
 import http from './http';
 import validate from './validate';
-import * as types from '../constants/types';
+import * as types from './constants';
 
 let dispatch = null;
 
@@ -9,11 +9,10 @@ const getDispatch = (func) => {
 };
 
 const genPromise = (payload, key) => {
+  dispatch({type: types.LOADING, payload: key});
   return new Promise(function(resolve, reject) {
-    dispatch({type: types.LOADING, payload: key});
     // 调用API
     http.fetch(payload).then((result) => {
-      dispatch({type: types.LOADED, payload: key});
       switch (result.code) {
         case 0:
           resolve(result.data);
@@ -23,8 +22,9 @@ const genPromise = (payload, key) => {
           break;
       }
     }).catch(() => {
-      dispatch({type: types.LOADED, payload: key});
       reject();
+    }).finally(() => {
+      dispatch({type: types.LOADED, payload: key});
     });
   });
 };

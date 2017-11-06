@@ -128,7 +128,7 @@ class BaseContainer extends React.Component {
     this.searchTimer && clearTimeout(this.searchTimer);
     this.searchTimer = setTimeout(() => {
       this.loadTableData({operId});
-    }, 500);
+    }, 300);
   };
 
   //  改变每页显示数量
@@ -139,15 +139,17 @@ class BaseContainer extends React.Component {
   //  改变页码
   changePageNumber = (pageNumber) => {
     this.setState({pageNumber});
-    const isValid = this.validPageNumber(pageNumber);
-    isValid && this.loadTableData({pageNumber});
+    this._timer && clearTimeout(this._timer);
+    this._timer = setTimeout(() => {
+      const isValid = this.validPageNumber(pageNumber);
+      isValid && this.loadTableData({pageNumber});
+    }, 300);
   };
 
   // 检验页码合理性
   validPageNumber = (PageNumber) => {
     const {pageSize, totalSize} = this.state;
     const pageNumberMax = Math.ceil(totalSize / pageSize);
-    console.log(pageNumberMax);
     return PageNumber >= 1 && PageNumber <= pageNumberMax;
   };
 

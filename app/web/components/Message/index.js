@@ -1,5 +1,9 @@
 import MessageGroup from './MessageGroup';
-import * as types from '../../constants/types';
+const types = {
+  SUCCESS: 'success',
+  INFO: 'info',
+  ERROR: 'error'
+};
 
 // 消息队列实例
 let instance = null;

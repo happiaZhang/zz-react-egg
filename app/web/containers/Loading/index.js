@@ -26,13 +26,11 @@ class Loader extends React.Component {
 
   showMessage = () => {
     const {showLoading} = this.state;
-
     if (!this.loadingKey && showLoading) {
-      const {loading} = this.props;
-      const {content = DEFAULT_CONTENT, duration = DEFAULT_DURATION} = loading[0];
-      this.loadingKey = message.info(content, duration);
+      this.loadingKey = message.info(DEFAULT_CONTENT, DEFAULT_DURATION);
     } else if (this.loadingKey && !showLoading) {
       message.close(this.loadingKey);
+      this.loadingKey = null;
     }
   };
 
