@@ -98,12 +98,5 @@ export default {
       }
     });
     return kvList.join('&');
-  },
-  debounce(fn, delay) {
-    let _timer = null;
-    return () => {
-      _timer && clearTimeout(_timer);
-      _timer = setTimeout(fn, delay);
-    };
   }
 };
