@@ -26,8 +26,8 @@ class Pagination extends React.Component {
   // 页码切换
   handleChangePageNumber = (value) => {
     let {onPageNumberSwitch} = this.props;
-
-    onPageNumberSwitch && onPageNumberSwitch(value);
+    const v = isNaN(parseInt(value)) ? value : parseInt(value);
+    onPageNumberSwitch && onPageNumberSwitch(v);
   };
 
   // 页面渲染
@@ -69,7 +69,7 @@ class Pagination extends React.Component {
           <Input
             style={{width: 24, height: 24, marginLeft: 20, padding: 0, textAlign: 'center'}}
             value={pageNumber}
-            onChange={(v) => { this.handleChangePageNumber(v); }} />
+            onChange={this.handleChangePageNumber} />
           <a
             className={`${styles.link} ${disabledNextClass}`}
             onClick={this.handleChangePageNumber.bind(this, pageNumber + 1)}>&gt;</a>
