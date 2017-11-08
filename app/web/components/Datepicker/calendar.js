@@ -40,9 +40,20 @@ class Calendar extends React.Component {
   };
 
   onMonth = (month) => {
-    if (!month) month = 12;
-    if (month > 12) month = 1;
-    this.setState({month});
+    let {year} = this.state;
+    if (!month) {
+      month = 12;
+      year -= 1;
+    }
+    if (month > 12) {
+      month = 1;
+      year += 1;
+    }
+    this.setState({year, month});
+  }
+
+  onYear = (year) => {
+    this.setState({year});
   }
 
   renderHeader = () => {
@@ -56,8 +67,8 @@ class Calendar extends React.Component {
           <span>{datetime.convertMonth(month)}</span>
           <div className={styles.calendarYearWrap}>
             <input type='text' disabled value={year} />
-            <span className={styles.calendarYearUp} />
-            <span className={styles.calendarYearDown} />
+            <span className={styles.calendarYearUp} onClick={this.onYear.bind(this, year + 1)} />
+            <span className={styles.calendarYearDown} onClick={this.onYear.bind(this, year - 1)} />
           </div>
         </span>
         <span className={styles.calendarMonthNext} onClick={this.onMonth.bind(this, month + 1)}>
