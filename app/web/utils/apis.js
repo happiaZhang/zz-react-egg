@@ -13,6 +13,7 @@ const genPromise = (payload, key) => {
   return new Promise(function(resolve, reject) {
     // 调用API
     http.fetch(payload).then((result) => {
+      dispatch({type: types.LOADED, payload: key});
       switch (result.code) {
         case 0:
           resolve(result.data);
@@ -22,9 +23,8 @@ const genPromise = (payload, key) => {
           break;
       }
     }).catch(() => {
-      reject();
-    }).finally(() => {
       dispatch({type: types.LOADED, payload: key});
+      reject();
     });
   });
 };
