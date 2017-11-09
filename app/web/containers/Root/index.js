@@ -3,6 +3,7 @@ import React from 'react';
 import {Route, BrowserRouter} from 'react-router-dom';
 import Header from '../Header';
 import Menu from '../Menu';
+import Query from '../Query';
 import RecordTrail from '../RecordTrail';
 import RecordTrailDetail from '../RecordTrailDetail';
 import MailCurtain from '../MailCurtain';
@@ -13,6 +14,7 @@ import AuthorityDetail from '../AuthorityDetail';
 import Loading from '../Loading';
 
 const ROUTES = [
+  {path: '/query', text: '备案查询', component: Query, menu: true},
   {path: '/', text: '备案初审', component: RecordTrail, menu: true},
   {path: '/trail/detail/:id', component: RecordTrailDetail},
   {path: '/mail', text: '邮寄幕布', component: MailCurtain, menu: true},

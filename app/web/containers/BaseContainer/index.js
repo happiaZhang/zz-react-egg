@@ -185,26 +185,33 @@ class BaseContainer extends React.Component {
     });
   };
 
+  renderFilter = () => {
+    const {status, searchText} = this.state;
+    return this.isQuery ? this.genFilter() : (
+      <div className={styles.tableOperation}>
+        <div className={styles.left}>
+          <Select
+            style={{width: 140}}
+            data={this.selectOptions}
+            value={status}
+            onChangeValue={this.changeStatus} />
+        </div>
+        <Search
+          placeholder='请输入申请ID'
+          value={searchText}
+          onChangeValue={this.onSearch} />
+      </div>
+    );
+  };
+
   // 页面渲染
   render() {
-    const {status, searchText, pageSize, pageNumber, totalSize, showModal, modalId} = this.state;
+    const {pageSize, pageNumber, totalSize, showModal, modalId} = this.state;
 
     return (
       <div>
         <MainHeader title={this.title} />
-        <div className={styles.tableOperation}>
-          <div className={styles.left}>
-            <Select
-              style={{width: 140}}
-              data={this.selectOptions}
-              value={status}
-              onChangeValue={this.changeStatus} />
-          </div>
-          <Search
-            placeholder='请输入申请ID'
-            value={searchText}
-            onChangeValue={this.onSearch} />
-        </div>
+        {this.renderFilter()}
         <Pagination
           type='simple'
           style={{marginTop: 12}}

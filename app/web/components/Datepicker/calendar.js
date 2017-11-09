@@ -1,4 +1,4 @@
-import styles from './index.scss';
+import styles from './calendar.scss';
 import React from 'react';
 import datetime from './datetime';
 
@@ -56,6 +56,11 @@ class Calendar extends React.Component {
     this.setState({year});
   }
 
+  selectDate = (year, month, day) => {
+    const {selectDate} = this.props;
+    selectDate && selectDate(year, month, day);
+  };
+
   renderHeader = () => {
     const {year, month} = this.state;
     return (
@@ -100,7 +105,10 @@ class Calendar extends React.Component {
         let tdClass = '';
         if (!active) tdClass += ' ' + styles.inactive;
         if (selected) tdClass += ' ' + styles.selected;
-        tdList.push(<td key={t} className={tdClass}>{d}</td>);
+        tdList.push(<td
+          key={t}
+          className={tdClass}
+          onClick={this.selectDate.bind(this, year, month, d)}>{d}</td>);
       }
       trList.push(<tr key={i}>{tdList}</tr>);
     }

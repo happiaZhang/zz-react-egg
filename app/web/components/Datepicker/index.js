@@ -7,15 +7,18 @@ import datetime from './datetime';
 let nodeContainer = null;
 
 /**
- * @param {string} value: the value format of date must be defined as 'yyyy-mm-dd'
+ * @param {string} value: the value format of date must be defined as 'yyyy-MM-dd'
  * @param {string} format
  * @param {string} placeholder
+ * @param {number} width
+ * @param {function} onChange: return selected date
  */
 
 class Datepicker extends React.Component {
   static defaultProps = {
     format: 'YYYY-MM-DD',
-    placeholder: 'YYYY/MM/DD'
+    placeholder: 'YYYY/MM/DD',
+    hasIcon: true
   };
 
   constructor(props) {
@@ -25,6 +28,14 @@ class Datepicker extends React.Component {
       isOpen: false,
       ...this.formatValue(props.value, props.format)
     };
+    this.calendarWidth = 245;
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const {value, format} = nextProps;
+    if (value !== this.props.value) {
+      this.setState({...this.formatValue(value, format)});
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -79,18 +90,38 @@ class Datepicker extends React.Component {
     const {isOpen, year, month, day} = this.state;
     if (!isOpen) {
       const {bottom, left} = this.container.getBoundingClientRect();
+      const overflowX = (left + this.calendarWidth) > window.innerWidth;
       this.showCalendar({
+        overflowX,
         bottom,
         left,
         isShow: true,
         setFocusWrap: this.setFocusWrap,
         onClose: this.hideCalendar,
+        selectDate: this.selectDate,
         year,
         month,
         day
       });
       this.setState({isOpen: true});
     }
+  };
+
+  selectDate = (year, month, day) => {
+    const {format} = this.props;
+    const dt = new Date(year, month - 1, day);
+    const value = datetime.format(dt, format);
+    this.setState({
+      year,
+      month,
+      day,
+      value,
+      isValid: true
+    }, () => {
+      this.hideCalendar();
+      const {onChange} = this.props;
+      onChange && onChange(datetime.format(dt, 'yyyy-MM-dd'));
+    });
   };
 
   showCalendar = (props) => {
@@ -110,6 +141,7 @@ class Datepicker extends React.Component {
   };
 
   render() {
+    const {placeholder, hasIcon, width} = this.props;
     const {isFocus, isValid, value} = this.state;
 
     const boxProps = {
@@ -118,11 +150,11 @@ class Datepicker extends React.Component {
       tabIndex: -1,
       onMouseDown: this.handleMouseDown,
       onBlur: this.handleBlur,
-      onClick: this.handleClick
+      onClick: this.handleClick,
+      style: {width}
     };
     if (isFocus) boxProps.className += ' ' + styles.focus;
 
-    const {placeholder} = this.props;
     const inputProps = {
       type: 'text',
       disabled: true,
@@ -134,11 +166,13 @@ class Datepicker extends React.Component {
     return (
       <div {...boxProps}>
         <input {...inputProps} />
-        <svg className={styles.datepickerIcon}>
-          <path d='M12 0h2v2.7h-2zM3 0h2v2.7H3z' />
-          <path d='M0 2v17h17V2H0zm15 15H2V7h13v10z' />
-          <path d='M9.9 15H8.6v-3.9H7.1v-.9c.9 0 1.7-.3 1.8-1.2h1v6z' />
-        </svg>
+        {
+          hasIcon ? <svg className={styles.datepickerIcon}>
+            <path d='M12 0h2v2.7h-2zM3 0h2v2.7H3z' />
+            <path d='M0 2v17h17V2H0zm15 15H2V7h13v10z' />
+            <path d='M9.9 15H8.6v-3.9H7.1v-.9c.9 0 1.7-.3 1.8-1.2h1v6z' />
+          </svg> : ''
+        }
       </div>
     );
   }
