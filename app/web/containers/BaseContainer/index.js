@@ -9,6 +9,7 @@ import message from '../../components/Message';
 import apis from '../../utils/apis';
 import validate from '../../utils/validate';
 
+const prefix = validate.prefix();
 class BaseContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -164,13 +165,13 @@ class BaseContainer extends React.Component {
         });
         break;
       case 'TRAIL':
-        history.push(`/trail/detail/${operId}`);
+        history.push(`${prefix}/trail/detail/${operId}`);
         break;
       case 'CHECK':
-        history.push(`/check/detail/${operId}`);
+        history.push(`${prefix}/check/detail/${operId}`);
         break;
       case 'AUTHORITY_RESOLVE':
-        history.push(`/authority/detail/${operId}`);
+        history.push(`${prefix}/authority/detail/${operId}`);
         break;
     }
   };
