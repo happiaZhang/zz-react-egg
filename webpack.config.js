@@ -18,17 +18,13 @@ module.exports = {
     port: 3000, // 端口
     inline: true, // 实时刷新
     hot: true, // 热更新，暂时没弄懂跟inline有什么区别，比只有inline更流畅，没有闪屏
-    proxy: [
-      {
-        context: ['/icp/api', '/api'],
-        target: 'http://127.0.0.1:7001',
-        pathRewrite: function(path) {
-          return path.replace('/icp/api', '/api');
-        },
-        changeOrigin: true,
-        secure: false
-      }
-    ]
+    proxy: [{
+      context: ['/icp/api', '/api'],
+      target: 'http://127.0.0.1:7001',
+      pathRewrite: {'^/icp/api': '/api'},
+      changeOrigin: true,
+      secure: false
+    }]
   },
 
   module: {

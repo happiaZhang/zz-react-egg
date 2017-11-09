@@ -2,7 +2,7 @@ import $ from 'jquery';
 import tools from './tools';
 import validate from './validate';
 
-const prefix = validate.prefix(true);
+const prefix = validate.prefix();
 export default {
   fetch({method = 'GET', url, data = {}}) {
     return new Promise(function(resolve, reject) {
