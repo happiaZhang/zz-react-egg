@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const OUTPUT_PATH = path.resolve(__dirname, '/app/public/');
+const OUTPUT_PATH = path.resolve(__dirname, './app/public/');
 
 module.exports = {
   devtool: 'none', // 生产环境不需要map
@@ -89,7 +89,7 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       template: './app/web/index.html',
-      filename: './app/view/index.html',
+      filename: '../view/index.html',
       inject: 'body',
       showErrors: false,
       minify: {
