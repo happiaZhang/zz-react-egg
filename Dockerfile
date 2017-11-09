@@ -10,7 +10,7 @@ COPY . /user/src/app
 
 #使用npm安装依赖包
 #RUN npm install -g cnpm --registry=https://registry.npm.taobao.org
-RUN cnpm install --production
+RUN npm install --production
 
 #映射7001端口
 EXPOSE  7001
