@@ -1,10 +1,7 @@
 import styles from './index.scss';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import Calendar from './calendar';
 import datetime from './datetime';
-
-let nodeContainer = null;
 
 /**
  * @param {string} value: the value format of date must be defined as 'yyyy-MM-dd'
@@ -87,25 +84,8 @@ class Datepicker extends React.Component {
   };
 
   handleClick = () => {
-    const {isOpen, year, month, day} = this.state;
+    const {isOpen} = this.state;
     if (!isOpen) {
-      const {bottom, left, right} = this.container.getBoundingClientRect();
-      const winWidth = window.innerWidth;
-      const overflowX = (left + this.calendarWidth) >= winWidth;
-      const overflowRight = overflowX ? winWidth - right : 'auto';
-      this.showCalendar({
-        overflowX,
-        overflowRight,
-        bottom,
-        left,
-        isShow: true,
-        setFocusWrap: this.setFocusWrap,
-        onClose: this.hideCalendar,
-        selectDate: this.selectDate,
-        year,
-        month,
-        day
-      });
       this.setState({isOpen: true});
     }
   };
@@ -127,20 +107,34 @@ class Datepicker extends React.Component {
     });
   };
 
-  showCalendar = (props) => {
-    if (!nodeContainer) {
-      nodeContainer = document.createElement('div');
-      document.body.appendChild(nodeContainer);
-    }
-    ReactDOM.render(<Calendar {...props} />, nodeContainer);
-  };
-
   hideCalendar = () => {
     const {isFocus} = this.state;
     if (!isFocus) {
-      ReactDOM.render(<Calendar isShow={false} />, nodeContainer);
       this.setState({isOpen: false});
     }
+  };
+
+  renderCalendar = () => {
+    const {isOpen, year, month, day} = this.state;
+    if (isOpen) {
+      const {left} = this.container.getBoundingClientRect();
+      const winWidth = window.innerWidth;
+      const overflowX = (left + this.calendarWidth) >= winWidth;
+      const props = {
+        overflowX,
+        right: 0,
+        left: 0,
+        isShow: true,
+        setFocusWrap: this.setFocusWrap,
+        onClose: this.hideCalendar,
+        selectDate: this.selectDate,
+        year,
+        month,
+        day
+      };
+      return <Calendar {...props} />;
+    }
+    return '';
   };
 
   render() {
@@ -176,6 +170,7 @@ class Datepicker extends React.Component {
             <path d='M9.9 15H8.6v-3.9H7.1v-.9c.9 0 1.7-.3 1.8-1.2h1v6z' />
           </svg> : ''
         }
+        {this.renderCalendar()}
       </div>
     );
   }
