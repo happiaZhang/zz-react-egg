@@ -6,15 +6,22 @@ import Select from '../../components/Select';
 import DateRange from '../../components/DateRange';
 import Input from '../../components/Input';
 
-const QUERY_STATUS = [
+const RECORD_TYPE = [
+  {value: '', text: '全部'},
+  {value: 1, text: '首次备案/新增网站/新增接入'},
+  {value: 2, text: '变更主体/变更网站'},
+  {value: 3, text: '注销主体/注销网站'},
+  {value: 4, text: '取消接入'}
+];
+const RECORD_STATUS = [
   {value: '', text: '全部'},
   {value: 10040, text: '待初审'},
-  {value: 10050, text: '邮寄幕布'},
-  {value: 10060, text: '已驳回'},
-  {value: 10070, text: '待审核幕布'},
-  {value: 10080, text: '幕布照片被驳回'},
+  {value: 10060, text: '初审驳回'},
+  {value: 10050, text: '待邮寄'},
+  {value: 10070, text: '待审核'},
+  {value: 10080, text: '幕布驳回'},
   {value: 10090, text: '待管局审核'},
-  {value: 10100, text: '备案完成'}
+  {value: 10100, text: '已完成'}
 ];
 
 class Query extends BaseContainer {
@@ -22,7 +29,7 @@ class Query extends BaseContainer {
     super(props);
     this.isQuery = true;
     this.title = '备案查询';
-    this.selectOptions = QUERY_STATUS;
+    this.selectOptions = RECORD_STATUS;
     this.errorMsg = '备案查询失败，请重新重试';
     this.operations = [{type: 'TRAIL', text: '查看'}];
     this.genFilter = this.genFilter;
