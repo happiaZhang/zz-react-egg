@@ -1,6 +1,8 @@
 import $ from 'jquery';
 import tools from './tools';
+import validate from './validate';
 
+const prefix = validate.prefix(true);
 export default {
   fetch({method = 'GET', url, data = {}}) {
     return new Promise(function(resolve, reject) {
@@ -8,7 +10,7 @@ export default {
         beforeSend: function(xhr) {
           xhr.setRequestHeader('x-csrf-token', tools.getCookie('csrfToken'));
         },
-        url: url,
+        url: prefix + url,
         data: data,
         type: method,
         dataType: 'json',

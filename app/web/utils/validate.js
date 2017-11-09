@@ -98,5 +98,12 @@ export default {
       }
     });
     return kvList.join('&');
+  },
+  prefix(isURL = false) {
+    const prefix = config.basePath.backoffice_icp;
+    if (prefix) {
+      return isURL ? prefix + '/' : prefix;
+    }
+    return '';
   }
 };
