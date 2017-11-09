@@ -129,12 +129,10 @@ class Calendar extends React.Component {
     const {isShow} = this.state;
     if (!isShow) return null;
 
-    const {bottom, left} = this.props;
+    const {bottom, left, overflowX, overflowRight} = this.props;
     const {isFocus} = this.state;
-    const style = {
-      top: bottom,
-      left
-    };
+    const style = {top: bottom};
+    overflowX ? style.right = overflowRight : style.left = left;
     const props = {
       tabIndex: -1,
       className: styles.calendarWrap,

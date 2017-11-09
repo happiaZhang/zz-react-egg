@@ -89,10 +89,13 @@ class Datepicker extends React.Component {
   handleClick = () => {
     const {isOpen, year, month, day} = this.state;
     if (!isOpen) {
-      const {bottom, left} = this.container.getBoundingClientRect();
-      const overflowX = (left + this.calendarWidth) > window.innerWidth;
+      const {bottom, left, right} = this.container.getBoundingClientRect();
+      const winWidth = window.innerWidth;
+      const overflowX = (left + this.calendarWidth) >= winWidth;
+      const overflowRight = overflowX ? winWidth - right : 'auto';
       this.showCalendar({
         overflowX,
+        overflowRight,
         bottom,
         left,
         isShow: true,

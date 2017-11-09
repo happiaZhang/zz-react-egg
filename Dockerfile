@@ -9,7 +9,7 @@ WORKDIR /user/src/app
 COPY . /user/src/app
 
 #使用npm安装依赖包
-RUN npm install -g cnpm --registry=https://registry.npm.taobao.org
+#RUN npm install -g cnpm --registry=https://registry.npm.taobao.org
 RUN cnpm install --production
 
 #映射7001端口
