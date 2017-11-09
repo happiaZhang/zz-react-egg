@@ -41,6 +41,12 @@ class PhotoFrame extends React.Component {
     onChange && onChange(checked);
   };
 
+  getFilename = () => {
+    const {src} = this.props;
+    const dirArray = src.split('/');
+    return dirArray[dirArray.length - 1];
+  };
+
   render() {
     const {className, width, height, shadeText, src} = this.props;
     const {checked, checkMode, showImg} = this.state;
@@ -51,10 +57,16 @@ class PhotoFrame extends React.Component {
       right: 0,
       display: 'inline-block'
     };
+    let fileName = null;
+    if (showImg && !checkMode) fileName = this.getFilename();
     return (
       <div className={`${styles.frameContainer} ${className}`} style={style}>
         {showImg ? <img src={src} alt={shadeText} /> : <span className={styles.frameShade}>{shadeText}</span>}
-        {checkMode ? '' : <Button className={styles.frameDownload} text='下载' />}
+        {
+          (!checkMode && showImg)
+            ? <a href={src} target='_blank' className={styles.frameDownload} download={fileName}>下载</a>
+            : ''
+        }
         {checkMode ? <Checkbox style={checkboxStyle} checked={checked} onClick={this.handleClick} /> : ''}
       </div>
     );
