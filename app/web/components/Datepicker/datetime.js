@@ -86,6 +86,15 @@ const add = (newDate, days) => {
   newDate.setDate(day(newDate) + days);
 };
 
+const getCurrentDate = () => {
+  const newDate = new Date();
+  return {
+    year: year(newDate),
+    month: month(newDate),
+    day: day(newDate)
+  };
+};
+
 export default {
   format,
   isValid,
@@ -94,5 +103,10 @@ export default {
   day,
   weekday,
   convertMonth,
-  add
+  add,
+  getCurrentDate,
+  RANGE: 'range',
+  SINGLE: 'single',
+  BEGIN: 'begin',
+  END: 'end'
 };

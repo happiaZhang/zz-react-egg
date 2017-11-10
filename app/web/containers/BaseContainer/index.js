@@ -16,7 +16,7 @@ class BaseContainer extends React.Component {
     this.state = {
       filingType: '',
       status: '',
-      searchText: '',
+      operId: '',
       pageSize: 10,
       pageNumber: 1,
       totalSize: 0,
@@ -52,14 +52,14 @@ class BaseContainer extends React.Component {
 
   // 加载表格数据
   loadTableData = (newState) => {
-    const {pageSize, pageNumber, status} = this.state;
+    const {pageSize, pageNumber, status, operId} = this.state;
     const params = {
       filingType: '',
       hostname: '',
       website: '',
       startTime: '',
       endTime: '',
-      operId: '',
+      operId,
       status,
       pageSize,
       pageNumber,
@@ -75,7 +75,7 @@ class BaseContainer extends React.Component {
         pageSize: params.pageSize,
         pageNumber: params.pageNumber,
         status: params.status,
-        searchText: params.operId
+        operId: params.operId
       });
     }).catch(() => {
       message.error(this.errorMsg);
@@ -126,7 +126,7 @@ class BaseContainer extends React.Component {
 
   // 条件搜索
   onSearch = (operId) => {
-    this.setState({searchText: operId});
+    this.setState({operId});
     this.searchTimer && clearTimeout(this.searchTimer);
     this.searchTimer = setTimeout(() => {
       this.loadTableData({operId});
@@ -193,7 +193,7 @@ class BaseContainer extends React.Component {
   }
 
   renderFilter = () => {
-    const {status, searchText} = this.state;
+    const {status, operId} = this.state;
     return this.isQuery ? this.genFilter(this.state) : (
       <div className={styles.tableOperation}>
         <div className={styles.left}>
@@ -205,7 +205,7 @@ class BaseContainer extends React.Component {
         </div>
         <Search
           placeholder='请输入申请ID'
-          value={searchText}
+          value={operId}
           onChangeValue={this.onSearch} />
       </div>
     );

@@ -5,15 +5,17 @@ import datetime from './datetime';
 
 /**
  * @param {string} value: the value format of date must be defined as 'yyyy-MM-dd'
- * @param {string} format
+ * @param {string} format: this format value display on <input> element
  * @param {string} placeholder
  * @param {number} width
- * @param {function} onChange: return selected date
+ * @param {function} onChange: return selected date, which is converted to 'yyyy-MM-dd' format
+ * @param {string} type: include two value. one is range, another is single. the default value is single
  */
 
+const DEFAULT_OUTPUT_FORMAT = 'yyyy-MM-dd';
 class Datepicker extends React.Component {
   static defaultProps = {
-    format: 'YYYY-MM-DD',
+    format: DEFAULT_OUTPUT_FORMAT,
     placeholder: 'YYYY/MM/DD',
     hasIcon: true
   };
@@ -90,7 +92,7 @@ class Datepicker extends React.Component {
     }
   };
 
-  selectDate = (year, month, day) => {
+  getDate = (year, month, day) => {
     const {format} = this.props;
     const dt = new Date(year, month - 1, day);
     const value = datetime.format(dt, format);
@@ -103,9 +105,18 @@ class Datepicker extends React.Component {
     }, () => {
       this.hideCalendar();
       const {onChange} = this.props;
-      onChange && onChange(datetime.format(dt, 'yyyy-MM-dd'));
+      onChange && onChange(datetime.format(dt, DEFAULT_OUTPUT_FORMAT));
     });
   };
+
+  getDateRange = ({startTime, endTime}) => {
+    this.hideCalendar();
+    const {onChange} = this.props;
+    onChange && onChange({
+      startTime: datetime.format(new Date(startTime), DEFAULT_OUTPUT_FORMAT),
+      endTime: datetime.format(new Date(endTime), DEFAULT_OUTPUT_FORMAT)
+    });
+  }
 
   hideCalendar = () => {
     const {isFocus} = this.state;
@@ -115,7 +126,8 @@ class Datepicker extends React.Component {
   };
 
   renderCalendar = () => {
-    const {isOpen, year, month, day} = this.state;
+    const {type = datetime.SINGLE} = this.props;
+    const {isOpen, year, month, day, isValid} = this.state;
     if (isOpen) {
       const {left} = this.container.getBoundingClientRect();
       const winWidth = window.innerWidth;
@@ -127,10 +139,13 @@ class Datepicker extends React.Component {
         isShow: true,
         setFocusWrap: this.setFocusWrap,
         onClose: this.hideCalendar,
-        selectDate: this.selectDate,
+        getDate: this.getDate,
+        getDateRange: this.getDateRange,
         year,
         month,
-        day
+        day,
+        isValid,
+        type
       };
       return <Calendar {...props} />;
     }

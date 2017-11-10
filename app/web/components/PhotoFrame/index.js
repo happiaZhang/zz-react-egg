@@ -123,10 +123,7 @@ class PhotoFrame extends React.Component {
 
     if (zoomOut) {
       props.style = {
-        height: 'auto',
-        verticalAlign: 'middle',
-        width: this.setDisplayWidth(),
-        transition: 'all 300ms'
+        width: this.setDisplayWidth()
       };
       props.onClick = this.stopBubble;
     }

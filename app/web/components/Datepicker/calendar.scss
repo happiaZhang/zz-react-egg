@@ -113,6 +113,7 @@
     padding-bottom: 5px;
   }
   td {
+    position: relative;
     line-height: 25px;
     cursor: pointer;
     &:hover {
@@ -120,6 +121,20 @@
     }
     &.inactive {
       color: #999999;
+    }
+    &.hover {
+      background-color: #5596e6;
+    }
+    &.now {
+      span {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: inline-block;
+        border: 2px solid #3d70b2;
+      }
     }
     &.selected {
       background-color: #3d70b2;

@@ -5,20 +5,22 @@ import datetime from './datetime';
 class Calendar extends React.Component {
   constructor(props) {
     super(props);
+    const {isValid, year, month, day} = props;
+    this.selectedDate = {
+      year: isValid ? year : null,
+      month: isValid ? month : null,
+      day: isValid ? day : null
+    };
     this.state = {
       isShow: props.isShow,
       isFocus: false,
-      year: props.year,
-      month: props.month,
-      day: props.day
+      year,
+      month,
+      day,
+      direction: props.direction,
+      selectedTime: props.selectedTime,
+      hoverTime: props.hoverTime
     };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const {isShow} = nextProps;
-    if (isShow !== this.props.isShow) {
-      this.setState({isShow});
-    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -56,9 +58,46 @@ class Calendar extends React.Component {
     this.setState({year});
   }
 
-  selectDate = (year, month, day) => {
-    const {selectDate} = this.props;
-    selectDate && selectDate(year, month, day);
+  handleClick = (year, month, day) => {
+    const {getDate} = this.props;
+    getDate && getDate(year, month, day);
+  };
+
+  resetSelectedDate = (year, month, day) => {
+    this.selectedDate.year = year;
+    this.selectedDate.month = month;
+    this.selectedDate.day = day;
+  };
+
+  onSelectDate = (year, month, day, time) => {
+    let {selectedTime} = this.state;
+    if (selectedTime == null) {
+      this.resetSelectedDate(year, month, day);
+      selectedTime = time;
+      this.setState({
+        year,
+        month,
+        day,
+        selectedTime
+      });
+    } else {
+      const {getDateRange} = this.props;
+      const {selectedTime, hoverTime, direction} = this.state;
+      getDateRange && getDateRange({
+        startTime: direction === datetime.BEGIN ? hoverTime : selectedTime,
+        endTime: direction === datetime.BEGIN ? selectedTime : hoverTime
+      });
+    }
+  };
+
+  onHoverDate = (hoverTime) => {
+    const {selectedTime} = this.state;
+    if (!(selectedTime == null)) {
+      this.setState({
+        hoverTime,
+        direction: hoverTime < selectedTime ? datetime.BEGIN : datetime.END
+      });
+    }
   };
 
   renderHeader = () => {
@@ -84,8 +123,12 @@ class Calendar extends React.Component {
   };
 
   renderTBody = () => {
-    const {year: sY, month: sM, day: sD} = this.props;
-    const {year, month} = this.state;
+    const {year: sY, month: sM, day: sD} = this.selectedDate;
+    const {year: cY, month: cM, day: cD} = datetime.getCurrentDate();
+    const {type} = this.props;
+    const {year, month, selectedTime, hoverTime, direction} = this.state;
+    const isBegin = direction === datetime.BEGIN;
+    const isEnd = direction === datetime.END;
     const startDate = new Date(year, month - 1, 1);
     const wk = datetime.weekday(startDate) + 1;
     datetime.add(startDate, -1 * wk);
@@ -100,15 +143,30 @@ class Calendar extends React.Component {
         const m = datetime.month(startDate);
         const d = datetime.day(startDate);
         const active = m === month;
+        const now = y === cY && m === cM && d === cD;
         const selected = y === sY && m === sM && d === sD;
+        let hover = false;
+        if (active && isBegin) hover = t >= hoverTime && t < selectedTime;
+        if (active && isEnd) hover = t > selectedTime && t <= hoverTime;
 
         let tdClass = '';
+        if (hover) tdClass += ' ' + styles.hover;
         if (!active) tdClass += ' ' + styles.inactive;
+        if (active && !hover && now) tdClass += ' ' + styles.now;
         if (selected) tdClass += ' ' + styles.selected;
-        tdList.push(<td
-          key={t}
-          className={tdClass}
-          onClick={this.selectDate.bind(this, year, month, d)}>{d}</td>);
+        const tdProps = {
+          key: t,
+          className: tdClass
+        };
+
+        if (type === datetime.RANGE) {
+          tdProps.onClick = this.onSelectDate.bind(this, y, m, d, t);
+          tdProps.onMouseEnter = this.onHoverDate.bind(this, t);
+        } else {
+          tdProps.onClick = this.handleClick.bind(this, y, m, d);
+        }
+
+        tdList.push(<td {...tdProps}><span>{d}</span></td>);
       }
       trList.push(<tr key={i}>{tdList}</tr>);
     }
