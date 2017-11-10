@@ -6,9 +6,7 @@ import validate from '../../utils/validate';
 class PhotoFrame extends React.Component {
   static defaultProps = {
     width: 158,
-    height: 99,
-    reservedSpace: 80,
-    scalable: false
+    height: 99
   };
 
   constructor(props) {
@@ -19,7 +17,7 @@ class PhotoFrame extends React.Component {
       showImg: false,
       zoomOut: false
     };
-    this.loadedImg = false;
+    this.reservedSpace = 80;
   }
 
   componentWillReceiveProps(nextProps) {
@@ -43,7 +41,7 @@ class PhotoFrame extends React.Component {
   }
 
   componentDidUpdate() {
-    if (!this.loadedImg) {
+    if (!this.realWidth) {
       this.getRealWidth();
     }
   }
@@ -67,53 +65,103 @@ class PhotoFrame extends React.Component {
     return dirArray[dirArray.length - 1];
   };
 
-  handleZoom = (e) => {
+  handleZoomOut = (e) => {
     e.stopPropagation();
-    console.log(this.realWidth);
+    this.setState({zoomOut: true});
+  };
+
+  handleZoomIn = (e) => {
+    e.stopPropagation();
+    this.setState({zoomOut: false});
   };
 
   canDownload = () => {
-    const {showImg, checkMode} = this.state;
-    return showImg && !checkMode;
+    const {showImg, checkMode, zoomOut} = this.state;
+    return showImg && !checkMode && !zoomOut;
   };
 
-  handleDownload = (e) => {
+  stopBubble = (e) => {
     e.stopPropagation();
   };
 
-  render() {
-    const {width, height, shadeText, src} = this.props;
-    const {checked, checkMode, showImg} = this.state;
+  setDisplayWidth = () => {
+    const maxWidth = window.innerWidth - this.reservedSpace;
+    return maxWidth >= this.realWidth ? this.realWidth : maxWidth;
+  };
+
+  setContainerProps = () => {
+    const {width, height} = this.props;
+    const {zoomOut} = this.state;
     const style = {width, height};
+    const props = {
+      className: zoomOut ? styles.frameCover : styles.frameContainer
+    };
+
+    if (zoomOut) {
+      props.onClick = this.handleZoomIn;
+    } else {
+      props.style = style;
+    }
+
+    if (this.canDownload()) {
+      style.cursor = 'pointer';
+      props.onClick = this.handleZoomOut;
+    }
+
+    return props;
+  };
+
+  setImgProps = () => {
+    const {shadeText, src} = this.props;
+    const {zoomOut} = this.state;
+
+    const props = {
+      ref: ref => (this.img = ref),
+      src,
+      alt: shadeText
+    };
+
+    if (zoomOut) {
+      props.style = {
+        height: 'auto',
+        verticalAlign: 'middle',
+        width: this.setDisplayWidth(),
+        transition: 'all 300ms'
+      };
+      props.onClick = this.stopBubble;
+    }
+
+    return props;
+  };
+
+  setLinkProps = () => {
+    const {src} = this.props;
+    const props = {
+      className: styles.frameDownload,
+      href: src,
+      target: '_blank',
+      download: this.getFilename(),
+      onClick: this.stopBubble
+    };
+    return props;
+  };
+
+  render() {
+    const {shadeText} = this.props;
+    const {checked, checkMode, showImg} = this.state;
+
     const checkboxStyle = {
       position: 'absolute',
       top: 0,
       right: 0,
       display: 'inline-block'
     };
-    const props = {style};
-    const canDownload = this.canDownload();
-    let aProps = null;
-    if (canDownload) {
-      style.cursor = 'pointer';
-      props.onClick = this.handleZoom;
-      aProps = {
-        className: styles.frameDownload,
-        href: src,
-        target: '_blank',
-        download: this.getFilename(),
-        onClick: this.handleDownload
-      };
-    }
+
     return (
-      <div className={`${styles.frameContainer}`} {...props}>
-        {
-          showImg
-            ? <img ref={ref => (this.img = ref)} src={src} alt={shadeText} />
-            : <span className={styles.frameShade}>{shadeText}</span>
-        }
-        {canDownload ? <a {...aProps}>下载</a> : ''}
-        {checkMode ? <Checkbox style={checkboxStyle} checked={checked} onClick={this.handleClick} /> : ''}
+      <div {...this.setContainerProps()}>
+        {showImg ? <img {...this.setImgProps()} /> : <span className={styles.frameShade}>{shadeText}</span>}
+        {this.canDownload() ? <a {...this.setLinkProps()}>下载</a> : null}
+        {checkMode ? <Checkbox style={checkboxStyle} checked={checked} onClick={this.handleClick} /> : null}
       </div>
     );
   }
