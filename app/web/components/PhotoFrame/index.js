@@ -1,13 +1,14 @@
 import styles from './index.scss';
 import React from 'react';
-import Button from '../../components/Button';
 import Checkbox from '../../components/Checkbox';
 import validate from '../../utils/validate';
 
 class PhotoFrame extends React.Component {
   static defaultProps = {
     width: 158,
-    height: 99
+    height: 99,
+    reservedSpace: 80,
+    scalable: false
   };
 
   constructor(props) {
@@ -15,8 +16,10 @@ class PhotoFrame extends React.Component {
     this.state = {
       checked: false,
       checkMode: false,
-      showImg: false
+      showImg: false,
+      zoomOut: false
     };
+    this.loadedImg = false;
   }
 
   componentWillReceiveProps(nextProps) {
@@ -35,6 +38,23 @@ class PhotoFrame extends React.Component {
     return !validate.isNil(stateKey);
   }
 
+  componentDidMount() {
+    this.getRealWidth();
+  }
+
+  componentDidUpdate() {
+    if (!this.loadedImg) {
+      this.getRealWidth();
+    }
+  }
+
+  getRealWidth = () => {
+    if (this.canDownload()) {
+      this.realWidth = this.img.naturalWidth;
+      this.loadedImg = true;
+    }
+  };
+
   handleClick =(checked) => {
     this.setState({checked});
     const {onChange} = this.props;
@@ -47,8 +67,22 @@ class PhotoFrame extends React.Component {
     return dirArray[dirArray.length - 1];
   };
 
+  handleZoom = (e) => {
+    e.stopPropagation();
+    console.log(this.realWidth);
+  };
+
+  canDownload = () => {
+    const {showImg, checkMode} = this.state;
+    return showImg && !checkMode;
+  };
+
+  handleDownload = (e) => {
+    e.stopPropagation();
+  };
+
   render() {
-    const {className, width, height, shadeText, src} = this.props;
+    const {width, height, shadeText, src} = this.props;
     const {checked, checkMode, showImg} = this.state;
     const style = {width, height};
     const checkboxStyle = {
@@ -57,16 +91,28 @@ class PhotoFrame extends React.Component {
       right: 0,
       display: 'inline-block'
     };
-    let fileName = null;
-    if (showImg && !checkMode) fileName = this.getFilename();
+    const props = {style};
+    const canDownload = this.canDownload();
+    let aProps = null;
+    if (canDownload) {
+      style.cursor = 'pointer';
+      props.onClick = this.handleZoom;
+      aProps = {
+        className: styles.frameDownload,
+        href: src,
+        target: '_blank',
+        download: this.getFilename(),
+        onClick: this.handleDownload
+      };
+    }
     return (
-      <div className={`${styles.frameContainer} ${className}`} style={style}>
-        {showImg ? <img src={src} alt={shadeText} /> : <span className={styles.frameShade}>{shadeText}</span>}
+      <div className={`${styles.frameContainer}`} {...props}>
         {
-          (!checkMode && showImg)
-            ? <a href={src} target='_blank' className={styles.frameDownload} download={fileName}>下载</a>
-            : ''
+          showImg
+            ? <img ref={ref => (this.img = ref)} src={src} alt={shadeText} />
+            : <span className={styles.frameShade}>{shadeText}</span>
         }
+        {canDownload ? <a {...aProps}>下载</a> : ''}
         {checkMode ? <Checkbox style={checkboxStyle} checked={checked} onClick={this.handleClick} /> : ''}
       </div>
     );

@@ -27,7 +27,8 @@ class Checkbox extends React.Component {
   }
 
   // 鼠标点击事件
-  handleClick = () => {
+  handleClick = (e) => {
+    e.stopPropagation();
     const {onClick} = this.props;
     let {checked} = this.state;
     checked = !checked;

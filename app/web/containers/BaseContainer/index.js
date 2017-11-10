@@ -14,6 +14,7 @@ class BaseContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      filingType: '',
       status: '',
       searchText: '',
       pageSize: 10,
@@ -186,9 +187,14 @@ class BaseContainer extends React.Component {
     });
   };
 
+  // 改变备案类型
+  changeFilingType = (filingType) => {
+    this.setState({filingType});
+  }
+
   renderFilter = () => {
     const {status, searchText} = this.state;
-    return this.isQuery ? this.genFilter() : (
+    return this.isQuery ? this.genFilter(this.state) : (
       <div className={styles.tableOperation}>
         <div className={styles.left}>
           <Select

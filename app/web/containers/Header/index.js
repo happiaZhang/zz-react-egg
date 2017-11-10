@@ -38,7 +38,7 @@ export default class Header extends React.Component {
     return (
       <div className={styles.headerBox}>
         <div className={styles.logo}><img src={logoImage} /></div>
-        <div className={styles.user}>欢迎您，{adminName} <a href='https:// admin.cloud.wanda.cn/logout'>退出</a></div>
+        <div className={styles.user}>欢迎您，{adminName} <a href='https://admin.cloud.wanda.cn/logout'>退出</a></div>
       </div>
     );
   }

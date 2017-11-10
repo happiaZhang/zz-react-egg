@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const OUTPUT_PATH = path.resolve(__dirname, './app/public/');
+const PUBLIC_PATH = '//10.209.242.72/bss-backoffice-icp-node/public/';
 
 module.exports = {
   devtool: 'none', // 生产环境不需要map
@@ -10,7 +11,7 @@ module.exports = {
   output: {
     path: OUTPUT_PATH, // 打包后的文件存放的地方
     filename: 'js/[name]-[hash].js', // 打包后输出文件的文件名
-    publicPath: '/public/' // 文件引入目录
+    publicPath: PUBLIC_PATH // 文件引入目录
   },
   module: {
     rules: [

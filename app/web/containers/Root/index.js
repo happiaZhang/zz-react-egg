@@ -15,8 +15,9 @@ import Loading from '../Loading';
 import validate from '../../utils/validate';
 
 const prefix = validate.prefix();
+const genRootPath = () => (validate.isEmpty(prefix) ? '/' : prefix);
 const ROUTES = [
-  {path: prefix + '/query', text: '备案查询', component: Query, menu: true},
+  {path: genRootPath(), text: '备案查询', component: Query, menu: true},
   {path: prefix + '/trail', text: '备案初审', component: RecordTrail, menu: true},
   {path: prefix + '/trail/detail/:id', component: RecordTrailDetail},
   {path: prefix + '/mail', text: '邮寄幕布', component: MailCurtain, menu: true},
