@@ -1,9 +1,3 @@
-const types = {
-  YEAR: 'year',
-  MONTH: 'month',
-  DAY: 'day'
-};
-
 const TRANSLATOR = {
   1: 'JANUARY',
   2: 'FEBRUARY',
@@ -40,43 +34,13 @@ const format = (newDate, fmt) => {
   return fmt;
 };
 
-const isValid = (newDate) => {
-  let isValid = true;
-
-  for (const k in newDate) {
-    const v = parseInt(newDate[k]);
-    if (isNaN(v)) {
-      isValid = false;
-      break;
-    }
-
-    // valid year
-    if (k === types.YEAR && (v < 1000 || v > 9999)) {
-      isValid = false;
-      break;
-    }
-
-    // valid month
-    if (k === types.MONTH && (v < 1 || v > 12)) {
-      isValid = false;
-      break;
-    }
-
-    // valid day
-    if (k === types.DAY && (v < 1 || v > 31)) {
-      isValid = false;
-      break;
-    }
-  }
-
-  return isValid;
-};
-
 const year = (newDate) => (newDate.getFullYear());
 
 const month = (newDate) => (newDate.getMonth() + 1);
 
 const day = (newDate) => (newDate.getDate());
+
+const time = (newDate) => (newDate.getTime());
 
 const weekday = (newDate) => (newDate.getDay() || 7);
 
@@ -86,27 +50,52 @@ const add = (newDate, days) => {
   newDate.setDate(day(newDate) + days);
 };
 
-const getCurrentDate = () => {
+const currentTime = () => {
   const newDate = new Date();
-  return {
-    year: year(newDate),
-    month: month(newDate),
-    day: day(newDate)
-  };
+  return time(new Date(year(newDate), month(newDate) - 1, day(newDate)));
 };
+
+const validDate = (value, fmt) => {
+  const result = {};
+  let dt = new Date(value);
+  if (isNaN(year(dt)) || time(dt) < min() || time(dt) > max()) {
+    result.isValid = false;
+    console.log('Invalid Date or Out of Valid Date Range');
+    dt = new Date();
+  } else {
+    result.isValid = true;
+  }
+
+  result.year = year(dt);
+  result.month = month(dt);
+  result.day = day(dt);
+  result.time = time(new Date(result.year, result.month - 1, result.day));
+  if (fmt) {
+    result.value = format(dt, fmt);
+  }
+  return result;
+};
+
+const min = () => (new Date(1900, 0, 1).getTime());
+
+const max = () => (new Date(9999, 11, 31).getTime());
 
 export default {
   format,
-  isValid,
   year,
   month,
   day,
   weekday,
+  time,
   convertMonth,
   add,
-  getCurrentDate,
+  currentTime,
+  validDate,
+  'DEFAULT_OUTPUT_FORMAT': 'yyyy-MM-dd',
   RANGE: 'range',
   SINGLE: 'single',
-  BEGIN: 'begin',
-  END: 'end'
+  START: 'start',
+  END: 'end',
+  min: min(),
+  max: max()
 };

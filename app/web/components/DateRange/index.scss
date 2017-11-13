@@ -1,5 +1,35 @@
 .dateRange {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  .icon {
+    position: absolute;
+    right: 2px;
+    top: 10px;
+    width: 17px;
+  }
+  .calendarIcon {
+    display: inline-block;
+    height: 19px;
+    fill: #3d70b2;
+  }
+  .clearIcon {
+    display: none;
+    line-height: 20px;
+    font-size: 20px;
+    color: #8c9ba5;
+    text-align: center;
+  }
+}
+
+.hover {
+  &:hover {
+    .calendarIcon {
+      display: none;
+    }
+    .clearIcon {
+      display: inline-block;
+    }
+  }
 }

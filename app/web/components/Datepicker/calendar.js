@@ -5,27 +5,21 @@ import datetime from './datetime';
 class Calendar extends React.Component {
   constructor(props) {
     super(props);
-    const {isValid, year, month, day} = props;
-    this.selectedDate = {
-      year: isValid ? year : null,
-      month: isValid ? month : null,
-      day: isValid ? day : null
-    };
     this.state = {
-      isShow: props.isShow,
       isFocus: false,
-      year,
-      month,
-      day,
-      direction: props.direction,
-      selectedTime: props.selectedTime,
-      hoverTime: props.hoverTime
+      year: props.year,
+      month: props.month,
+      day: props.day,
+      selectedDates: props.selectedDates,
+      direction: null,
+      selectedOne: null,
+      hoverOne: null
     };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     const stateKey = Object.keys(nextState).find(k => nextState[k] !== this.state[k]);
-    return !(stateKey == null);
+    return stateKey != null;
   }
 
   handleMouseDown = (e) => {
@@ -58,46 +52,65 @@ class Calendar extends React.Component {
     this.setState({year});
   }
 
-  handleClick = (year, month, day) => {
+  handleClick = (year, month, day, time) => {
     const {getDate} = this.props;
-    getDate && getDate(year, month, day);
-  };
-
-  resetSelectedDate = (year, month, day) => {
-    this.selectedDate.year = year;
-    this.selectedDate.month = month;
-    this.selectedDate.day = day;
+    getDate && getDate(year, month, day, time);
   };
 
   onSelectDate = (year, month, day, time) => {
-    let {selectedTime} = this.state;
-    if (selectedTime == null) {
-      this.resetSelectedDate(year, month, day);
-      selectedTime = time;
+    let {selectedOne, selectedDates} = this.state;
+    if (selectedOne === null) {
+      selectedDates.length = 0;
+      selectedDates.push(time);
+      selectedOne = time;
       this.setState({
         year,
         month,
         day,
-        selectedTime
+        selectedDates,
+        selectedOne
       });
     } else {
       const {getDateRange} = this.props;
-      const {selectedTime, hoverTime, direction} = this.state;
+      const {selectedOne, hoverOne, direction} = this.state;
       getDateRange && getDateRange({
-        startTime: direction === datetime.BEGIN ? hoverTime : selectedTime,
-        endTime: direction === datetime.BEGIN ? selectedTime : hoverTime
+        startDate: direction === datetime.START ? hoverOne : selectedOne,
+        endDate: direction === datetime.START ? selectedOne : hoverOne
       });
     }
   };
 
-  onHoverDate = (hoverTime) => {
-    const {selectedTime} = this.state;
-    if (!(selectedTime == null)) {
+  onHoverDate = (hoverOne) => {
+    const {selectedOne} = this.state;
+    if (selectedOne !== null) {
       this.setState({
-        hoverTime,
-        direction: hoverTime < selectedTime ? datetime.BEGIN : datetime.END
+        hoverOne,
+        direction: hoverOne < selectedOne ? datetime.START : datetime.END
       });
     }
+  };
+
+  setHover = (active, t) => {
+    const {type} = this.props;
+    if (type === datetime.SINGLE || !active) return false;
+
+    const {selectedOne, hoverOne, direction, selectedDates} = this.state;
+    let selectDay = selectedOne;
+    let hoverDay = hoverOne;
+    let dir = direction;
+    let hover = false;
+    if (selectDay === null && selectedDates.length === 2) {
+      selectDay = selectedDates[0];
+      hoverDay = selectedDates[1];
+      dir = selectDay < hoverDay ? datetime.END : datetime.START;
+    }
+
+    const isStart = dir === datetime.START;
+    const isEnd = dir === datetime.END;
+    if (isStart) hover = t >= hoverDay && t < selectDay;
+    if (isEnd) hover = t > selectDay && t <= hoverDay;
+
+    return hover;
   };
 
   renderHeader = () => {
@@ -123,12 +136,9 @@ class Calendar extends React.Component {
   };
 
   renderTBody = () => {
-    const {year: sY, month: sM, day: sD} = this.selectedDate;
-    const {year: cY, month: cM, day: cD} = datetime.getCurrentDate();
+    const cT = datetime.currentTime();
     const {type} = this.props;
-    const {year, month, selectedTime, hoverTime, direction} = this.state;
-    const isBegin = direction === datetime.BEGIN;
-    const isEnd = direction === datetime.END;
+    const {year, month, selectedDates} = this.state;
     const startDate = new Date(year, month - 1, 1);
     const wk = datetime.weekday(startDate) + 1;
     datetime.add(startDate, -1 * wk);
@@ -143,11 +153,9 @@ class Calendar extends React.Component {
         const m = datetime.month(startDate);
         const d = datetime.day(startDate);
         const active = m === month;
-        const now = y === cY && m === cM && d === cD;
-        const selected = y === sY && m === sM && d === sD;
-        let hover = false;
-        if (active && isBegin) hover = t >= hoverTime && t < selectedTime;
-        if (active && isEnd) hover = t > selectedTime && t <= hoverTime;
+        const now = cT === t;
+        const selected = selectedDates.findIndex(d => (d === t)) > -1;
+        const hover = this.setHover(active, t);
 
         let tdClass = '';
         if (hover) tdClass += ' ' + styles.hover;
@@ -159,11 +167,13 @@ class Calendar extends React.Component {
           className: tdClass
         };
 
-        if (type === datetime.RANGE) {
-          tdProps.onClick = this.onSelectDate.bind(this, y, m, d, t);
-          tdProps.onMouseEnter = this.onHoverDate.bind(this, t);
-        } else {
-          tdProps.onClick = this.handleClick.bind(this, y, m, d);
+        if (t >= datetime.min && t <= datetime.max) {
+          if (type === datetime.RANGE) {
+            tdProps.onClick = this.onSelectDate.bind(this, y, m, d, t);
+            tdProps.onMouseEnter = this.onHoverDate.bind(this, t);
+          } else {
+            tdProps.onClick = this.handleClick.bind(this, y, m, d, t);
+          }
         }
 
         tdList.push(<td {...tdProps}><span>{d}</span></td>);
@@ -184,9 +194,6 @@ class Calendar extends React.Component {
   };
 
   render() {
-    const {isShow} = this.state;
-    if (!isShow) return null;
-
     const {left, overflowX, right} = this.props;
     const {isFocus} = this.state;
     const style = {};

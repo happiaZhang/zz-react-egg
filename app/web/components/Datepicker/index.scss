@@ -11,18 +11,36 @@
     border: 1px solid transparent;
     cursor: pointer;
   }
-  .datepickerIcon {
+  .icon {
     position: absolute;
-    left: 100%;
+    right: 5px;
     top: 10px;
-    margin-left: 10px;
     width: 17px;
+  }
+  .datepickerIcon {
+    display: inline-block;
     height: 19px;
-    fill: #3d70b2
+    fill: #3d70b2;
+  }
+  .clearIcon {
+    display: none;
+    line-height: 19px;
+    font-size: 20px;
+    text-align: center;
+    color: #8c9ba5;
   }
   &:focus {
     outline: 1px solid #3d70b2;
   }
 }
 
-
+.hover {
+  &:hover {
+    .datepickerIcon {
+      display: none;
+    }
+    .clearIcon {
+      display: inline-block;
+    }
+  }
+}

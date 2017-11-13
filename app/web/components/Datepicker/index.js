@@ -4,20 +4,23 @@ import Calendar from './calendar';
 import datetime from './datetime';
 
 /**
- * @param {string} value: the value format of date must be defined as 'yyyy-MM-dd'
- * @param {string} format: this format value display on <input> element
+ * @param {string} value
+ * @param {string} format: the date's display format
  * @param {string} placeholder
  * @param {number} width
- * @param {function} onChange: return selected date, which is converted to 'yyyy-MM-dd' format
- * @param {string} type: include two value. one is range, another is single. the default value is single
+ * @param {boolean} showIcon: default value is true
+ * @param {function} onChange: return selected date
+ * @param {string} type: is one of two values [range, single]. default is single
+ * @param {string | number} startDate: when type is range, this value is valid and its format is timestamp
+ * @param {string | number} endDate: like startDate
  */
 
-const DEFAULT_OUTPUT_FORMAT = 'yyyy-MM-dd';
 class Datepicker extends React.Component {
   static defaultProps = {
-    format: DEFAULT_OUTPUT_FORMAT,
+    format: datetime.DEFAULT_OUTPUT_FORMAT,
     placeholder: 'YYYY/MM/DD',
-    hasIcon: true
+    showIcon: true,
+    type: datetime.SINGLE
   };
 
   constructor(props) {
@@ -25,47 +28,30 @@ class Datepicker extends React.Component {
     this.state = {
       isFocus: false,
       isOpen: false,
-      ...this.formatValue(props.value, props.format)
+      startDate: props.startDate,
+      endDate: props.endDate,
+      ...datetime.validDate(props.value, props.format)
     };
     this.calendarWidth = 245;
   }
 
   componentWillReceiveProps(nextProps) {
-    const {value, format} = nextProps;
+    const {value, format, startDate, endDate} = nextProps;
     if (value !== this.props.value) {
-      this.setState({...this.formatValue(value, format)});
+      this.setState({...datetime.validDate(value, format)});
+    }
+    if (startDate !== this.props.startDate) {
+      this.setState({startDate});
+    }
+    if (endDate !== this.props.endDate) {
+      this.setState({endDate});
     }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     const stateKey = Object.keys(nextState).find(k => nextState[k] !== this.state[k]);
-    return !(stateKey == null);
+    return stateKey != null;
   }
-
-  // 格式化日期数值
-  formatValue = (value, format) => {
-    let isValid = false;
-
-    if (value) {
-      const dtArray = value.split('-');
-      if (dtArray.length === 3) {
-        isValid = datetime.isValid({
-          year: dtArray[0],
-          month: dtArray[1],
-          day: dtArray[2]
-        });
-      }
-    }
-
-    const dt = isValid ? new Date(value) : new Date();
-    return {
-      year: datetime.year(dt),
-      month: datetime.month(dt),
-      day: datetime.day(dt),
-      value: datetime.format(dt, format),
-      isValid
-    };
-  };
 
   setFocusWrap = () => {
     this.focusWrap = true;
@@ -92,30 +78,34 @@ class Datepicker extends React.Component {
     }
   };
 
-  getDate = (year, month, day) => {
+  onClear = (e) => {
+    e.stopPropagation();
     const {format} = this.props;
-    const dt = new Date(year, month - 1, day);
+    this.setState({...datetime.validDate('', format)});
+  }
+
+  getDate = (year, month, day, time) => {
+    const {format} = this.props;
+    const dt = new Date(time);
     const value = datetime.format(dt, format);
     this.setState({
       year,
       month,
       day,
+      time,
       value,
       isValid: true
     }, () => {
       this.hideCalendar();
       const {onChange} = this.props;
-      onChange && onChange(datetime.format(dt, DEFAULT_OUTPUT_FORMAT));
+      onChange && onChange(datetime.format(dt, datetime.DEFAULT_OUTPUT_FORMAT));
     });
   };
 
-  getDateRange = ({startTime, endTime}) => {
+  getDateRange = ({startDate, endDate}) => {
     this.hideCalendar();
     const {onChange} = this.props;
-    onChange && onChange({
-      startTime: datetime.format(new Date(startTime), DEFAULT_OUTPUT_FORMAT),
-      endTime: datetime.format(new Date(endTime), DEFAULT_OUTPUT_FORMAT)
-    });
+    onChange && onChange({startDate, endDate});
   }
 
   hideCalendar = () => {
@@ -125,18 +115,31 @@ class Datepicker extends React.Component {
     }
   };
 
+  setSelectedDates = () => {
+    const {type} = this.props;
+    const {isValid, time, startDate, endDate} = this.state;
+    const selectedDates = [];
+    if (type === datetime.SINGLE) {
+      if (isValid) selectedDates.push(time);
+    } else if (type === datetime.RANGE) {
+      if (typeof startDate === 'number') selectedDates.push(startDate);
+      if (typeof endDate === 'number') selectedDates.push(endDate);
+    }
+    return selectedDates;
+  };
+
   renderCalendar = () => {
-    const {type = datetime.SINGLE} = this.props;
-    const {isOpen, year, month, day, isValid} = this.state;
+    const {type} = this.props;
+    const {isOpen, year, month, day} = this.state;
     if (isOpen) {
       const {left} = this.container.getBoundingClientRect();
       const winWidth = window.innerWidth;
       const overflowX = (left + this.calendarWidth) >= winWidth;
+      const selectedDates = this.setSelectedDates();
       const props = {
         overflowX,
         right: 0,
         left: 0,
-        isShow: true,
         setFocusWrap: this.setFocusWrap,
         onClose: this.hideCalendar,
         getDate: this.getDate,
@@ -144,16 +147,16 @@ class Datepicker extends React.Component {
         year,
         month,
         day,
-        isValid,
+        selectedDates,
         type
       };
       return <Calendar {...props} />;
     }
-    return '';
+    return null;
   };
 
   render() {
-    const {placeholder, hasIcon, width} = this.props;
+    const {placeholder, showIcon, width} = this.props;
     const {isFocus, isValid, value} = this.state;
 
     const boxProps = {
@@ -166,6 +169,7 @@ class Datepicker extends React.Component {
       style: {width}
     };
     if (isFocus) boxProps.className += ' ' + styles.focus;
+    if (isValid) boxProps.className += ' ' + styles.hover;
 
     const inputProps = {
       type: 'text',
@@ -174,17 +178,19 @@ class Datepicker extends React.Component {
       placeholder,
       value: isValid ? value : ''
     };
+    if (showIcon) inputProps.style = {paddingRight: 27};
 
     return (
       <div {...boxProps}>
         <input {...inputProps} />
         {
-          hasIcon ? <svg className={styles.datepickerIcon}>
+          showIcon ? <svg className={`${styles.icon} ${styles.datepickerIcon}`}>
             <path d='M12 0h2v2.7h-2zM3 0h2v2.7H3z' />
             <path d='M0 2v17h17V2H0zm15 15H2V7h13v10z' />
             <path d='M9.9 15H8.6v-3.9H7.1v-.9c.9 0 1.7-.3 1.8-1.2h1v6z' />
-          </svg> : ''
+          </svg> : null
         }
+        {showIcon ? <a className={`${styles.icon} ${styles.clearIcon}`} onClick={this.onClear}>&times;</a> : null}
         {this.renderCalendar()}
       </div>
     );

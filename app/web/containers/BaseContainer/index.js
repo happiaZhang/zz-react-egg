@@ -182,7 +182,7 @@ class BaseContainer extends React.Component {
     this.setState({showModal: false}, () => {
       if (reload) {
         const {history} = this.props;
-        history.push('/mail');
+        history.push(`${prefix}/mail`);
       }
     });
   };
