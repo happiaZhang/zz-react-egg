@@ -7,6 +7,7 @@ import datetime from '../Datepicker/datetime';
  * @param {string | number} startDate
  * @param {string | number} endDate
  * @param {number} width
+ * @param {function} onChange
  */
 
 class DateRange extends React.Component {
@@ -50,15 +51,21 @@ class DateRange extends React.Component {
 
   handleChange = ({startDate, endDate}) => {
     this.setState({startDate, endDate});
+    this.getChange({startDate, endDate});
+  };
+
+  handleClear = () => {
+    const initValue = this.initValue();
+    this.setState(initValue);
+    this.getChange(initValue);
+  };
+
+  getChange = ({startDate, endDate}) => {
     const {onChange} = this.props;
     onChange && onChange({
       startDate: datetime.format(new Date(startDate), datetime.DEFAULT_OUTPUT_FORMAT),
       endDate: datetime.format(new Date(endDate), datetime.DEFAULT_OUTPUT_FORMAT)
     });
-  };
-
-  handleClear = () => {
-    this.setState(this.initValue());
   };
 
   render() {

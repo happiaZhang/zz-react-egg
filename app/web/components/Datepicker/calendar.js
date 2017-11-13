@@ -11,7 +11,7 @@ class Calendar extends React.Component {
       month: props.month,
       day: props.day,
       selectedDates: props.selectedDates,
-      direction: null,
+      direction: datetime.START,
       selectedOne: null,
       hoverOne: null
     };
@@ -72,10 +72,10 @@ class Calendar extends React.Component {
       });
     } else {
       const {getDateRange} = this.props;
-      const {selectedOne, hoverOne, direction} = this.state;
+      const {selectedOne, direction} = this.state;
       getDateRange && getDateRange({
-        startDate: direction === datetime.START ? hoverOne : selectedOne,
-        endDate: direction === datetime.START ? selectedOne : hoverOne
+        startDate: direction === datetime.START ? time : selectedOne,
+        endDate: direction === datetime.START ? selectedOne : time
       });
     }
   };

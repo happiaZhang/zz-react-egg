@@ -11,12 +11,13 @@ import message from '../../components/Message';
 import validate from '../../utils/validate';
 import apis from '../../utils/apis';
 
+const prefix = validate.prefix();
 const ROUTES = [
   {key: 'checkPhoto', to: '/check', text: '申请列表'}
 ];
 const WEBSITE_FRAMES = [
-  {shadeText: '幕布照片', width: 337, height: 211},
-  {shadeText: '身份证（正面）', width: 337, height: 211}
+  {key: 'webSiteManagerInfo.photoPath', shadeText: '幕布照片', width: 337, height: 211},
+  {key: 'idc', shadeText: '身份证（正面）', width: 337, height: 211}
 ];
 
 class CheckPhotoDetail extends React.Component {
@@ -116,7 +117,7 @@ class CheckPhotoDetail extends React.Component {
   // 跳转到列表页
   refresh = () => {
     const {history} = this.props;
-    history.push('/check');
+    history.push(`${prefix}/check`);
   };
 
   // 向后台发送驳回申请
@@ -156,7 +157,8 @@ class CheckPhotoDetail extends React.Component {
     const {checkMode} = this.state;
     const frames = [];
     WEBSITE_FRAMES.forEach((props, i) => {
-      props.checkMode = !validate.isEmpty(managerId) && checkMode;
+      const {key} = props;
+      props.checkMode = !validate.isEmpty(managerId) && checkMode && key !== 'idc';
       props.onChange = this.handleSelected(managerId);
       frames.push(<li key={i}><PhotoFrame {...props} /></li>);
     });
@@ -179,10 +181,10 @@ class CheckPhotoDetail extends React.Component {
     const {listWebSiteInfo} = this.state;
     const websiteInfoList = [];
     listWebSiteInfo && listWebSiteInfo.forEach(websiteInfo => {
-      const {id, title, infoList, managerId} = this.getWebsiteBrief(websiteInfo);
+      const {id, name, infoList, managerId} = this.getWebsiteBrief(websiteInfo);
       const props = {
         key: id,
-        title: validate.isEmpty(title) ? '备案网站' : `备案网站 - ${title}`,
+        title: validate.isEmpty(name) ? '备案网站' : `备案网站 - ${name}`,
         style: {marginTop: 50},
         suffix: this.renderSuffix(managerId)
       };
@@ -207,7 +209,7 @@ class CheckPhotoDetail extends React.Component {
       {label: '证件类型', key: 'webSiteManagerInfo.credentialType'},
       {label: '证件号码', key: 'webSiteManagerInfo.credentialNumber'},
       {prop: 'id', key: 'webSiteBasicInfoDto.id'},
-      {prop: 'title', key: 'webSiteBasicInfoDto.name'},
+      {prop: 'name', key: 'webSiteBasicInfoDto.name'},
       {prop: 'managerId', key: 'webSiteManagerInfo.id'}
     ];
     briefList.forEach(info => {

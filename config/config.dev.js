@@ -2,9 +2,6 @@
 
 module.exports = appInfo => {
   return {
-    // 开发域名
-    adminDomainURI: 'http://bo.cloud.wanda.cn',
-
     // api host
     adminHost: 'http://10.214.169.111:32730',
     icpAdminHost: 'http://10.214.169.111:32356',

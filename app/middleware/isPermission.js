@@ -12,7 +12,7 @@ module.exports = () => {
     }
     const {config} = ctx.app;// 获取配置信息
     // 返回跳转地址
-    const loginURI = `${config.adminDomainURI}/admin/login`;
+    const loginURI = `${ctx.getCookieDomain(ctx)}/admin/login`;
     const permissionStr = config.permission.uri;
     // 判断用户权限
     const token = ctx.state.token;

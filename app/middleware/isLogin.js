@@ -13,7 +13,7 @@ module.exports = () => {
     // 获取配置信息
     const {config} = ctx.app;
     // 返回跳转地址
-    const loginURI = `${config.adminDomainURI}/admin/login`;
+    const loginURI = `${ctx.getCookieDomain(ctx)}/admin/login`;
     // 获取根域的用户状态sid
     const amsid = ctx.cookies.get('amsid');
     // 用户未登录
