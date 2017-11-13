@@ -36,23 +36,6 @@ class PhotoFrame extends React.Component {
     return !validate.isNil(stateKey);
   }
 
-  componentDidMount() {
-    this.getRealWidth();
-  }
-
-  componentDidUpdate() {
-    if (!this.realWidth) {
-      this.getRealWidth();
-    }
-  }
-
-  getRealWidth = () => {
-    if (this.canDownload()) {
-      this.realWidth = this.img.naturalWidth;
-      this.loadedImg = true;
-    }
-  };
-
   handleClick =(checked) => {
     this.setState({checked});
     const {onChange} = this.props;
@@ -86,7 +69,7 @@ class PhotoFrame extends React.Component {
 
   setDisplayWidth = () => {
     const maxWidth = window.innerWidth - this.reservedSpace;
-    return maxWidth >= this.realWidth ? this.realWidth : maxWidth;
+    return maxWidth >= this.img.naturalWidth ? this.img.naturalWidth : maxWidth;
   };
 
   setContainerProps = () => {
