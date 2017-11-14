@@ -91,10 +91,10 @@ export default {
         kvList.push(`${k}=${kv}`);
       } else if (kv instanceof Array) {
         kv.forEach(v => {
-          kvList.push(`${k}=${v}`);
+          kvList.push(`${k}=${encodeURIComponent(v)}`);
         });
       } else {
-        kvList.push(`${k}=${kv}`);
+        kvList.push(`${k}=${encodeURIComponent(kv)}`);
       }
     });
     return kvList.join('&');

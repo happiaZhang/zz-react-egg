@@ -29,7 +29,8 @@ class Calendar extends React.Component {
     this.setState({isFocus: true});
   };
 
-  handleBlur = () => {
+  handleBlur = (e) => {
+    e.stopPropagation();
     this.setState({isFocus: false});
     const {onClose} = this.props;
     onClose && onClose();

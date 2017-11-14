@@ -11,6 +11,9 @@ import CheckPhoto from '../CheckPhoto';
 import CheckPhotoDetail from '../CheckPhotoDetail';
 import Authority from '../Authority';
 import AuthorityDetail from '../AuthorityDetail';
+import HostRevoke from '../HostRevoke';
+import SiteRevoke from '../SiteRevoke';
+import AccessRevoke from '../AccessRevoke';
 import Loading from '../Loading';
 import validate from '../../utils/validate';
 
@@ -24,7 +27,10 @@ const ROUTES = [
   {path: prefix + '/check', text: '审核幕布照片', component: CheckPhoto, menu: true},
   {path: prefix + '/check/detail/:id', component: CheckPhotoDetail},
   {path: prefix + '/authority', text: '管局审核', component: Authority, menu: true},
-  {path: prefix + '/authority/detail/:id', component: AuthorityDetail}
+  {path: prefix + '/authority/detail/:id', component: AuthorityDetail},
+  {path: prefix + '/revoke/host', text: '注销主体', component: HostRevoke, menu: true},
+  {path: prefix + '/revoke/site', text: '注销网站', component: SiteRevoke, menu: true},
+  {path: prefix + '/revoke/access', text: '取消接入', component: AccessRevoke, menu: true}
 ];
 
 export default class Root extends React.Component {

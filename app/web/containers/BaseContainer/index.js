@@ -93,7 +93,11 @@ class BaseContainer extends React.Component {
     return [
       {text: '申请ID', value: 'operId'},
       {text: '备案服务号', value: 'filingServiceNo'},
-      {text: '关联域名', value: 'website'},
+      {
+        text: '关联域名',
+        value: 'website',
+        render: this.handleMultipleLine()
+      },
       {text: '备案类型', value: 'recordType', render: () => ('首次备案')},
       {text: '备案主体', value: 'hostname'},
       {text: '最近更新时间', value: 'updateTime'},
@@ -107,6 +111,20 @@ class BaseContainer extends React.Component {
       },
       {text: '操作', value: 'OPERATION_COLUMN', width: 60}
     ];
+  };
+
+  // 处理多行显示问题
+  handleMultipleLine = (delimiter = '\n') => {
+    return (value, item) => {
+      const innerText = item[value];
+      if (validate.isNil(innerText)) return '';
+      const list = [];
+      const textArray = innerText.split(delimiter);
+      textArray.forEach((text, i) => {
+        list.push(<li key={i}>{text}</li>);
+      });
+      return <ul>{list}</ul>;
+    };
   };
 
   // 设置表格内容
@@ -189,7 +207,8 @@ class BaseContainer extends React.Component {
 
   // 改变备案类型
   changeFilingType = (filingType) => {
-    this.setState({filingType});
+    this.setSelectOptions(filingType);
+    this.setState({filingType, status: ''});
   }
 
   renderFilter = () => {

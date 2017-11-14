@@ -12,8 +12,25 @@ class Select extends React.Component {
     super(props);
 
     this.state = {
-      listShowState: false
+      listShowState: false,
+      data: [...props.data],
+      value: props.value
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const {data, value} = nextProps;
+    if (data !== this.props.data) {
+      this.setState({data});
+    }
+    if (value !== this.props.value) {
+      this.setState({value});
+    }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    const stateKey = Object.keys(nextState).find(k => nextState[k] !== this.state[k]);
+    return stateKey != null;
   }
 
   // 选项框文字点击操作
@@ -28,7 +45,8 @@ class Select extends React.Component {
 
   // 选项点击操作
   handleOptionClick = (optionValue, optionText) => {
-    let {value, onChangeValue} = this.props;
+    const {onChangeValue} = this.props;
+    const {value} = this.state;
 
     // 数据没有改变,则不执行任何操作
     if (optionValue === value) {
@@ -62,8 +80,8 @@ class Select extends React.Component {
 
   // 页面渲染
   render() {
-    let {type, style, data, value} = this.props;
-    let {listShowState} = this.state;
+    let {type, style} = this.props;
+    let {listShowState, data, value} = this.state;
 
     let currentValue = this.getCurrentValue(data, value); // 获取当前显示值
     let typeClass = type ? styles[type] : '';

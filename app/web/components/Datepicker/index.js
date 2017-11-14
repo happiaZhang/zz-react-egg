@@ -78,10 +78,19 @@ class Datepicker extends React.Component {
     }
   };
 
+  getChange = (dt) => {
+    this.hideCalendar();
+    const {onChange} = this.props;
+    onChange && onChange(datetime.format(dt, datetime.DEFAULT_OUTPUT_FORMAT));
+  }
+
   onClear = (e) => {
     e.stopPropagation();
     const {format} = this.props;
-    this.setState({...datetime.validDate('', format)});
+    const newState = datetime.validDate('', format);
+    this.setState({...newState}, () => {
+      this.getChange(new Date(newState.time));
+    });
   }
 
   getDate = (year, month, day, time) => {
@@ -96,9 +105,7 @@ class Datepicker extends React.Component {
       value,
       isValid: true
     }, () => {
-      this.hideCalendar();
-      const {onChange} = this.props;
-      onChange && onChange(datetime.format(dt, datetime.DEFAULT_OUTPUT_FORMAT));
+      this.getChange(dt);
     });
   };
 

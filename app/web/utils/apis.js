@@ -29,6 +29,15 @@ const genPromise = (payload, key) => {
   });
 };
 
+// 生成query string
+const genQueryString = (params) => {
+  const qs = {...params};
+  const operId = qs.operId;
+  const isEmpty = validate.isEmpty(operId.trim());
+  qs.operId = isEmpty ? '' : parseInt(operId);
+  return validate.encode(qs);
+};
+
 // 获取用户信息
 const getAdminInfo = function() {
   const payload = {
@@ -65,11 +74,7 @@ const setInitVerify = function(data) {
 
 // 获取表格数据
 const getTableData = function(params) {
-  const qs = {...params};
-  const operId = qs.operId;
-  const isEmpty = validate.isEmpty(operId.trim());
-  qs.operId = isEmpty ? '' : parseInt(operId);
-  const queryString = validate.encode(qs);
+  const queryString = genQueryString(params);
   const payload = {
     url: `/api/icp-admin/filing-admin/info-summary?${queryString}`
   };
@@ -112,6 +117,33 @@ const getHostMaterial = function(id) {
   return genPromise(payload, 'getHostMaterial');
 };
 
+// 获取注销主体信息
+const getHostRevokeInfo = function(params) {
+  const queryString = genQueryString(params);
+  const payload = {
+    url: `/api/icp-admin/filing-admin/host-revoke-info?${queryString}`
+  };
+  return genPromise(payload, 'getHostRevokeInfo');
+};
+
+// 获取注销网站信息
+const getSiteRevokeInfo = function(params) {
+  const queryString = genQueryString(params);
+  const payload = {
+    url: `/api/icp-admin/filing-admin/site-revoke-info?${queryString}`
+  };
+  return genPromise(payload, 'getSiteRevokeInfo');
+};
+
+// 获取取消接入信息
+const getAccessRevokeInfo = function(params) {
+  const queryString = genQueryString(params);
+  const payload = {
+    url: `/api/icp-admin/filing-admin/site-accesscancelled-info?${queryString}`
+  };
+  return genPromise(payload, 'getAccessRevokeInfo');
+};
+
 export default {
   getAdminInfo,
   getHostInfoByID,
@@ -122,5 +154,8 @@ export default {
   setCurtainDelivery,
   getCurtainInfo,
   setCurtainRejection,
-  getHostMaterial
+  getHostMaterial,
+  getHostRevokeInfo,
+  getSiteRevokeInfo,
+  getAccessRevokeInfo
 };
