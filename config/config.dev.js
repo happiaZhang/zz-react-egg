@@ -32,4 +32,4 @@ module.exports = appInfo => {
       consoleLevel: 'DEBUG'
     }
   };
-}
+};
