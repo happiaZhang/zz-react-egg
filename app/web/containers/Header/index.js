@@ -20,9 +20,9 @@ export default class Header extends React.Component {
   // 组件加载完成以后
   componentDidMount() {
     // 获取管理员信息
-    // if (!isDev) {
-    // }
-    this.getAdminInfo();
+    if (!isDev) {
+      this.getAdminInfo();
+    }
   }
 
   // 获取管理员信息
