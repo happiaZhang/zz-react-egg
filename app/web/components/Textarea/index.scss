@@ -14,7 +14,8 @@
     font-size: 14px;
     line-height: 1.29;
     &:focus {
-      border: solid 1px #3d70b2;
+      border: 0 none;
+      outline: 1px solid #3d70b2
     }
   }
 }

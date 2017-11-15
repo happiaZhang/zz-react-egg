@@ -18,16 +18,16 @@ const message = (props) => {
  */
 export default {
   // 提示消息
-  info: function(content, duration) {
-    return message({content, duration, type: types.INFO});
+  info: function(content, duration, callback) {
+    return message({content, duration, type: types.INFO, callback});
   },
   // 成功消息
-  success: function(content, duration) {
-    return message({content, duration, type: types.SUCCESS});
+  success: function(content, duration, callback) {
+    return message({content, duration, type: types.SUCCESS, callback});
   },
   // 错误消息
-  error: function(content, duration) {
-    return message({content, duration, type: types.ERROR});
+  error: function(content, duration, callback) {
+    return message({content, duration, type: types.ERROR, callback});
   },
   // 关闭消息
   close: function(messageKey) {

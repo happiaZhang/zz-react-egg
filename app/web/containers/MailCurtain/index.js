@@ -27,27 +27,33 @@ class MailCurtain extends BaseContainer {
     this.selectOptions = MAIL_STATUS;
     this.errorMsg = '获取邮寄幕布列表失败，请刷新重试';
     this.operations = [{type: 'EXPRESS', text: '填写快递单号'}];
-    this.param = {};
     this.loadCurtainMail = this.loadCurtainMail;
   }
 
   // 加载幕布邮寄信息
-  loadCurtainMail = (id, cb) => {
-    apis.getCurtainInfo(id).then((res) => {
+  loadCurtainMail = (operId) => {
+    apis.getCurtainInfo({operId}).then((res) => {
       this.curtainMailDto = res.curtainMailDto;
-      if (cb) cb();
+      this.param = {operId, checkPerson: 'zhangzheng'};
+      this.setState({showModal: true});
     }).catch(() => {
       message.error('获取幕布邮寄信息失败，请刷新重试');
     });
   };
 
+  // 驳回邮寄
+  onReject = () => {
+    this.setState({showModal: false});
+  };
+
   // 邮寄幕布
   onConfirm = () => {
     apis.setCurtainDelivery(this.param).then(() => {
-      message.success('快递单号填写完成，已标记为已寄送，请尽快寄送');
-      this.onClose(true);
+      message.success('快递单号填写完成，已标记为已寄送，请尽快寄送', 3, () => {
+        this.onClose(true);
+      });
     }).catch(() => {
-      message.error('邮寄幕布失败，请刷新重试');
+      message.error('快递单号信息保存失败，请刷新重试');
     });
   };
 
@@ -59,10 +65,13 @@ class MailCurtain extends BaseContainer {
   };
 
   // 渲染模态框
-  renderModal = (operId) => {
-    this.param.operId = operId;
+  renderModal = () => {
+    const footer = [
+      {text: '取消', type: 'default', onClick: this.onReject},
+      {text: '确定', type: 'primary', onClick: this.onConfirm}
+    ];
     return (
-      <Modal width={720} showState onCloseClick={this.onClose} onSubmitClick={this.onConfirm}>
+      <Modal width={720} showState onCloseClick={this.onClose} footer={footer}>
         {this.renderInputBox()}
         <Card>{this.renderInfoList()}</Card>
       </Modal>

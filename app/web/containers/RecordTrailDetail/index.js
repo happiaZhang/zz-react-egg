@@ -57,6 +57,7 @@ const WEBSITE_INFO_LIST = [
   {key: 'webSiteManagerInfoDto.mobilePhone', label: '手机号码'},
   {key: 'webSiteManagerInfoDto.email', label: '电子邮箱'}
 ];
+const MULTI_KEY = 'webSiteBasicInfoDto.verifiedDomain';
 const HOST_FRAMES = [
   {key: 'hostBusinessLicensePhotoPath', shadeText: '工商营业执照'},
   {key: 'hostManagerIDPhotoFrontPath', shadeText: '身份证（正面）'},
@@ -67,6 +68,25 @@ const WEBSITE_FRAMES = [
   {key: 'webSiteIDPhotoBackPath', shadeText: '身份证（反面）'},
   {key: 'webSiteFilingVerifyPhotoPath', shadeText: '核验单'}
 ];
+const KEYS_MAPPER = {
+  hostUnitFullDto: 'hostUnit',
+  hostUnitManagerDto: 'hostUnitManager',
+  webSiteBasicInfoDto: 'websiteInfo',
+  webSiteManagerInfoDto: 'websiteManagerInfo',
+  hostBusinessLicensePhotoPath: 'hostManagerItems',
+  hostManagerIDPhotoFrontPath: 'hostManagerItems',
+  hostManagerIDPhotoBackPath: 'hostManagerItems',
+  webSiteIDPhotoFrontPath: 'webSitePhotoItems',
+  webSiteIDPhotoBackPath: 'webSitePhotoItems',
+  webSiteFilingVerifyPhotoPath: 'webSitePhotoItems'
+};
+const ID_MAPPER = {
+  webSiteBasicInfoDto: 'webSiteBasicInfoDto.id',
+  webSiteManagerInfoDto: 'webSiteManagerInfoDto.id',
+  webSiteIDPhotoFrontPath: 'id',
+  webSiteIDPhotoBackPath: 'id',
+  webSiteFilingVerifyPhotoPath: 'id'
+};
 
 class RecordTrailDetail extends React.Component {
   // 构造方法
@@ -78,21 +98,30 @@ class RecordTrailDetail extends React.Component {
       listWebSiteInfo: null,
       materialInfo: null
     };
+    this.rejectReason = '信息有误,请重新填写';
+    this.hostUnit = [];
+    this.hostUnitManager = [];
+    this.websiteManagerInfo = {};
+    this.websiteInfo = {};
+    this.verifiedDomain = {};
+    this.hostManagerItems = [];
+    this.webSitePhotoItems = {};
+    this.type = 'RecordTrailDetail';
   }
 
   // 首次挂载组件
   componentDidMount() {
-    const id = this.getOperID();
+    const operId = this.getOperId();
 
     // 获取主体信息
-    apis.getHostInfoByID(id).then(hostInfo => {
+    apis.getHostInfoByID({operId}).then(hostInfo => {
       this.setState({hostInfo});
     }).catch(() => {
       message.error('获取主体信息失败，请刷新重试');
     });
 
     // 获取网站信息
-    apis.getWebsiteInfoByID(id).then(data => {
+    apis.getWebsiteInfoByID({operId}).then(data => {
       const {listWebSiteInfo} = data;
       listWebSiteInfo.forEach(websiteInfo => {
         const {listWebSiteManagerInfo} = websiteInfo;
@@ -104,8 +133,8 @@ class RecordTrailDetail extends React.Component {
     });
 
     // 获取主体资料信息
-    apis.getHostMaterial(id).then(materialInfo => {
-      this.setState({materialInfo});
+    apis.getHostMaterial({operId}).then(materialInfo => {
+      materialInfo && this.setState({materialInfo});
     }).catch(() => {
       message.error('获取主体资料信息失败，请刷新重试');
     });
@@ -118,24 +147,35 @@ class RecordTrailDetail extends React.Component {
   }
 
   // 获取主体Id
-  getOperID = () => {
+  getOperId = () => {
     const {match} = this.props;
     return match.params.id;
   };
 
   // 选择错误项
-  checkWarningItem = (k, symbol) => {
+  checkWarningItem = (key, id, value) => {
     return (v) => {
-      if (validate.isNil(symbol)) return;
-      if (!this.model.hasOwnProperty(symbol)) this.model[symbol] = [];
-      if (v) {
-        this.model[symbol].push(k);
+      if (this[key] instanceof Array) {
+        this.handleWarningItem(v, this[key], value);
       } else {
-        const i = this.model[symbol].findIndex(elm => (elm === k));
-        this.model[symbol].splice(i, 1);
+        if (validate.isEmpty(id)) return;
+        if (!this[key].hasOwnProperty(id)) {
+          this[key][id] = [];
+        }
+        this.handleWarningItem(v, this[key][id], value);
       }
     };
   };
+
+  // 处理错误项
+  handleWarningItem = (isChecked, items, value) => {
+    if (isChecked) {
+      items.push(value);
+    } else {
+      const index = items.findIndex(i => i === value);
+      items.splice(index, 1);
+    }
+  }
 
   // 选择与非选择模式的切换
   onCheckMode = (checkMode) => {
@@ -144,66 +184,120 @@ class RecordTrailDetail extends React.Component {
     };
   };
 
-  // 处理初审驳回或初审通过
-  handleTrail = (isResolved) => {
+  // 设置备案状态
+  setFilingStatus = (isResolve) => (isResolve ? 10050 : 10060);
+
+  // 设置消息提醒
+  setMsg = (isResolve) => {
+    const successMsg = `初审已${isResolve ? '通过' : '驳回'}`;
+    const errorMsg = `初审${isResolve ? '通过' : '驳回'}失败，请刷新重试`;
+    return {successMsg, errorMsg};
+  };
+
+  // 跳转到列表页
+  switch2List = () => {
     const {history} = this.props;
+    switch (this.type) {
+      case 'RecordTrailDetail':
+        history.push('/trail');
+        break;
+      case 'CheckPhotoDetail':
+        history.push('/check');
+        break;
+    }
+  };
+
+  // 处理驳回或通过
+  handleClick = (isResolve) => {
     const data = {
-      operId: this.getOperID(),
-      filingStatus: isResolved ? 10050 : 10060,
-      checkPerson: 'ZhangZheng'
+      checkPerson: 'ZhangZheng',
+      operId: this.getOperId(),
+      filingStatus: this.setFilingStatus(isResolve)
     };
-    const errMsg = `初审${isResolved ? '通过' : '驳回'}失败，请刷新重试`;
+    const {successMsg, errorMsg} = this.setMsg(isResolve);
     return () => {
-      if (!isResolved) data.rejectReason = JSON.stringify(this.setRejectModel());
-      apis.setInitVerify(data).then(() => {
-        history.push('/');
+      if (!isResolve) data.rejectReason = this.setRejectReason();
+      apis.setFilingStatus(data).then(() => {
+        message.success(successMsg, 3, this.switch2List);
       }).catch(() => {
-        message.error(errMsg);
+        message.error(errorMsg);
       });
     };
   };
 
-  // 设置驳回数据模型
-  setRejectModel = () => {
+  // 设置驳回理由
+  setRejectReason = () => {
     const result = {};
+    const {
+      rejectReason,
+      hostUnit,
+      hostUnitManager,
+      websiteManagerInfo,
+      websiteInfo,
+      verifiedDomain,
+      hostManagerItems,
+      webSitePhotoItems
+    } = this;
 
-    Object.keys(this.model).forEach(k => {
-      const hasUnderline = k.indexOf('_') > -1;
-      if (hasUnderline) {
-        const ks = k.split('_');
-        const kk = ks[0];
-        const id = ks[1];
-        if (!result.hasOwnProperty(kk)) result[kk] = [];
-        result[kk].push({
-          id,
-          warnItems: this.model[k]
+    if (rejectReason.trim().length > 0) result.rejectReason = rejectReason;
+
+    if (hostUnit.length > 0) result.hostInfo = {hostUnit};
+    if (hostUnitManager.length > 0) {
+      if (result.hasOwnProperty('hostInfo')) {
+        result.hostInfo.hostUnitManager = hostUnitManager;
+      } else {
+        result.hostInfo = {hostUnitManager};
+      }
+    }
+
+    const websiteManagers = this.obj2Arr(websiteManagerInfo, 'warnItems');
+    if (websiteManagers.length > 0) result.websiteManagerInfo = websiteManagers;
+
+    const websites = this.obj2Arr(websiteInfo, 'otherItems');
+    if (websites.length > 0) result.websiteInfo = websites;
+
+    const domains = this.obj2Arr(verifiedDomain, 'verifiedDomain');
+    if (domains.length > 0) {
+      if (result.hasOwnProperty('websiteInfo')) {
+        domains.forEach(d => {
+          const {verifiedDomain} = d;
+          const index = websites.findIndex(({id}) => (id === d.id));
+          if (index > -1) {
+            websites[index].verifiedDomain = verifiedDomain;
+          } else {
+            websites.push(d);
+          }
         });
       } else {
-        result[k] = this.model[k];
+        result.websiteInfo = domains;
       }
-    });
+    }
 
-    Object.keys(result).forEach(k => {
-      const hasDot = k.indexOf('.') > -1;
-      if (hasDot) {
-        const data = result[k];
-        const ks = k.split('.');
-        const k1 = ks[0];
-        const k2 = ks[1];
-        if (!result.hasOwnProperty(k1)) result[k1] = {};
-        result[k1][k2] = data;
-        delete result[k];
+    if (hostManagerItems.length > 0) result.materialInfo = {hostManagerItems};
+    const websitePhotos = this.obj2Arr(webSitePhotoItems, 'warnItems');
+    if (websitePhotos.length > 0) {
+      if (result.hasOwnProperty('materialInfo')) {
+        result.materialInfo.webSitePhotoItems = websitePhotos;
+      } else {
+        result.materialInfo = {webSitePhotoItems: websitePhotos};
       }
-    });
+    }
 
-    return result;
+    return JSON.stringify(result);
   };
 
-  // 初始化驳回数据模型
-  initRejectModel = () => {
-    const {checkMode} = this.state;
-    this.model = checkMode ? {rejectReason: '信息有误，请重新填写'} : null;
-  };
+  // 对象转数组
+  obj2Arr = (obj, key) => {
+    const arr = [];
+    Object.keys(obj).forEach(id => {
+      if (obj[id].length === 0) {
+        delete obj.id;
+      } else {
+        arr.push({id, [key]: obj[id]});
+      }
+    });
+    return arr;
+  }
 
   // 渲染资料
   renderFrames = (className, frames, data) => {
@@ -211,10 +305,11 @@ class RecordTrailDetail extends React.Component {
     const list = [];
     frames.forEach((d, i) => {
       const {shadeText, key} = d;
+      const id = this.setId(data, key);
       const props = {
         shadeText,
         checkMode,
-        onChange: this.checkWarningItem(key, this.setSymbol(data, key)),
+        onChange: this.checkWarningItem(KEYS_MAPPER[key], id, key),
         src: validate.formatData(data, key)
       };
       list.push(<li key={i}><PhotoFrame {...props} /></li>);
@@ -229,41 +324,24 @@ class RecordTrailDetail extends React.Component {
     infoList.forEach(info => {
       const {key, label, content} = info;
       const props = {key, label, checkMode};
+      const isMult = key === MULTI_KEY;
       const ks = key.split('.');
-      const itemKey = ks[ks.length - 1];
-      props.onChange = this.checkWarningItem(itemKey, this.setSymbol(data, key));
+      const id = this.setId(data, ks[0]);
+      const value = isMult && content ? content() : ks[ks.length - 1];
+      props.onChange = this.checkWarningItem(isMult ? 'verifiedDomain' : KEYS_MAPPER[ks[0]], id, value);
       props.content = content ? content(data, key) : validate.formatData(data, key);
       list.push(<Info {...props} />);
     });
     return list;
   };
 
-  // 设置标识
-  setSymbol = (data, key) => {
-    if (validate.isNil(data)) return null;
-
-    const ks = key.split('.');
-    ks.length = 1;
-    const keyMap = {
-      hostUnitFullDto: {symbol: 'hostInfo.hostUnit'},
-      hostUnitManagerDto: {symbol: 'hostInfo.hostUnitManager'},
-      webSiteBasicInfoDto: {symbol: 'websiteInfo', idKey: 'webSiteBasicInfoDto.id'},
-      webSiteManagerInfoDto: {symbol: 'websiteManagerInfo', idKey: 'webSiteManagerInfoDto.id'},
-      hostBusinessLicensePhotoPath: {symbol: 'materialInfo.hostManagerItems'},
-      hostManagerIDPhotoFrontPath: {symbol: 'materialInfo.hostManagerItems'},
-      hostManagerIDPhotoBackPath: {symbol: 'materialInfo.hostManagerItems'},
-      webSiteIDPhotoFrontPath: {symbol: 'materialInfo.webSitePhotoItems', idKey: 'id'},
-      webSiteIDPhotoBackPath: {symbol: 'materialInfo.webSitePhotoItems', idKey: 'id'},
-      webSiteFilingVerifyPhotoPath: {symbol: 'materialInfo.webSitePhotoItems', idKey: 'id'}
-    };
-
-    const {symbol, idKey} = keyMap[ks[0]];
-    if (idKey) {
-      const id = validate.formatData(data, idKey);
-      return validate.isEmpty(id) ? null : symbol + '_' + id;
-    } else {
-      return symbol;
+  // 设置标识id
+  setId = (data, key) => {
+    let id = '';
+    if (ID_MAPPER[key]) {
+      id = validate.formatData(data, ID_MAPPER[key]);
     }
+    return id;
   };
 
   // 渲染错误理由文本框
@@ -274,24 +352,38 @@ class RecordTrailDetail extends React.Component {
       width={635}
       height={150}
       header='请勾选需要用户修改的内容，并输入驳回理由'
-      value={this.model.rejectReason}
+      value={this.rejectReason}
       onBlur={this.setReason} /> : '';
   };
 
   // 设置拒绝理由
   setReason = (v) => {
-    this.model.rejectReason = v;
+    this.rejectReason = v;
   };
 
   // 渲染驳回与通过操作按钮
   renderButtons = () => {
     const {checkMode} = this.state;
+
+    let rejectText = null;
+    let resolveText = null;
+    switch (this.type) {
+      case 'RecordTrailDetail':
+        rejectText = '初审驳回';
+        resolveText = '初审通过';
+        break;
+      case 'CheckPhotoDetail':
+        rejectText = '审核驳回';
+        resolveText = '审核通过';
+        break;
+    }
+
     const btnGroup = checkMode ? [
       {key: 'cancel', text: '取消', type: 'default', onClick: this.onCheckMode(false)},
-      {key: 'confirm', text: '确认驳回', onClick: this.handleTrail(false)}
+      {key: 'confirm', text: '确认驳回', onClick: this.handleClick(false)}
     ] : [
-      {key: 'reject', text: '初审驳回', type: 'default', onClick: this.onCheckMode(true)},
-      {key: 'resolve', text: '初审通过', onClick: this.handleTrail(true)}
+      {key: 'reject', text: rejectText, type: 'default', onClick: this.onCheckMode(true)},
+      {key: 'resolve', text: resolveText, onClick: this.handleClick(true)}
     ];
     return (
       <div className={styles.toolBar}>
@@ -332,7 +424,7 @@ class RecordTrailDetail extends React.Component {
 
       websiteList.push(
         <Card {...props}>
-          {this.renderInfoList(WEBSITE_INFO_LIST, websiteInfo)}
+          {this.renderInfoList(this.genWebsiteInfo(websiteInfo), websiteInfo)}
         </Card>
       );
     });
@@ -340,10 +432,34 @@ class RecordTrailDetail extends React.Component {
     return websiteList;
   };
 
+  // 生成网站信息列表
+  genWebsiteInfo = (websiteInfo) => {
+    const websiteInfoList = [];
+    WEBSITE_INFO_LIST.forEach(info => {
+      const {key, label} = info;
+      if (key === MULTI_KEY) {
+        const kv = validate.formatData(websiteInfo, key);
+        if (kv === '') {
+          websiteInfoList.push(info);
+        } else {
+          kv.split(',').forEach((d, i) => {
+            websiteInfoList.push({
+              key,
+              label: i === 0 ? label : <i>&nbsp;</i>,
+              content: () => (d)
+            });
+          });
+        }
+      } else {
+        websiteInfoList.push(info);
+      }
+    });
+    return websiteInfoList;
+  };
+
   // 渲染页面
   render() {
     const {hostInfo, materialInfo} = this.state;
-    this.initRejectModel();
     return (
       <div className={styles.recordTrailDetail}>
         <Breadcrumb routes={ROUTES} style={{marginTop: 15}} />

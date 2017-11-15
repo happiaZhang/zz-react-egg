@@ -13,11 +13,12 @@ class Message extends React.Component {
 
   // 组件加载成功
   componentDidMount() {
-    const {duration, onClose, messageKey} = this.props;
+    const {duration, onClose, messageKey, callback} = this.props;
 
     this.timerAnimation = setTimeout(() => {
       this.setState({hide: 'hide'}, () => {
         this.timerHide = setTimeout(() => {
+          callback && callback();
           onClose && onClose(messageKey);
         }, 400);
       });

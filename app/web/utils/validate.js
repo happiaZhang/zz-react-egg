@@ -74,7 +74,7 @@ export default {
       if (this.isNil(d[k])) {
         result = '';
         break;
-      } else if (typeof d[k] === 'string') {
+      } else if (typeof d[k] === 'string' || typeof d[k] === 'number') {
         result = d[k];
       } else {
         d = {...d[k]};

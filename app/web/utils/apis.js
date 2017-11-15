@@ -32,9 +32,12 @@ const genPromise = (payload, key) => {
 // 生成query string
 const genQueryString = (params) => {
   const qs = {...params};
-  const operId = qs.operId;
-  const isEmpty = validate.isEmpty(operId.trim());
-  qs.operId = isEmpty ? '' : parseInt(operId);
+  Object.keys(qs).forEach(k => {
+    if (k.toUpperCase() === 'OPERID') {
+      const operId = qs[k];
+      qs[k] = validate.isEmpty(operId) ? '' : parseInt(operId);
+    }
+  });
   return validate.encode(qs);
 };
 
@@ -47,29 +50,31 @@ const getAdminInfo = function() {
 };
 
 // 获取主体信息
-const getHostInfoByID = function(id) {
+const getHostInfoByID = function(params) {
+  const queryString = genQueryString(params);
   const payload = {
-    url: `/api/icp-admin/filing-admin/host-info/${id}`
+    url: `/api/icp-admin/filing-admin/host-info?${queryString}`
   };
   return genPromise(payload, 'getHostInfoByID');
 };
 
 // 获取网站信息
-const getWebsiteInfoByID = function(id) {
+const getWebsiteInfoByID = function(params) {
+  const queryString = genQueryString(params);
   const payload = {
-    url: `/api/icp-admin/filing-admin/all-website-info/${id}`
+    url: `/api/icp-admin/filing-admin/all-website-info?${queryString}`
   };
   return genPromise(payload, 'getWebsiteInfoByID');
 };
 
 // 设置初审验证
-const setInitVerify = function(data) {
+const setFilingStatus = function(data) {
   const payload = {
-    url: '/api/icp-admin/filing-admin/filing-init-verify',
+    url: '/api/icp-admin/filing-admin/filing-status',
     method: 'POST',
     data
   };
-  return genPromise(payload, 'setInitVerify');
+  return genPromise(payload, 'setFilingStatus');
 };
 
 // 获取表格数据
@@ -92,27 +97,19 @@ const setCurtainDelivery = function(data) {
 };
 
 // 获取幕布邮寄信息
-const getCurtainInfo = (id) => {
+const getCurtainInfo = (params) => {
+  const queryString = genQueryString(params);
   const payload = {
-    url: `/api/icp-admin/filing-admin/curtain-info/${id}`
+    url: `/api/icp-admin/filing-admin/curtain-info?${queryString}`
   };
   return genPromise(payload, 'getCurtainInfo');
 };
 
-// 审核幕布驳回
-const setCurtainRejection = (data) => {
-  const payload = {
-    url: '/api/icp-admin/filing-admin/curtain-rejection',
-    method: 'POST',
-    data
-  };
-  return genPromise(payload, 'setCurtainRejection');
-};
-
 // 获取主体资料信息
-const getHostMaterial = function(id) {
+const getHostMaterial = function(params) {
+  const queryString = genQueryString(params);
   const payload = {
-    url: `/api/icp-admin/filing-admin/host-info-material/${id}`
+    url: `/api/icp-admin/filing-admin/host-info-material?${queryString}`
   };
   return genPromise(payload, 'getHostMaterial');
 };
@@ -148,12 +145,11 @@ export default {
   getAdminInfo,
   getHostInfoByID,
   getWebsiteInfoByID,
-  setInitVerify,
+  setFilingStatus,
   getDispatch,
   getTableData,
   setCurtainDelivery,
   getCurtainInfo,
-  setCurtainRejection,
   getHostMaterial,
   getHostRevokeInfo,
   getSiteRevokeInfo,

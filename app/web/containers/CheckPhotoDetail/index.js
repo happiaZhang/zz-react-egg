@@ -1,17 +1,15 @@
 import styles from '../RecordTrailDetail/index.scss';
 import React from 'react';
+import RecordTrailDetail from '../RecordTrailDetail';
 import Breadcrumb from '../../components/Breadcrumb';
 import MainHeader from '../MainHeader';
 import Card from '../../components/Card';
 import Info from '../../components/Info';
 import PhotoFrame from '../../components/PhotoFrame';
-import Button from '../../components/Button';
-import Textarea from '../../components/Textarea';
 import message from '../../components/Message';
 import validate from '../../utils/validate';
 import apis from '../../utils/apis';
 
-const prefix = validate.prefix();
 const ROUTES = [
   {key: 'checkPhoto', to: '/check', text: '申请列表'}
 ];
@@ -20,7 +18,7 @@ const WEBSITE_FRAMES = [
   {key: 'idc', shadeText: '身份证（正面）', width: 337, height: 211}
 ];
 
-class CheckPhotoDetail extends React.Component {
+class CheckPhotoDetail extends RecordTrailDetail {
   constructor(props) {
     super(props);
     this.state = {
@@ -29,24 +27,20 @@ class CheckPhotoDetail extends React.Component {
       hostUnitName: null,
       listWebSiteInfo: null
     };
+    this.materialInfo = [];
+    this.type = 'CheckPhotoDetail';
   }
 
   componentDidMount() {
     this.initPage();
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    const stateKey = Object.keys(nextState).find(k => nextState[k] !== this.state[k]);
-    return !validate.isNil(stateKey);
-  }
-
   // 初始化页面
   initPage = () => {
-    const {match} = this.props;
-    const id = match.params.id;
+    const operId = this.getOperId();
 
     // 获取主体信息
-    apis.getHostInfoByID(id).then((data) => {
+    apis.getHostInfoByID({operId}).then((data) => {
       const hostType = validate.formatData(data, 'hostUnitFullDto.hostUnitBasicDto.hostType');
       const hostUnitName = validate.formatData(data, 'hostUnitFullDto.hostUnitName');
       this.setState({hostType, hostUnitName});
@@ -55,7 +49,7 @@ class CheckPhotoDetail extends React.Component {
     });
 
     // 获取网站信息
-    apis.getWebsiteInfoByID(id).then((data) => {
+    apis.getWebsiteInfoByID({operId}).then((data) => {
       const {listWebSiteInfo} = data;
       listWebSiteInfo.forEach(webSiteInfo => {
         const {listWebSiteManagerInfo} = webSiteInfo;
@@ -75,103 +69,49 @@ class CheckPhotoDetail extends React.Component {
     return list;
   };
 
-  // 渲染驳回理由
-  renderTextarea = () => {
-    const {checkMode} = this.state;
-    return checkMode ? <Textarea
-      className={styles.reason}
-      width={635}
-      height={150}
-      header='请勾选需要用户修改的内容，并输入驳回理由'
-      value='信息有误，请重新填写'
-    /> : '';
+  // 设置备案状态 (overwrite)
+  setFilingStatus = (isResolve) => (isResolve ? 10090 : 10080);
+
+  // 设置消息提醒 (overwrite)
+  setMsg = (isResolve) => {
+    const successMsg = `幕布照片已${isResolve ? '审核通过' : '驳回'}`;
+    const errorMsg = `幕布照片${isResolve ? '审核' : '驳回'}失败，请刷新重试`;
+    return {successMsg, errorMsg};
   };
 
-  // 渲染操作的按钮组
-  renderButtons = () => {
-    const {checkMode} = this.state;
-    const btnGroup = checkMode ? [
-      {key: 'cancel', text: '取消', type: 'default', onClick: this.onCheckMode(false)},
-      {key: 'confirm', text: '确认驳回', onClick: this.onReject}
-    ] : [
-      {key: 'reject', text: '审核驳回', type: 'default', onClick: this.onCheckMode(true)},
-      {key: 'resolve', text: '审核通过', onClick: this.onResolved}
-    ];
-    return (
-      <div className={styles.toolBar}>
-        {
-          btnGroup.map(props => {
-            return <Button {...props} />;
-          })
-        }
-      </div>
-    );
-  };
+  // 设置驳回理由 (overwrite)
+  setRejectReason = () => {
+    const result = {};
+    const {rejectReason, materialInfo} = this;
 
-  // 获取主体ID
-  getOperId = () => {
-    const {match} = this.props;
-    return match.params.id;
-  };
+    if (rejectReason.trim().length > 0) result.rejectReason = rejectReason;
+    if (materialInfo.length > 0) result.materialInfo = materialInfo;
 
-  // 跳转到列表页
-  refresh = () => {
-    const {history} = this.props;
-    history.push(`${prefix}/check`);
-  };
-
-  // 向后台发送驳回申请
-  onReject = () => {
-    const operId = this.getOperId();
-    this.model.operId = operId;
-    this.model.checkPerson = 'ZhangZheng';
-    apis.setCurtainRejection(this.model).then(() => {
-      this.refresh();
-    }).catch(() => {
-      message.error('申请幕布驳回失败，请刷新重试');
-    });
-  }
-
-  // 向后台发送审核通过消息
-  onResolved = () => {
-    const filingStatus = 10090;
-    const operId = this.getOperId();
-    const checkPerson = 'ZhangZheng';
-
-    apis.setInitVerify({filingStatus, operId, checkPerson}).then(() => {
-      this.refresh();
-    }).catch(() => {
-      message.error('审核通过失败，请刷新重试');
-    });
-  }
-
-  // 审核驳回
-  onCheckMode = (checkMode) => {
-    return () => {
-      this.setState({checkMode});
-    };
+    return JSON.stringify(result);
   };
 
   // 渲染幕布照片
-  renderSuffix = (managerId) => {
+  renderSuffix = (siteId, managerId, photoPath) => {
     const {checkMode} = this.state;
     const frames = [];
     WEBSITE_FRAMES.forEach((props, i) => {
       const {key} = props;
       props.checkMode = !validate.isEmpty(managerId) && checkMode && key !== 'idc';
-      props.onChange = this.handleSelected(managerId);
+      props.onChange = this.handleSelected(siteId, managerId);
+      props.src = photoPath;
       frames.push(<li key={i}><PhotoFrame {...props} /></li>);
     });
     return <ul className={styles.curtainFrame}>{frames}</ul>;
   };
 
-  // 选择有误的幕布
-  handleSelected = (managerId) => {
+  // 选择有误的幕布照片
+  handleSelected = (siteId, managerId) => {
     return (checked) => {
       if (checked) {
-        this.model.managerId = managerId;
+        this.materialInfo.push({siteId, managerId});
       } else {
-        delete this.model.managerId;
+        const index = this.materialInfo.findIndex(m => (m.siteId === siteId));
+        this.materialInfo.splice(index, 1);
       }
     };
   }
@@ -181,12 +121,12 @@ class CheckPhotoDetail extends React.Component {
     const {listWebSiteInfo} = this.state;
     const websiteInfoList = [];
     listWebSiteInfo && listWebSiteInfo.forEach(websiteInfo => {
-      const {id, name, infoList, managerId} = this.getWebsiteBrief(websiteInfo);
+      const {id, name, infoList, managerId, photoPath} = this.getWebsiteBrief(websiteInfo);
       const props = {
         key: id,
         title: validate.isEmpty(name) ? '备案网站' : `备案网站 - ${name}`,
         style: {marginTop: 50},
-        suffix: this.renderSuffix(managerId)
+        suffix: this.renderSuffix(id, managerId, photoPath)
       };
 
       websiteInfoList.push(
@@ -210,7 +150,8 @@ class CheckPhotoDetail extends React.Component {
       {label: '证件号码', key: 'webSiteManagerInfo.credentialNumber'},
       {prop: 'id', key: 'webSiteBasicInfoDto.id'},
       {prop: 'name', key: 'webSiteBasicInfoDto.name'},
-      {prop: 'managerId', key: 'webSiteManagerInfo.id'}
+      {prop: 'managerId', key: 'webSiteManagerInfo.id'},
+      {prop: 'photoPath', key: 'webSiteManagerInfo.photoPath'}
     ];
     briefList.forEach(info => {
       const {label, isHost = false, key, prop} = info;
@@ -228,14 +169,7 @@ class CheckPhotoDetail extends React.Component {
     return obj;
   };
 
-  // 初始化驳回数据模型
-  initRejectModel = () => {
-    const {checkMode} = this.state;
-    this.model = checkMode ? {rejectReason: '信息有误，请重新填写'} : null;
-  };
-
   render() {
-    this.initRejectModel();
     return (
       <div className={styles.recordTrailDetail}>
         <Breadcrumb routes={ROUTES} style={{marginTop: 15}} />

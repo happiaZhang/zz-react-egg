@@ -12,13 +12,12 @@ module.exports = app => {
 
     async action() {
       const {ctx} = this;
-
       // 获取用户的信息
       const res = await app.curl(`${this.host}/userrest/view`, {
         method: 'GET',
         dataType: 'json',
         data: {
-          token: ctx.session.token || '54c6c598c41208c8f4ee4123869b67bc'
+          token: ctx.state.token
         }
       });
 

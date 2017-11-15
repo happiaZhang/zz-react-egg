@@ -9,7 +9,15 @@ import message from '../../components/Message';
 import apis from '../../utils/apis';
 import validate from '../../utils/validate';
 
-const prefix = validate.prefix();
+const FILING_TYPE = {
+  1: '首次备案',
+  2: '新增网站',
+  3: '新增接入',
+  4: '备案变更',
+  5: '注销主体',
+  6: '注销网站',
+  7: '取消网站接入'
+};
 class BaseContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -21,7 +29,6 @@ class BaseContainer extends React.Component {
       pageNumber: 1,
       totalSize: 0,
       showModal: false,
-      modalId: '',
       elements: []
     };
   }
@@ -54,6 +61,7 @@ class BaseContainer extends React.Component {
   loadTableData = (newState) => {
     const {pageSize, pageNumber, status, operId} = this.state;
     const params = {
+      queryType: 1,
       filingType: '',
       hostname: '',
       website: '',
@@ -92,18 +100,17 @@ class BaseContainer extends React.Component {
   setTheadData = () => {
     return [
       {text: '申请ID', value: 'operId'},
-      {text: '备案服务号', value: 'filingServiceNo'},
       {
         text: '关联域名',
         value: 'website',
         render: this.handleMultipleLine()
       },
-      {text: '备案类型', value: 'recordType', render: () => ('首次备案')},
+      {text: '备案类型', value: 'filingType', render: (value, item) => (FILING_TYPE[item[value]] || '')},
       {text: '备案主体', value: 'hostname'},
       {text: '最近更新时间', value: 'updateTime'},
       {
         text: '状态',
-        value: 'operStatus',
+        value: 'status',
         render: (value, item) => {
           const status = this.selectOptions.find(s => s.value === item[value]);
           return status.text;
@@ -179,18 +186,16 @@ class BaseContainer extends React.Component {
     const {operId} = data;
     switch (type) {
       case 'EXPRESS':
-        this.loadCurtainMail(operId, () => {
-          this.setState({showModal: true, modalId: operId});
-        });
+        this.loadCurtainMail(operId);
         break;
       case 'TRAIL':
-        history.push(`${prefix}/trail/detail/${operId}`);
+        history.push(`/trail/detail/${operId}`);
         break;
       case 'CHECK':
-        history.push(`${prefix}/check/detail/${operId}`);
+        history.push(`/check/detail/${operId}`);
         break;
       case 'AUTHORITY_RESOLVE':
-        history.push(`${prefix}/authority/detail/${operId}`);
+        history.push(`/authority/detail/${operId}`);
         break;
     }
   };
@@ -200,7 +205,7 @@ class BaseContainer extends React.Component {
     this.setState({showModal: false}, () => {
       if (reload) {
         const {history} = this.props;
-        history.push(`${prefix}/mail`);
+        history.push(`/mail`);
       }
     });
   };
@@ -211,6 +216,7 @@ class BaseContainer extends React.Component {
     this.setState({filingType, status: ''});
   }
 
+  // 渲染过滤器
   renderFilter = () => {
     const {status, operId} = this.state;
     return this.isQuery ? this.genFilter(this.state) : (
@@ -232,7 +238,7 @@ class BaseContainer extends React.Component {
 
   // 页面渲染
   render() {
-    const {pageSize, pageNumber, totalSize, showModal, modalId} = this.state;
+    const {pageSize, pageNumber, totalSize, showModal} = this.state;
 
     return (
       <div>
@@ -258,7 +264,7 @@ class BaseContainer extends React.Component {
           pageNumber={pageNumber}
           totalSize={totalSize}
           onPageNumberSwitch={this.changePageNumber} />
-        {showModal ? this.renderModal(modalId) : ''}
+        {showModal ? this.renderModal() : ''}
       </div>
     );
   }

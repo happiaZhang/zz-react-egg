@@ -18,19 +18,18 @@ import Loading from '../Loading';
 import validate from '../../utils/validate';
 
 const prefix = validate.prefix();
-const genRootPath = () => (validate.isEmpty(prefix) ? '/' : prefix);
 const ROUTES = [
-  {path: genRootPath(), text: '备案查询', component: Query, menu: true},
-  {path: prefix + '/trail', text: '备案初审', component: RecordTrail, menu: true},
-  {path: prefix + '/trail/detail/:id', component: RecordTrailDetail},
-  {path: prefix + '/mail', text: '邮寄幕布', component: MailCurtain, menu: true},
-  {path: prefix + '/check', text: '审核幕布照片', component: CheckPhoto, menu: true},
-  {path: prefix + '/check/detail/:id', component: CheckPhotoDetail},
-  {path: prefix + '/authority', text: '管局审核', component: Authority, menu: true},
-  {path: prefix + '/authority/detail/:id', component: AuthorityDetail},
-  {path: prefix + '/revoke/host', text: '注销主体', component: HostRevoke, menu: true},
-  {path: prefix + '/revoke/site', text: '注销网站', component: SiteRevoke, menu: true},
-  {path: prefix + '/revoke/access', text: '取消接入', component: AccessRevoke, menu: true}
+  {path: '/', text: '备案查询', component: Query, menu: true},
+  {path: '/trail', text: '备案初审', component: RecordTrail, menu: true},
+  {path: '/trail/detail/:id', component: RecordTrailDetail},
+  {path: '/mail', text: '邮寄幕布', component: MailCurtain, menu: true},
+  {path: '/check', text: '审核幕布照片', component: CheckPhoto, menu: true},
+  {path: '/check/detail/:id', component: CheckPhotoDetail},
+  {path: '/authority', text: '管局审核', component: Authority, menu: true},
+  {path: '/authority/detail/:id', component: AuthorityDetail},
+  {path: '/revoke/host', text: '注销主体', component: HostRevoke, menu: true},
+  {path: '/revoke/site', text: '注销网站', component: SiteRevoke, menu: true},
+  {path: '/revoke/access', text: '取消接入', component: AccessRevoke, menu: true}
 ];
 
 export default class Root extends React.Component {
@@ -56,7 +55,7 @@ export default class Root extends React.Component {
 
   render() {
     return (
-      <BrowserRouter>
+      <BrowserRouter basename={prefix}>
         <div className={styles.wrapper}>
           <Loading />
           <Header />

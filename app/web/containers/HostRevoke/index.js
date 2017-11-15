@@ -9,6 +9,24 @@ const REVOKE_STATUS = [
   {value: 3, text: '已完成'}
 ];
 
+const REVOKE_STATUS_TEMP = {
+  20000: '未提交',
+  20001: '待处理',
+  20002: '待管局审核',
+  20003: '已处理',
+  20004: '已处理',
+  30000: '未提交',
+  30001: '待处理',
+  30002: '待管局审核',
+  30003: '已处理',
+  30004: '已处理',
+  40000: '未提交',
+  40001: '待处理',
+  40002: '待管局审核',
+  40003: '已处理',
+  40004: '已处理'
+};
+
 class HostRevoke extends BaseContainer {
   constructor(props) {
     super(props);
@@ -21,17 +39,17 @@ class HostRevoke extends BaseContainer {
 
   // 加载表格数据(overwrite)
   loadTableData = (newState) => {
-    const {pageSize, pageNumber, status, operId} = this.state;
+    const {pageSize, pageNumber, operId} = this.state;
     const params = {
       operId,
-      status,
       pageSize,
       pageNumber,
-      ...newState
+      ...newState,
+      status: ''
     };
 
     // 获取表格数据
-    this.apiFunc(this.convertParams(params)).then(res => {
+    this.apiFunc(params).then(res => {
       const {elements, totalSize} = res;
       this.setState({
         totalSize,
@@ -51,7 +69,7 @@ class HostRevoke extends BaseContainer {
     return [
       {text: '申请ID', value: 'operId'},
       {text: '备案主体', value: 'hostname'},
-      {text: '备案服务号', value: 'filingServiceNo'},
+      {text: '备案号', value: 'filingServiceNo'},
       {
         text: '网站名称',
         value: 'websiteName',
@@ -66,10 +84,7 @@ class HostRevoke extends BaseContainer {
       {
         text: '状态',
         value: 'revoked',
-        render: (value, item) => {
-          const status = this.selectOptions.find(s => s.value === item[value]);
-          return status.text;
-        }
+        render: (value, item) => (REVOKE_STATUS_TEMP[item[value]])
       },
       {text: '操作', value: 'OPERATION_COLUMN', width: 60}
     ];
