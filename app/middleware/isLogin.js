@@ -29,6 +29,7 @@ module.exports = () => {
       return ctx.redirect(loginURI);
     }
 
+    console.log('login successfully');
     await next();
   };
 };

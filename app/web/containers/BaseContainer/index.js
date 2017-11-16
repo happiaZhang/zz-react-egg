@@ -209,7 +209,7 @@ class BaseContainer extends React.Component {
         history.push(`/revoke/site/${operId}/${siteId}`);
         break;
       case 'REVOKE_ACCESS_QUERY':
-        history.push(`/audit/access/${operId}/${siteId}`);
+        history.push(`/revoke/access/${operId}/${siteId}`);
         break;
     }
   };

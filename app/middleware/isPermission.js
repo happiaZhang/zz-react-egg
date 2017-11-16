@@ -23,11 +23,14 @@ module.exports = () => {
     });
     // 用户没有权限
     if (result.status !== 200 || result.data.code !== 0) {
+      console.log('用户没有权限');
       if (ctx.url.indexOf('/api/') !== -1) {
         ctx.throw(config.errors.NoPermission_Error, 'user nopermission');
       }
       return ctx.redirect(loginURI);
     }
+    console.log(token);
+    console.log(permissionStr);
     // 用户拥有权限
     await next();
   };
