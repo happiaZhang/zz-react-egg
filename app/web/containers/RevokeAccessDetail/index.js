@@ -1,15 +1,12 @@
-import TrialDetail from '../TrialDetail';
+import RevokeHostDetail from '../RevokeHostDetail';
+import apis from '../../utils/apis';
 
-class RevokeAccessDetail extends TrialDetail {
+class RevokeAccessDetail extends RevokeHostDetail {
   constructor(props) {
     super(props);
     this.route = [{key: 'revokeAccess', to: '/revoke/access', text: '取消接入'}];
-    this.anchor = [
-      {text: '主体信息', to: '#host'},
-      {text: '网站信息', to: '#website'},
-      {text: '查看备案密码', to: '#password'}
-    ];
     this.type = 'RevokeAccessDetail';
+    this.apiFunc = apis.setAccessRevoke;
   }
 }
 

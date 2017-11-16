@@ -22,7 +22,7 @@ module.exports = () => {
       permissionStr
     });
     // 用户没有权限
-    if (result.status !== 200 || !result.data || result.data.code !== 0) {
+    if (result.status !== 200 || result.data.code !== 0) {
       if (ctx.url.indexOf('/api/') !== -1) {
         ctx.throw(config.errors.NoPermission_Error, 'user nopermission');
       }
