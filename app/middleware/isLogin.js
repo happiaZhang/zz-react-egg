@@ -14,27 +14,21 @@ module.exports = () => {
     const {config} = ctx.app;
     // 返回跳转地址
     const loginURI = `${ctx.getCookieDomain(ctx)}/admin/login`;
-    // 获取根域的用户状态sid
-    const amsid = ctx.cookies.get('amsid');
-    // 用户未登录
-    if (!amsid) {
+
+    try {
+      // 获取根域的用户状态sid
+      const amsid = ctx.cookies.get('amsid');
+      // 获取用户登录token
+      const loginData = await ctx.helper.redis(amsid);
+      const loginInfo = JSON.parse(loginData);
+      ctx.state.token = loginInfo.token;
+    } catch (error) {
       if (ctx.url.indexOf('/api/') !== -1) {
         ctx.throw(config.errors.NoLogin_Error, 'user nologin');
       }
       return ctx.redirect(loginURI);
     }
-    // 获取用户登录token
-    const loginData = await ctx.helper.redis(amsid);
-    // 用户未登录
-    if (!loginData) {
-      if (ctx.url.indexOf('/api/') !== -1) {
-        ctx.throw(config.errors.NoLogin_Error, 'user nologin');
-      }
-      return ctx.redirect(loginURI);
-    }
-    // 用户已登录
-    const loginInfo = JSON.parse(loginData);
-    ctx.state.token = loginInfo.token;
+
     await next();
   };
 };
