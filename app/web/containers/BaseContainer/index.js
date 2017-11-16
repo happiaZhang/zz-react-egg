@@ -1,4 +1,4 @@
-import styles from '../RecordTrail/index.scss';
+import styles from './index.scss';
 import React from 'react';
 import MainHeader from '../MainHeader';
 import Select from '../../components/Select';
@@ -185,17 +185,23 @@ class BaseContainer extends React.Component {
     const {history} = this.props;
     const {operId} = data;
     switch (type) {
-      case 'EXPRESS':
-        this.loadCurtainMail(operId);
+      case 'TRIAL_QUERY':
+        history.push(`/trial/detail/${operId}`);
         break;
-      case 'TRAIL':
-        history.push(`/trail/detail/${operId}`);
+      case 'DELIVERY':
+        this.loadCurtain(operId);
         break;
-      case 'CHECK':
-        history.push(`/check/detail/${operId}`);
+      case 'VERIFY_QUERY':
+        history.push(`/verify/detail/${operId}`);
         break;
-      case 'AUTHORITY_RESOLVE':
-        history.push(`/authority/detail/${operId}`);
+      case 'AUDIT_RESOLVE':
+        history.push(`/audit/resolve/${operId}`);
+        break;
+      case 'AUDIT_REJECT':
+        history.push(`/audit/reject/${operId}`);
+        break;
+      case 'AUDIT_QUERY':
+        history.push(`/audit/detail/${operId}`);
         break;
     }
   };
@@ -205,7 +211,7 @@ class BaseContainer extends React.Component {
     this.setState({showModal: false}, () => {
       if (reload) {
         const {history} = this.props;
-        history.push(`/mail`);
+        history.push('/delivery');
       }
     });
   };

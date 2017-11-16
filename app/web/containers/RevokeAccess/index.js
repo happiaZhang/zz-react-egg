@@ -1,7 +1,7 @@
-import HostRevoke from '../HostRevoke';
+import RevokeHost from '../RevokeHost';
 import apis from '../../utils/apis';
 
-class AccessRevoke extends HostRevoke {
+class RevokeAccess extends RevokeHost {
   constructor(props) {
     super(props);
     this.title = '取消接入';
@@ -9,4 +9,4 @@ class AccessRevoke extends HostRevoke {
   }
 }
 
-export default AccessRevoke;
+export default RevokeAccess;

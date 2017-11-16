@@ -6,14 +6,16 @@ import validate from '../../utils/validate';
 class PhotoFrame extends React.Component {
   static defaultProps = {
     width: 158,
-    height: 99
+    height: 99,
+    checkMode: false,
+    checked: false
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      checked: false,
-      checkMode: false,
+      checked: props.checked,
+      checkMode: props.checkMode,
       showImg: false,
       zoomOut: false
     };

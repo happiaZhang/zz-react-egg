@@ -27,7 +27,7 @@ const REVOKE_STATUS_TEMP = {
   40004: '已处理'
 };
 
-class HostRevoke extends BaseContainer {
+class RevokeHost extends BaseContainer {
   constructor(props) {
     super(props);
     this.title = '注销主体';
@@ -92,12 +92,12 @@ class HostRevoke extends BaseContainer {
 
   setOperations = (elm) => {
     const {revoked} = elm;
-    if (revoked === 1) {
+    if (revoked === 20001 || revoked === 30001 || revoked === 40001) {
       return [{type: 'REVOKE_HOST', text: '查看'}];
-    } else if (revoked === 2) {
+    } else if (revoked === 20002 || revoked === 30002 || revoked === 40002) {
       return [{type: 'REVOKE_CONFIRM', text: '已完成'}];
     }
   };
 }
 
-export default HostRevoke;
+export default RevokeHost;

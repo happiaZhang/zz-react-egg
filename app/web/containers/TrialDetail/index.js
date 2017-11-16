@@ -13,7 +13,7 @@ import apis from '../../utils/apis';
 import validate from '../../utils/validate';
 
 const ROUTES = [
-  {key: 'recordTrail', to: '/', text: '备案初审'}
+  {key: 'trial', to: '/trial', text: '备案初审'}
 ];
 const ANCHORS = [
   {text: '主体信息', to: '#host'},
@@ -60,12 +60,10 @@ const WEBSITE_INFO_LIST = [
 const MULTI_KEY = 'webSiteBasicInfoDto.verifiedDomain';
 const HOST_FRAMES = [
   {key: 'hostBusinessLicensePhotoPath', shadeText: '工商营业执照'},
-  {key: 'hostManagerIDPhotoFrontPath', shadeText: '身份证（正面）'},
-  {key: 'hostManagerIDPhotoBackPath', shadeText: '身份证（反面）'}
+  {key: 'hostManagerIDPhotoPath', shadeText: '身份证'}
 ];
 const WEBSITE_FRAMES = [
-  {key: 'webSiteIDPhotoFrontPath', shadeText: '身份证（正面）'},
-  {key: 'webSiteIDPhotoBackPath', shadeText: '身份证（反面）'},
+  {key: 'webSiteManagerPhotoPath', shadeText: '身份证'},
   {key: 'webSiteFilingVerifyPhotoPath', shadeText: '核验单'}
 ];
 const KEYS_MAPPER = {
@@ -74,21 +72,18 @@ const KEYS_MAPPER = {
   webSiteBasicInfoDto: 'websiteInfo',
   webSiteManagerInfoDto: 'websiteManagerInfo',
   hostBusinessLicensePhotoPath: 'hostManagerItems',
-  hostManagerIDPhotoFrontPath: 'hostManagerItems',
-  hostManagerIDPhotoBackPath: 'hostManagerItems',
-  webSiteIDPhotoFrontPath: 'webSitePhotoItems',
-  webSiteIDPhotoBackPath: 'webSitePhotoItems',
+  hostManagerIDPhotoPath: 'hostManagerItems',
+  webSiteManagerPhotoPath: 'webSitePhotoItems',
   webSiteFilingVerifyPhotoPath: 'webSitePhotoItems'
 };
 const ID_MAPPER = {
   webSiteBasicInfoDto: 'webSiteBasicInfoDto.id',
   webSiteManagerInfoDto: 'webSiteManagerInfoDto.id',
-  webSiteIDPhotoFrontPath: 'id',
-  webSiteIDPhotoBackPath: 'id',
+  webSiteManagerPhotoPath: 'id',
   webSiteFilingVerifyPhotoPath: 'id'
 };
 
-class RecordTrailDetail extends React.Component {
+class TrialDetail extends React.Component {
   // 构造方法
   constructor(props) {
     super(props);
@@ -106,7 +101,9 @@ class RecordTrailDetail extends React.Component {
     this.verifiedDomain = {};
     this.hostManagerItems = [];
     this.webSitePhotoItems = {};
-    this.type = 'RecordTrailDetail';
+    this.type = 'TrialDetail';
+    this.route = ROUTES;
+    this.isAuditReject = false;
   }
 
   // 首次挂载组件
@@ -198,11 +195,14 @@ class RecordTrailDetail extends React.Component {
   switch2List = () => {
     const {history} = this.props;
     switch (this.type) {
-      case 'RecordTrailDetail':
-        history.push('/trail');
+      case 'TrialDetail':
+        history.push('/trial');
         break;
-      case 'CheckPhotoDetail':
-        history.push('/check');
+      case 'VerifyDetail':
+        history.push('/verify');
+        break;
+      case 'AuditReject':
+        history.push('/audit');
         break;
     }
   };
@@ -212,7 +212,8 @@ class RecordTrailDetail extends React.Component {
     const data = {
       checkPerson: 'ZhangZheng',
       operId: this.getOperId(),
-      filingStatus: this.setFilingStatus(isResolve)
+      filingStatus: this.setFilingStatus(isResolve),
+      rejectReason: ''
     };
     const {successMsg, errorMsg} = this.setMsg(isResolve);
     return () => {
@@ -347,13 +348,13 @@ class RecordTrailDetail extends React.Component {
   // 渲染错误理由文本框
   renderTextarea = () => {
     const {checkMode} = this.state;
-    return checkMode ? <Textarea
+    return (checkMode || this.isAuditReject) ? <Textarea
       className={styles.reason}
       width={635}
       height={150}
       header='请勾选需要用户修改的内容，并输入驳回理由'
       value={this.rejectReason}
-      onBlur={this.setReason} /> : '';
+      onBlur={this.setReason} /> : null;
   };
 
   // 设置拒绝理由
@@ -363,22 +364,23 @@ class RecordTrailDetail extends React.Component {
 
   // 渲染驳回与通过操作按钮
   renderButtons = () => {
+    if (this.type === 'AuditDetail') return null;
     const {checkMode} = this.state;
 
     let rejectText = null;
     let resolveText = null;
     switch (this.type) {
-      case 'RecordTrailDetail':
+      case 'TrialDetail':
         rejectText = '初审驳回';
         resolveText = '初审通过';
         break;
-      case 'CheckPhotoDetail':
+      case 'VerifyDetail':
         rejectText = '审核驳回';
         resolveText = '审核通过';
         break;
     }
 
-    const btnGroup = checkMode ? [
+    const btnGroup = (checkMode || this.isAuditReject) ? [
       {key: 'cancel', text: '取消', type: 'default', onClick: this.onCheckMode(false)},
       {key: 'confirm', text: '确认驳回', onClick: this.handleClick(false)}
     ] : [
@@ -425,11 +427,32 @@ class RecordTrailDetail extends React.Component {
       websiteList.push(
         <Card {...props}>
           {this.renderInfoList(this.genWebsiteInfo(websiteInfo), websiteInfo)}
+          {this.renderCurtain(websiteInfo)}
         </Card>
       );
     });
 
     return websiteList;
+  };
+
+  // 渲染网站幕布照片
+  renderCurtain = (websiteInfo) => {
+    if (this.type !== 'AuditDetail' && this.type !== 'AuditReject') return null;
+    const {checkMode} = this.state;
+    const props = {
+      key: 'webSiteManagerInfoDto.photoPath',
+      shadeText: '幕布照片',
+      width: 337,
+      height: 211,
+      checkMode
+    };
+    props.src = validate.formatData(websiteInfo, props.key);
+    return (
+      <div>
+        <h5 style={{lineHeight: '34px'}}>幕布照片</h5>
+        <PhotoFrame {...props} />
+      </div>
+    );
   };
 
   // 生成网站信息列表
@@ -462,7 +485,7 @@ class RecordTrailDetail extends React.Component {
     const {hostInfo, materialInfo} = this.state;
     return (
       <div className={styles.recordTrailDetail}>
-        <Breadcrumb routes={ROUTES} style={{marginTop: 15}} />
+        <Breadcrumb routes={this.route} style={{marginTop: 15}} />
         <MainHeader title='查看备案信息' style={{paddingTop: 5}} />
         <Anchor items={ANCHORS} activeKey='#host' style={{marginTop: 30}} />
         <div style={{width: 500}}>
@@ -483,4 +506,4 @@ class RecordTrailDetail extends React.Component {
   }
 }
 
-export default RecordTrailDetail;
+export default TrialDetail;

@@ -8,11 +8,11 @@ import message from '../../components/Message';
 import apis from '../../utils/apis';
 import validate from '../../utils/validate';
 
-const MAIL_STATUS = [
+const DELIVERY_STATUS = [
   {value: '', text: '全部'},
   {value: 10050, text: '待寄送'}
 ];
-const MAIL_INFO = [
+const DELIVERY_INFO = [
   {key: 'address', label: '幕布邮寄地址'},
   {key: 'postCode', label: '邮政编码'},
   {key: 'name', label: '联系人姓名'},
@@ -20,18 +20,18 @@ const MAIL_INFO = [
   {key: 'fixedPhone', label: '电话号码'}
 ];
 
-class MailCurtain extends BaseContainer {
+class Delivery extends BaseContainer {
   constructor(props) {
     super(props);
     this.title = '邮寄幕布';
-    this.selectOptions = MAIL_STATUS;
+    this.selectOptions = DELIVERY_STATUS;
     this.errorMsg = '获取邮寄幕布列表失败，请刷新重试';
-    this.operations = [{type: 'EXPRESS', text: '填写快递单号'}];
-    this.loadCurtainMail = this.loadCurtainMail;
+    this.operations = [{type: 'DELIVERY', text: '填写快递单号'}];
+    this.loadCurtain = this.loadCurtain;
   }
 
   // 加载幕布邮寄信息
-  loadCurtainMail = (operId) => {
+  loadCurtain = (operId) => {
     apis.getCurtainInfo({operId}).then((res) => {
       this.curtainMailDto = res.curtainMailDto;
       this.param = {operId, checkPerson: 'zhangzheng'};
@@ -107,7 +107,7 @@ class MailCurtain extends BaseContainer {
   // 渲染邮寄人信息
   renderInfoList = () => {
     const infoList = [];
-    MAIL_INFO.forEach(props => {
+    DELIVERY_INFO.forEach(props => {
       const content = validate.formatData(this.curtainMailDto, props.key);
       infoList.push(<Info {...props} content={content} />);
     });
@@ -115,4 +115,4 @@ class MailCurtain extends BaseContainer {
   };
 }
 
-export default MailCurtain;
+export default Delivery;

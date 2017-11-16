@@ -1,6 +1,6 @@
-import styles from '../RecordTrailDetail/index.scss';
+import styles from '../TrialDetail/index.scss';
 import React from 'react';
-import RecordTrailDetail from '../RecordTrailDetail';
+import TrialDetail from '../TrialDetail';
 import Breadcrumb from '../../components/Breadcrumb';
 import MainHeader from '../MainHeader';
 import Card from '../../components/Card';
@@ -11,14 +11,14 @@ import validate from '../../utils/validate';
 import apis from '../../utils/apis';
 
 const ROUTES = [
-  {key: 'checkPhoto', to: '/check', text: '申请列表'}
+  {key: 'verify', to: '/verify', text: '申请列表'}
 ];
 const WEBSITE_FRAMES = [
   {key: 'webSiteManagerInfo.photoPath', shadeText: '幕布照片', width: 337, height: 211},
-  {key: 'idc', shadeText: '身份证（正面）', width: 337, height: 211}
+  {key: 'idc', shadeText: '身份证', width: 337, height: 211}
 ];
 
-class CheckPhotoDetail extends RecordTrailDetail {
+class VerifyDetail extends TrialDetail {
   constructor(props) {
     super(props);
     this.state = {
@@ -28,7 +28,7 @@ class CheckPhotoDetail extends RecordTrailDetail {
       listWebSiteInfo: null
     };
     this.materialInfo = [];
-    this.type = 'CheckPhotoDetail';
+    this.type = 'VerifyDetail';
   }
 
   componentDidMount() {
@@ -184,4 +184,4 @@ class CheckPhotoDetail extends RecordTrailDetail {
   }
 }
 
-export default CheckPhotoDetail;
+export default VerifyDetail;

@@ -1,7 +1,7 @@
-import HostRevoke from '../HostRevoke';
+import RevokeHost from '../RevokeHost';
 import apis from '../../utils/apis';
 
-class SiteRevoke extends HostRevoke {
+class RevokeSite extends RevokeHost {
   constructor(props) {
     super(props);
     this.title = '注销网站';
@@ -9,4 +9,4 @@ class SiteRevoke extends HostRevoke {
   }
 }
 
-export default SiteRevoke;
+export default RevokeSite;
