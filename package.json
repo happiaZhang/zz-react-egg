@@ -1,5 +1,5 @@
 {
-    "name": "bss-icp-admin-node",
+    "name": "bss-backoffice-icp-node",
     "version": "1.0.0",
     "private": true,
     "dependencies": {
@@ -63,7 +63,7 @@
         "node": ">=6.0.0"
     },
     "scripts": {
-        "start": "cross-env EGG_SERVER_ENV=prod egg-scripts start",
+        "start": "egg-scripts start",
         "stop": "egg-scripts stop",
         "dev": "cross-env EGG_SERVER_ENV=local egg-bin dev",
         "debug": "egg-bin debug",
