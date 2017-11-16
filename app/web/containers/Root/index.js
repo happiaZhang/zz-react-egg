@@ -14,8 +14,11 @@ import AuditResolve from '../AuditResolve';
 import AuditReject from '../AuditReject';
 import AuditDetail from '../AuditDetail';
 import RevokeHost from '../RevokeHost';
+import RevokeHostDetail from '../RevokeHostDetail';
 import RevokeSite from '../RevokeSite';
+import RevokeSiteDetail from '../RevokeSiteDetail';
 import RevokeAccess from '../RevokeAccess';
+import RevokeAccessDetail from '../RevokeAccessDetail';
 import Loading from '../Loading';
 import validate from '../../utils/validate';
 
@@ -32,8 +35,11 @@ const ROUTES = [
   {path: '/audit/reject/:id', component: AuditReject},
   {path: '/audit/detail/:id', component: AuditDetail},
   {path: '/revoke/host', text: '注销主体', component: RevokeHost, menu: true},
+  {path: '/revoke/host/:id', component: RevokeHostDetail},
   {path: '/revoke/site', text: '注销网站', component: RevokeSite, menu: true},
-  {path: '/revoke/access', text: '取消接入', component: RevokeAccess, menu: true}
+  {path: '/revoke/site/:id/:siteId', component: RevokeSiteDetail},
+  {path: '/revoke/access', text: '取消接入', component: RevokeAccess, menu: true},
+  {path: '/revoke/access/:id/:siteId', component: RevokeAccessDetail}
 ];
 
 export default class Root extends React.Component {

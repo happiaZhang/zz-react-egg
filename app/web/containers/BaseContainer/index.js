@@ -99,14 +99,13 @@ class BaseContainer extends React.Component {
   // 设置表头内容
   setTheadData = () => {
     return [
-      {text: '申请ID', value: 'operId'},
+      {text: '备案主体', value: 'hostname'},
       {
         text: '关联域名',
         value: 'website',
         render: this.handleMultipleLine()
       },
       {text: '备案类型', value: 'filingType', render: (value, item) => (FILING_TYPE[item[value]] || '')},
-      {text: '备案主体', value: 'hostname'},
       {text: '最近更新时间', value: 'updateTime'},
       {
         text: '状态',
@@ -183,7 +182,7 @@ class BaseContainer extends React.Component {
   // 每行操作处理
   onRowOperation = (type, data) => {
     const {history} = this.props;
-    const {operId} = data;
+    const {operId, siteId} = data;
     switch (type) {
       case 'TRIAL_QUERY':
         history.push(`/trial/detail/${operId}`);
@@ -202,6 +201,15 @@ class BaseContainer extends React.Component {
         break;
       case 'AUDIT_QUERY':
         history.push(`/audit/detail/${operId}`);
+        break;
+      case 'REVOKE_HOST_QUERY':
+        history.push(`/revoke/host/${operId}`);
+        break;
+      case 'REVOKE_SITE_QUERY':
+        history.push(`/revoke/site/${operId}/${siteId}`);
+        break;
+      case 'REVOKE_ACCESS_QUERY':
+        history.push(`/audit/access/${operId}/${siteId}`);
         break;
     }
   };

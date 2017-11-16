@@ -103,6 +103,7 @@ class TrialDetail extends React.Component {
     this.webSitePhotoItems = {};
     this.type = 'TrialDetail';
     this.route = ROUTES;
+    this.anchor = ANCHORS;
     this.isAuditReject = false;
   }
 
@@ -147,6 +148,12 @@ class TrialDetail extends React.Component {
   getOperId = () => {
     const {match} = this.props;
     return match.params.id;
+  };
+
+  // 获取网站Id
+  getSiteId = () => {
+    const {match} = this.props;
+    return match.params.siteId;
   };
 
   // 选择错误项
@@ -487,7 +494,7 @@ class TrialDetail extends React.Component {
       <div className={styles.recordTrailDetail}>
         <Breadcrumb routes={this.route} style={{marginTop: 15}} />
         <MainHeader title='查看备案信息' style={{paddingTop: 5}} />
-        <Anchor items={ANCHORS} activeKey='#host' style={{marginTop: 30}} />
+        <Anchor items={this.anchor} activeKey='#host' style={{marginTop: 30}} />
         <div style={{width: 500}}>
           <Card
             classID='host'

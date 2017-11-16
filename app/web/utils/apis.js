@@ -161,6 +161,36 @@ const setSiteNo = function(data) {
   return genPromise(payload, 'setSiteNo');
 };
 
+// 设置主体注销状态
+const setHostRevoke = function(data) {
+  const payload = {
+    url: '/api/icp-admin/filing-admin/host-revoke',
+    method: 'POST',
+    data
+  };
+  return genPromise(payload, 'setHostRevoke');
+};
+
+// 设置网站注销状态
+const setSiteRevoke = function(data) {
+  const payload = {
+    url: '/api/icp-admin/filing-admin/site-revoke',
+    method: 'POST',
+    data
+  };
+  return genPromise(payload, 'setSiteRevoke');
+};
+
+// 设置网站备案号
+const setAccessRevoke = function(data) {
+  const payload = {
+    url: '/api/icp-admin/filing-admin/site-access-cancel',
+    method: 'POST',
+    data
+  };
+  return genPromise(payload, 'setAccessRevoke');
+};
+
 export default {
   getAdminInfo,
   getHostInfoByID,
@@ -175,5 +205,8 @@ export default {
   getSiteRevokeInfo,
   getAccessRevokeInfo,
   setHostNo,
-  setSiteNo
+  setSiteNo,
+  setHostRevoke,
+  setSiteRevoke,
+  setAccessRevoke
 };

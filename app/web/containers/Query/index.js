@@ -58,7 +58,7 @@ class Query extends BaseContainer {
   };
 
   genFilter = (state) => {
-    const {filingType, status} = state;
+    const {filingType} = state;
     const FILTER_ITEMS = [
       [
         {
@@ -69,6 +69,7 @@ class Query extends BaseContainer {
           onChangeValue: this.changeFilingType,
           value: filingType
         },
+        /*
         {
           label: '备案状态',
           component: Select,
@@ -77,12 +78,13 @@ class Query extends BaseContainer {
           onChangeValue: this.changeStatus,
           value: status
         },
-        {label: '最近更新时间', component: DateRange}
-      ],
-      [
-        {label: '申请ID', component: Input, style: {width: 300}},
+        */
         {label: '主办单位或主办人名称', component: Input, style: {width: 300}},
         {label: '关联域名', component: Input, style: {width: 300}}
+
+      ],
+      [
+        {label: '最近更新时间', component: DateRange}
       ]
     ];
 

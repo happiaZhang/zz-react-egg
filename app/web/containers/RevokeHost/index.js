@@ -8,13 +8,22 @@ const REVOKE_HOST_STATUS = [
   {value: 20002, text: '待管局审核'}
 ];
 
-const REVOKE_STATUS_TEMP = {
+const REVOKE_STATUS = {
   20001: '待处理',
   20002: '待管局审核',
   30001: '待处理',
   30002: '待管局审核',
   40001: '待处理',
   40002: '待管局审核'
+};
+
+const REVOKE_TYPE = {
+  20001: 'REVOKE_HOST_QUERY',
+  20002: 'REVOKE_DONE',
+  30001: 'REVOKE_SITE_QUERY',
+  30002: 'REVOKE_DONE',
+  40001: 'REVOKE_ACCESS_QUERY',
+  40002: 'REVOKE_DONE'
 };
 
 class RevokeHost extends BaseContainer {
@@ -57,7 +66,6 @@ class RevokeHost extends BaseContainer {
   // 设置表头内容(overwrite)
   setTheadData = () => {
     return [
-      {text: '申请ID', value: 'operId'},
       {text: '备案主体', value: 'hostname'},
       {text: '备案号', value: 'filingServiceNo'},
       {
@@ -74,7 +82,7 @@ class RevokeHost extends BaseContainer {
       {
         text: '状态',
         value: 'revoked',
-        render: (value, item) => (REVOKE_STATUS_TEMP[item[value]])
+        render: (value, item) => (REVOKE_STATUS[item[value]])
       },
       {text: '操作', value: 'OPERATION_COLUMN', width: 60}
     ];
@@ -83,9 +91,9 @@ class RevokeHost extends BaseContainer {
   setOperations = (elm) => {
     const {revoked} = elm;
     if (revoked === 20001 || revoked === 30001 || revoked === 40001) {
-      return [{type: 'REVOKE_HOST', text: '查看'}];
+      return [{type: REVOKE_TYPE[revoked], text: '查看'}];
     } else if (revoked === 20002 || revoked === 30002 || revoked === 40002) {
-      return [{type: 'REVOKE_CONFIRM', text: '已完成'}];
+      return [{type: REVOKE_TYPE[revoked], text: '已完成'}];
     }
   };
 }
