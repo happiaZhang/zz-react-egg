@@ -7,7 +7,7 @@ module.exports = appInfo => {
   const config = {};
 
   // app key
-  config.keys = 'wandacloud-bss-node';
+  config.keys = 'bss-backoffice-node';
 
   // view 模版
   config.view = {
