@@ -19,6 +19,8 @@ module.exports = appInfo => {
   config.errors = require('./errors/config');
   // 正则表达式
   config.regex = require('./regex/config');
+  // 用户权限
+  config.permission = require('./permission/config');
 
   return config;
 };

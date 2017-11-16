@@ -67,6 +67,15 @@ const getWebsiteInfoByID = function(params) {
   return genPromise(payload, 'getWebsiteInfoByID');
 };
 
+// 获取注销网站信息
+const getWebsiteInfo = function(params) {
+  const queryString = genQueryString(params);
+  const payload = {
+    url: `/api/icp-admin/filing-admin/website-info?${queryString}`
+  };
+  return genPromise(payload, 'getWebsiteInfo');
+};
+
 // 设置初审验证
 const setFilingStatus = function(data) {
   const payload = {
@@ -195,6 +204,7 @@ export default {
   getAdminInfo,
   getHostInfoByID,
   getWebsiteInfoByID,
+  getWebsiteInfo,
   setFilingStatus,
   getDispatch,
   getTableData,

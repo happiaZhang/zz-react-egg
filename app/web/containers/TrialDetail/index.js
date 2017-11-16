@@ -119,16 +119,27 @@ class TrialDetail extends React.Component {
     });
 
     // 获取网站信息
-    apis.getWebsiteInfoByID({operId}).then(data => {
-      const {listWebSiteInfo} = data;
-      listWebSiteInfo.forEach(websiteInfo => {
-        const {listWebSiteManagerInfo} = websiteInfo;
-        websiteInfo.webSiteManagerInfoDto = listWebSiteManagerInfo[0] || {};
+    if (this.type === 'RevokeSiteDetail' || this.type === 'RevokeAccessDetail') {
+      const siteId = this.getSiteId();
+      apis.getWebsiteInfo({operId, siteId}).then(data => {
+        const {listWebSiteManagerInfo} = data;
+        data.webSiteManagerInfoDto = listWebSiteManagerInfo[0] || {};
+        this.setState({listWebSiteInfo: [data]});
+      }).catch(() => {
+        message.error('获取网站信息失败，请刷新重试');
       });
-      this.setState({listWebSiteInfo});
-    }).catch(() => {
-      message.error('获取网站信息失败，请刷新重试');
-    });
+    } else {
+      apis.getWebsiteInfoByID({operId}).then(data => {
+        const {listWebSiteInfo} = data;
+        listWebSiteInfo.forEach(websiteInfo => {
+          const {listWebSiteManagerInfo} = websiteInfo;
+          websiteInfo.webSiteManagerInfoDto = listWebSiteManagerInfo[0] || {};
+        });
+        this.setState({listWebSiteInfo});
+      }).catch(() => {
+        message.error('获取网站信息失败，请刷新重试');
+      });
+    }
 
     // 获取主体资料信息
     apis.getHostMaterial({operId}).then(materialInfo => {
