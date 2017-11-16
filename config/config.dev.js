@@ -29,7 +29,8 @@ module.exports = appInfo => {
       agentLogName: `${appInfo.name}-agent.log`,
       errorLogName: `${appInfo.name}-common-error.log`,
       dir: `/var/log/${appInfo.name}`,
-      consoleLevel: 'DEBUG'
+      consoleLevel: 'DEBUG',
+      disableConsoleAfterReady: false
     }
   };
 };

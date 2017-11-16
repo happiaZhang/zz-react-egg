@@ -2,36 +2,26 @@ import BaseContainer from '../BaseContainer';
 import message from '../../components/Message';
 import apis from '../../utils/apis';
 
-const REVOKE_STATUS = [
+const REVOKE_HOST_STATUS = [
   {value: '', text: '全部'},
-  {value: 1, text: '待处理'},
-  {value: 2, text: '待管局审核'},
-  {value: 3, text: '已完成'}
+  {value: 20001, text: '待处理'},
+  {value: 20002, text: '待管局审核'}
 ];
 
 const REVOKE_STATUS_TEMP = {
-  20000: '未提交',
   20001: '待处理',
   20002: '待管局审核',
-  20003: '已处理',
-  20004: '已处理',
-  30000: '未提交',
   30001: '待处理',
   30002: '待管局审核',
-  30003: '已处理',
-  30004: '已处理',
-  40000: '未提交',
   40001: '待处理',
-  40002: '待管局审核',
-  40003: '已处理',
-  40004: '已处理'
+  40002: '待管局审核'
 };
 
 class RevokeHost extends BaseContainer {
   constructor(props) {
     super(props);
     this.title = '注销主体';
-    this.selectOptions = REVOKE_STATUS;
+    this.selectOptions = REVOKE_HOST_STATUS;
     this.errorMsg = `获取${this.title}信息失败，请刷新重试`;
     this.apiFunc = apis.getHostRevokeInfo;
     this.operations = this.setOperations;
@@ -39,17 +29,17 @@ class RevokeHost extends BaseContainer {
 
   // 加载表格数据(overwrite)
   loadTableData = (newState) => {
-    const {pageSize, pageNumber, operId} = this.state;
+    const {pageSize, pageNumber, operId, status} = this.state;
     const params = {
       operId,
+      status,
       pageSize,
       pageNumber,
-      ...newState,
-      status: ''
+      ...newState
     };
 
     // 获取表格数据
-    this.apiFunc(params).then(res => {
+    this.apiFunc(this.convertParams(params)).then(res => {
       const {elements, totalSize} = res;
       this.setState({
         totalSize,

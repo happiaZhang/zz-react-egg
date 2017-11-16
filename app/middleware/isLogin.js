@@ -16,11 +16,14 @@ module.exports = () => {
     const loginURI = `${ctx.getCookieDomain(ctx)}/admin/login`;
     // 获取根域的用户状态sid
     const amsid = ctx.cookies.get('amsid');
+    console.log('loginURI = ', loginURI);
+    console.log('amsid = ', amsid);
     // 用户未登录
     if (!amsid) {
       if (ctx.url.indexOf('/api/') !== -1) {
         ctx.throw(config.errors.NoLogin_Error, 'user nologin');
       }
+      console.log('redirect');
       return ctx.redirect(loginURI);
     }
     // 获取用户登录token
