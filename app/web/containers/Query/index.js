@@ -95,7 +95,7 @@ class Query extends BaseContainer {
   };
 
   genFilter = () => {
-    const {queryType, startTime, endTime} = this.state;
+    const {queryType, startTime, endTime, hostname, website} = this.state;
     const FILTER_ITEMS = [
       [
         {
@@ -116,8 +116,20 @@ class Query extends BaseContainer {
           value: status
         },
         */
-        {label: '主办单位或主办人名称', component: Input, style: {width: 300}, onChange: this.changeHostname},
-        {label: '关联域名', component: Input, style: {width: 300}, onChange: this.changeWebsite}
+        {
+          label: '主办单位或主办人名称',
+          component: Input,
+          style: {width: 300},
+          onChange: this.changeHostname,
+          value: hostname
+        },
+        {
+          label: '关联域名',
+          component: Input,
+          style: {width: 300},
+          onChange: this.changeWebsite,
+          value: website
+        }
 
       ],
       [
