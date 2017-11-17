@@ -6,8 +6,8 @@
 module.exports = appInfo => {
   return {
     // api host
-    adminHost: 'http://10.214.169.111:32730',
-    icpAdminHost: 'http://10.214.169.111:32356',
+    adminHost: 'admin-management-rest-svc:8080',
+    icpAdminHost: 'icp-admin-svc:8080',
 
     // middleware
     middleware: ['errorHandler', 'logger', 'isLogin', 'isPermission'],
