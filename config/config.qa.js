@@ -19,7 +19,7 @@ module.exports = appInfo => {
     redis: {
       client: {
         port: 6379,
-        host: 'redis-primary.default',
+        host: 'redis-primary.infra',
         password: '',
         db: 0
       }
