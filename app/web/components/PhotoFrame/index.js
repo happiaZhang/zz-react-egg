@@ -16,7 +16,7 @@ class PhotoFrame extends React.Component {
     this.state = {
       checked: props.checked,
       checkMode: props.checkMode,
-      showImg: false,
+      showImg: validate.isURL(props.src),
       zoomOut: false
     };
     this.reservedSpace = 80;
