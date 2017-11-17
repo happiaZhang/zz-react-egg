@@ -17,6 +17,10 @@ const QUERY_TYPE = [
 ];
 
 const FILING_STATUS = [
+  {value: 10000, text: '开始备案'},
+  {value: 10010, text: '填写主体信息'},
+  {value: 10020, text: '填写网站信息'},
+  {value: 10030, text: '提交备案资料'},
   {value: 10040, text: '待初审'},
   {value: 10050, text: '待邮寄'},
   {value: 10060, text: '初审驳回'},
@@ -26,12 +30,21 @@ const FILING_STATUS = [
   {value: 10100, text: '已完成'},
   {value: 10110, text: '备案失败'},
   {value: 10120, text: '撤销备案'},
+  {value: 20000, text: '未提交'},
   {value: 20001, text: '待处理'},
   {value: 20002, text: '待管局审核'},
+  {value: 20003, text: '审核通过'},
+  {value: 20004, text: '审核失败'},
+  {value: 30000, text: '未提交'},
   {value: 30001, text: '待处理'},
   {value: 30002, text: '待管局审核'},
+  {value: 30003, text: '审核通过'},
+  {value: 30004, text: '审核失败'},
+  {value: 40000, text: '未提交'},
   {value: 40001, text: '待处理'},
-  {value: 40002, text: '待管局审核'}
+  {value: 40002, text: '待管局审核'},
+  {value: 40003, text: '审核通过'},
+  {value: 40004, text: '审核失败'}
 ];
 
 class Query extends BaseContainer {

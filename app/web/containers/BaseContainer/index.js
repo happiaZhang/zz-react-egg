@@ -118,7 +118,7 @@ class BaseContainer extends React.Component {
         value: 'status',
         render: (value, item) => {
           const status = this.selectOptions.find(s => s.value === item[value]);
-          return status.text;
+          return status ? status.text : item[value];
         }
       },
       {text: '操作', value: 'OPERATION_COLUMN', width: 60}

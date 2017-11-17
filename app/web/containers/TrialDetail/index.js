@@ -453,6 +453,21 @@ class TrialDetail extends React.Component {
     return websiteList;
   };
 
+  // 渲染备案密码
+  renderPassword = () => {
+    if (this.type === 'RevokeHostDetail' || this.type === 'RevokeSiteDetail' || this.type === 'RevokeAccessDetail') {
+      const {hostInfo} = this.state;
+      const filingPassword = validate.formatData(hostInfo, 'hostUnitFullDto.filingPassword');
+      return (
+        <Card title='备案密码' style={{marginTop: 50}} classID='password'>
+          <Info label='备案密码' content={filingPassword} />
+        </Card>
+      );
+    } else {
+      return null;
+    }
+  };
+
   // 渲染网站幕布照片
   renderCurtain = (websiteInfo) => {
     if (this.type !== 'AuditDetail' && this.type !== 'AuditReject') return null;
@@ -516,6 +531,7 @@ class TrialDetail extends React.Component {
             {this.renderInfoList(HOST_INFO_LIST, hostInfo)}
           </Card>
           {this.renderWebsiteInfoList()}
+          {this.renderPassword()}
         </div>
         {this.renderTextarea()}
         {this.renderButtons()}
