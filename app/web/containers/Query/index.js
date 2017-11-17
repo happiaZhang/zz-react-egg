@@ -130,7 +130,7 @@ class Query extends BaseContainer {
         },
         */
         {
-          label: '主办单位或主办人名称',
+          label: '主办单位',
           component: Input,
           style: {width: 300},
           onChange: this.changeHostname,
