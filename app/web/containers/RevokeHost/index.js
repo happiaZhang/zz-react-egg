@@ -17,7 +17,7 @@ const REVOKE_STATUS = {
   40002: '待管局审核'
 };
 
-const REVOKE_TYPE = {
+export const REVOKE_TYPE = {
   20001: 'REVOKE_HOST_QUERY',
   20002: 'REVOKE_DONE',
   30001: 'REVOKE_SITE_QUERY',

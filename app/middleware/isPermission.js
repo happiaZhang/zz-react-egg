@@ -29,8 +29,6 @@ module.exports = () => {
       }
       return ctx.redirect(loginURI);
     }
-    console.log(token);
-    console.log(permissionStr);
     // 用户拥有权限
     await next();
   };

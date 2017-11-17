@@ -22,6 +22,7 @@ class BaseContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      queryType: 1,
       filingType: '',
       status: '',
       operId: '',
@@ -29,7 +30,11 @@ class BaseContainer extends React.Component {
       pageNumber: 1,
       totalSize: 0,
       showModal: false,
-      elements: []
+      elements: [],
+      hostname: '',
+      website: '',
+      startTime: '',
+      endTime: ''
     };
   }
 
@@ -59,14 +64,14 @@ class BaseContainer extends React.Component {
 
   // 加载表格数据
   loadTableData = (newState) => {
-    const {pageSize, pageNumber, status, operId} = this.state;
+    const {queryType, pageSize, pageNumber, status, operId, startTime, endTime, hostname, website} = this.state;
     const params = {
-      queryType: 1,
+      queryType,
       filingType: '',
-      hostname: '',
-      website: '',
-      startTime: '',
-      endTime: '',
+      hostname,
+      website,
+      startTime,
+      endTime,
       operId,
       status,
       pageSize,
@@ -83,7 +88,8 @@ class BaseContainer extends React.Component {
         pageSize: params.pageSize,
         pageNumber: params.pageNumber,
         status: params.status,
-        operId: params.operId
+        operId: params.operId,
+        queryType: params.queryType
       });
     }).catch(() => {
       message.error(this.errorMsg);
@@ -157,6 +163,29 @@ class BaseContainer extends React.Component {
     }, 300);
   };
 
+  // 改变主体名称
+  changeHostname = (hostname) => {
+    this.setState({hostname});
+    this.hostTimer && clearTimeout(this.hostTimer);
+    this.hostTimer = setTimeout(() => {
+      this.loadTableData({hostname});
+    }, 300);
+  };
+
+  // 改变关联域名
+  changeWebsite = (website) => {
+    this.setState({website});
+    this.siteTimer && clearTimeout(this.siteTimer);
+    this.siteTimer = setTimeout(() => {
+      this.loadTableData({website});
+    }, 300);
+  };
+
+  // 改变查询日期
+  changeTime = ({startDate: startTime, endDate: endTime}) => {
+    this.loadTableData({startTime, endTime});
+  };
+
   //  改变每页显示数量
   changePageSize = (pageSize) => {
     this.loadTableData({pageSize});
@@ -225,15 +254,14 @@ class BaseContainer extends React.Component {
   };
 
   // 改变备案类型
-  changeFilingType = (filingType) => {
-    this.setSelectOptions(filingType);
-    this.setState({filingType, status: ''});
+  changeQueryType = (queryType) => {
+    this.loadTableData({queryType});
   }
 
   // 渲染过滤器
   renderFilter = () => {
     const {status, operId} = this.state;
-    return this.isQuery ? this.genFilter(this.state) : (
+    return this.type === 'Query' ? this.genFilter() : (
       <div className={styles.tableOperation}>
         <div className={styles.left}>
           <Select
