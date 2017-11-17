@@ -13,6 +13,7 @@ class RevokeAccess extends RevokeHost {
     this.title = '取消接入';
     this.selectOptions = REVOKE_ACCESS_STATUS;
     this.apiFunc = apis.getAccessRevokeInfo;
+    this.revokeFunc = apis.setAccessRevoke;
   }
 }
 

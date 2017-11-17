@@ -1,6 +1,7 @@
 import styles from './index.scss';
 import React from 'react';
 import BaseContainer from '../BaseContainer';
+import Button from '../../components/Button';
 import FormGroup from '../../components/FormGroup';
 import Select from '../../components/Select';
 import DateRange from '../../components/DateRange';
@@ -119,16 +120,6 @@ class Query extends BaseContainer {
           onChangeValue: this.changeQueryType,
           value: queryType
         },
-        /*
-        {
-          label: '备案状态',
-          component: Select,
-          data: this.selectOptions,
-          style: {width: 300},
-          onChangeValue: this.changeStatus,
-          value: status
-        },
-        */
         {
           label: '主办单位',
           component: Input,
@@ -152,6 +143,11 @@ class Query extends BaseContainer {
           onChange: this.changeTime,
           startDate: startTime,
           endDate: endTime
+        },
+        {
+          component: Button,
+          onClick: this.loadTableData,
+          text: '查询'
         }
       ]
     ];

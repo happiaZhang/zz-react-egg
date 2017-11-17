@@ -166,24 +166,16 @@ class BaseContainer extends React.Component {
   // 改变主体名称
   changeHostname = (hostname) => {
     this.setState({hostname});
-    this.hostTimer && clearTimeout(this.hostTimer);
-    this.hostTimer = setTimeout(() => {
-      this.loadTableData({hostname});
-    }, 300);
   };
 
   // 改变关联域名
   changeWebsite = (website) => {
     this.setState({website});
-    this.siteTimer && clearTimeout(this.siteTimer);
-    this.siteTimer = setTimeout(() => {
-      this.loadTableData({website});
-    }, 300);
   };
 
   // 改变查询日期
   changeTime = ({startDate: startTime, endDate: endTime}) => {
-    this.loadTableData({startTime, endTime});
+    this.setState({startTime, endTime});
   };
 
   //  改变每页显示数量
@@ -240,6 +232,12 @@ class BaseContainer extends React.Component {
       case 'REVOKE_ACCESS_QUERY':
         history.push(`/revoke/access/${operId}/${siteId}`);
         break;
+      case 'REVOKE_DONE':
+        this.handleRevoke(data, true);
+        break;
+      case 'REVOKE_FAIL':
+        this.handleRevoke(data, false);
+        break;
     }
   };
 
@@ -255,7 +253,7 @@ class BaseContainer extends React.Component {
 
   // 改变备案类型
   changeQueryType = (queryType) => {
-    this.loadTableData({queryType});
+    this.setState({queryType});
   }
 
   // 渲染过滤器

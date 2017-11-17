@@ -6,7 +6,7 @@ class FormGroup extends React.Component {
     const {label, component, ...other} = this.props;
     return (
       <div className={styles.formGroup}>
-        <label>{label}</label>
+        {label ? <label>{label}</label> : null}
         {React.createElement(component, other)}
       </div>
     );

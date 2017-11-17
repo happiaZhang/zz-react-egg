@@ -13,6 +13,7 @@ class RevokeSite extends RevokeHost {
     this.title = '注销网站';
     this.selectOptions = REVOKE_SITE_STATUS;
     this.apiFunc = apis.getSiteRevokeInfo;
+    this.revokeFunc = apis.setSiteRevoke;
   }
 }
 

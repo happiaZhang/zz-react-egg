@@ -19,11 +19,8 @@ const REVOKE_STATUS = {
 
 export const REVOKE_TYPE = {
   20001: 'REVOKE_HOST_QUERY',
-  20002: 'REVOKE_DONE',
   30001: 'REVOKE_SITE_QUERY',
-  30002: 'REVOKE_DONE',
   40001: 'REVOKE_ACCESS_QUERY',
-  40002: 'REVOKE_DONE'
 };
 
 class RevokeHost extends BaseContainer {
@@ -33,8 +30,31 @@ class RevokeHost extends BaseContainer {
     this.selectOptions = REVOKE_HOST_STATUS;
     this.errorMsg = `获取${this.title}信息失败，请刷新重试`;
     this.apiFunc = apis.getHostRevokeInfo;
+    this.revokeFunc = apis.setHostRevoke;
     this.operations = this.setOperations;
+    this.handleRevoke = this.handleRevoke;
   }
+
+  // 处理注销状态
+  handleRevoke = (row, isDone) => {
+    const {revoked, operId, siteId} = row;
+    const data = {
+      checkPerson: 'zhangzheng',
+      operId: parseInt(operId),
+      status: isDone ? 20003 : 20004
+    };
+    if (revoked !== 20002) data.siteId = parseInt(siteId);
+    if (revoked === 30002) data.status = isDone ? 30003 : 30004;
+    if (revoked === 40002) data.status = isDone ? 40003 : 40004;
+
+    this.revokeFunc(data).then(() => {
+      message.success('处理成功', 1, () => {
+        this.loadTableData();
+      });
+    }).catch(() => {
+      message.error('处理失败，请刷新重试');
+    });
+  };
 
   // 加载表格数据(overwrite)
   loadTableData = (newState) => {
@@ -93,7 +113,10 @@ class RevokeHost extends BaseContainer {
     if (revoked === 20001 || revoked === 30001 || revoked === 40001) {
       return [{type: REVOKE_TYPE[revoked], text: '查看'}];
     } else if (revoked === 20002 || revoked === 30002 || revoked === 40002) {
-      return [{type: REVOKE_TYPE[revoked], text: '已完成'}];
+      return [
+        {type: 'REVOKE_DONE', text: '通过'},
+        {type: 'REVOKE_FAIL', text: '失败'}
+      ];
     }
   };
 }
