@@ -16,11 +16,12 @@ const FILING_TYPE = {
   4: '备案变更',
   5: '注销主体',
   6: '注销网站',
-  7: '取消网站接入'
+  7: '取消接入'
 };
 class BaseContainer extends React.Component {
   constructor(props) {
     super(props);
+    this.name = this.constructor.name;
     this.state = {
       queryType: 1,
       filingType: '',
@@ -105,7 +106,7 @@ class BaseContainer extends React.Component {
   // 设置表头内容
   setTheadData = () => {
     return [
-      {text: '备案主体', value: 'hostname'},
+      {text: '主办单位', value: 'hostname'},
       {
         text: '关联域名',
         value: 'website',
@@ -259,7 +260,7 @@ class BaseContainer extends React.Component {
   // 渲染过滤器
   renderFilter = () => {
     const {status, operId} = this.state;
-    return this.type === 'Query' ? this.genFilter() : (
+    return this.name === 'Query' ? this.genFilter() : (
       <div className={styles.tableOperation}>
         <div className={styles.left}>
           <Select

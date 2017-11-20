@@ -20,7 +20,7 @@ const REVOKE_STATUS = {
 export const REVOKE_TYPE = {
   20001: 'REVOKE_HOST_QUERY',
   30001: 'REVOKE_SITE_QUERY',
-  40001: 'REVOKE_ACCESS_QUERY',
+  40001: 'REVOKE_ACCESS_QUERY'
 };
 
 class RevokeHost extends BaseContainer {
@@ -86,7 +86,7 @@ class RevokeHost extends BaseContainer {
   // 设置表头内容(overwrite)
   setTheadData = () => {
     return [
-      {text: '备案主体', value: 'hostname'},
+      {text: '主办单位', value: 'hostname'},
       {text: '备案号', value: 'filingServiceNo'},
       {
         text: '网站名称',

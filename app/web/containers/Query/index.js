@@ -52,12 +52,11 @@ class Query extends BaseContainer {
   constructor(props) {
     super(props);
     const {startTime, endTime} = this.lastWeek();
-    this.type = 'Query';
     this.state.queryType = 4;
     this.state.startTime = startTime;
     this.state.endTime = endTime;
     this.title = '备案查询';
-    this.errorMsg = '备案查询失败，请重新重试';
+    this.errorMsg = '备案查询失败，请刷新重试';
     this.selectOptions = FILING_STATUS;
     this.operations = this.setOperations;
     this.genFilter = this.genFilter;

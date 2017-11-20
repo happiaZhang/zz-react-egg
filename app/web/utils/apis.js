@@ -150,24 +150,14 @@ const getAccessRevokeInfo = function(params) {
   return genPromise(payload, 'getAccessRevokeInfo');
 };
 
-// 设置主体备案号
-const setHostNo = function(data) {
+// 设置主体或网站备案号
+const setFilingNo = function(data) {
   const payload = {
-    url: '/api/icp-admin/filing-admin/filing-hostno',
+    url: '/api/icp-admin/filing-admin/filing-no',
     method: 'POST',
     data
   };
-  return genPromise(payload, 'setHostNo');
-};
-
-// 设置网站备案号
-const setSiteNo = function(data) {
-  const payload = {
-    url: '/api/icp-admin/filing-admin/filing-siteno',
-    method: 'POST',
-    data
-  };
-  return genPromise(payload, 'setSiteNo');
+  return genPromise(payload, 'setFilingNo');
 };
 
 // 设置主体注销状态
@@ -214,8 +204,7 @@ export default {
   getHostRevokeInfo,
   getSiteRevokeInfo,
   getAccessRevokeInfo,
-  setHostNo,
-  setSiteNo,
+  setFilingNo,
   setHostRevoke,
   setSiteRevoke,
   setAccessRevoke

@@ -41,7 +41,7 @@ class RevokeHostDetail extends TrialDetail {
 
   renderButtons = () => {
     const btnGroup = [
-      {key: 'commit', text: '已提交管局审核', onClick: this.onCommit, style: {width: 150}}
+      {key: 'commit', text: '提交至管局审核', onClick: this.onCommit, style: {width: 150}}
     ];
     return (
       <div className={styles.toolBar}>

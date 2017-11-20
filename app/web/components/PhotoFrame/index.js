@@ -17,7 +17,7 @@ class PhotoFrame extends React.Component {
       checked: props.checked,
       checkMode: props.checkMode,
       showImg: validate.isURL(props.src),
-      zoomOut: false
+      zoomIn: false
     };
     this.reservedSpace = 80;
   }
@@ -50,19 +50,19 @@ class PhotoFrame extends React.Component {
     return dirArray[dirArray.length - 1];
   };
 
-  handleZoomOut = (e) => {
-    e.stopPropagation();
-    this.setState({zoomOut: true});
-  };
-
   handleZoomIn = (e) => {
     e.stopPropagation();
-    this.setState({zoomOut: false});
+    this.setState({zoomIn: true});
+  };
+
+  handleZoomOut = (e) => {
+    e.stopPropagation();
+    this.setState({zoomIn: false});
   };
 
   canDownload = () => {
-    const {showImg, checkMode, zoomOut} = this.state;
-    return showImg && !checkMode && !zoomOut;
+    const {showImg, checkMode, zoomIn} = this.state;
+    return showImg && !checkMode && !zoomIn;
   };
 
   stopBubble = (e) => {
@@ -76,21 +76,22 @@ class PhotoFrame extends React.Component {
 
   setContainerProps = () => {
     const {width, height} = this.props;
-    const {zoomOut} = this.state;
+    const {zoomIn} = this.state;
     const style = {width, height};
     const props = {
-      className: zoomOut ? styles.frameCover : styles.frameContainer
+      className: zoomIn ? styles.frameCover : styles.frameContainer
     };
 
-    if (zoomOut) {
-      props.onClick = this.handleZoomIn;
+    if (zoomIn) {
+      props.style = {cursor: 'zoom-out'};
+      props.onClick = this.handleZoomOut;
     } else {
       props.style = style;
     }
 
     if (this.canDownload()) {
-      style.cursor = 'pointer';
-      props.onClick = this.handleZoomOut;
+      style.cursor = 'zoom-in';
+      props.onClick = this.handleZoomIn;
     }
 
     return props;
@@ -98,7 +99,7 @@ class PhotoFrame extends React.Component {
 
   setImgProps = () => {
     const {shadeText, src} = this.props;
-    const {zoomOut} = this.state;
+    const {zoomIn} = this.state;
 
     const props = {
       ref: ref => (this.img = ref),
@@ -106,9 +107,10 @@ class PhotoFrame extends React.Component {
       alt: shadeText
     };
 
-    if (zoomOut) {
+    if (zoomIn) {
       props.style = {
-        width: this.setDisplayWidth()
+        width: this.setDisplayWidth(),
+        cursor: 'default'
       };
       props.onClick = this.stopBubble;
     }

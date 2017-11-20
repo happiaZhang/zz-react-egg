@@ -343,7 +343,7 @@ class TrialDetail extends React.Component {
     infoList.forEach(info => {
       const {key, label, content} = info;
       const props = {key, label, checkMode};
-      const isMult = key === MULTI_KEY;
+      const isMult = key.indexOf(MULTI_KEY) === 0;
       const ks = key.split('.');
       const id = this.setId(data, ks[0]);
       const value = isMult && content ? content() : ks[ks.length - 1];
@@ -500,7 +500,7 @@ class TrialDetail extends React.Component {
         } else {
           kv.split(',').forEach((d, i) => {
             websiteInfoList.push({
-              key,
+              key: key + '_' + i,
               label: i === 0 ? label : <i>&nbsp;</i>,
               content: () => (d)
             });

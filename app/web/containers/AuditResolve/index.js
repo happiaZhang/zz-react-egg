@@ -35,9 +35,6 @@ class AuditDetail extends TrialDetail {
     };
     this.filingHostNo = {};
     this.filingSiteNo = {};
-    this.filingHost = false;
-    this.filingSite = false;
-    this.filingCounter = 0;
   }
 
   componentDidMount() {
@@ -60,44 +57,33 @@ class AuditDetail extends TrialDetail {
   }
 
   onAudit = () => {
+    const data = {
+      checkPerson: 'zhangzheng',
+      operId: this.getOperId()
+    };
+
     Object.keys(this.filingHostNo).forEach(operId => {
-      const data = {
-        checkPerson: 'zhangzheng',
-        hostFilingNo: this.filingHostNo[operId],
-        operId: parseInt(operId)
-      };
-      apis.setHostNo(data).then(() => {
-        this.filingHost = true;
-        this.linkToList();
-      }).catch(() => {
-        message.error('设置主体备案号失败，请刷新重试');
-      });
+      data.hostFilingNo = this.filingHostNo[operId];
     });
 
-    const counter = Object.keys(this.filingSiteNo).length;
-    const operId = this.getOperId();
+    const filingSiteNoDtoList = [];
     Object.keys(this.filingSiteNo).forEach(siteId => {
-      const data = {
-        checkPerson: 'zhangzheng',
+      filingSiteNoDtoList.push({
         siteFilingNo: this.filingSiteNo[siteId],
-        siteId: parseInt(siteId),
-        operId: parseInt(operId)
-      };
-      apis.setSiteNo(data).then(() => {
-        this.filingCounter++;
-        if (this.filingCounter === counter) this.filingSite = true;
-        this.linkToList();
-      }).catch(() => {
-        message.error('设置主体备案号失败，请刷新重试');
+        siteId: parseInt(siteId)
       });
     });
-  };
 
-  linkToList = () => {
-    if (this.filingHost && this.filingSite) {
-      const {history} = this.props;
-      history.push('/audit');
-    }
+    if (filingSiteNoDtoList.length > 0) data.filingSiteNoDtoList = filingSiteNoDtoList;
+
+    apis.setFilingNo(data).then(() => {
+      message.success('备案号保存成功', 2, () => {
+        const {history} = this.props;
+        history.push('/audit');
+      });
+    }).catch(() => {
+      message.error('保存备案号失败，请刷新重试');
+    });
   };
 
   renderButtons = () => {
