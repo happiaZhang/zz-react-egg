@@ -21,7 +21,6 @@ module.exports = () => {
       token,
       permissionStr
     });
-    console.log(result);
     // 用户没有权限
     if (result.status != 200 || !result.data || result.data.code != 0) {
       if (ctx.url.indexOf('/api/') !== -1) {

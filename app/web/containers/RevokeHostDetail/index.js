@@ -14,7 +14,6 @@ class RevokeHostDetail extends TrialDetail {
       {text: '网站信息', to: '#website'},
       {text: '查看备案密码', to: '#password'}
     ];
-    this.type = 'RevokeHostDetail';
     this.apiFunc = apis.setHostRevoke;
   }
 
@@ -25,9 +24,9 @@ class RevokeHostDetail extends TrialDetail {
       status: 20002
     };
 
-    if (this.type !== 'RevokeHostDetail') data.siteId = this.getSiteId();
-    if (this.type === 'RevokeSiteDetail') data.status = 30002;
-    if (this.type === 'RevokeAccessDetail') data.status = 40002;
+    if (this.name !== 'RevokeHostDetail') data.siteId = this.getSiteId();
+    if (this.name === 'RevokeSiteDetail') data.status = 30002;
+    if (this.name === 'RevokeAccessDetail') data.status = 40002;
 
     this.apiFunc(data).then(() => {
       message.success('提交管局审核成功', 3, () => {

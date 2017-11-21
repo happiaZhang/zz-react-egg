@@ -28,7 +28,6 @@ class VerifyDetail extends TrialDetail {
       listWebSiteInfo: null
     };
     this.materialInfo = [];
-    this.type = 'VerifyDetail';
   }
 
   componentDidMount() {

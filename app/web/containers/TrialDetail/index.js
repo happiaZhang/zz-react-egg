@@ -12,6 +12,15 @@ import message from '../../components/Message';
 import apis from '../../utils/apis';
 import validate from '../../utils/validate';
 
+const AUDIT_INDUSTRY = {
+  news: '新闻',
+  bss: '电子公告服务',
+  culture: '文化',
+  publish: '出版',
+  education: '教育',
+  medicalCare: '医疗',
+  television: '广播电影电视节目'
+};
 const ROUTES = [
   {key: 'trial', to: '/trial', text: '备案初审'}
 ];
@@ -39,7 +48,25 @@ const HOST_INFO_LIST = [
 const WEBSITE_INFO_LIST = [
   {key: 'webSiteBasicInfoDto.name', label: '网站名称'},
   {key: 'webSiteBasicInfoDto.indexUrl', label: '网站首页URL'},
-  {key: 'webSiteBasicInfoDto.verifiedDomain', label: '已验证域名'},
+  {
+    key: 'webSiteBasicInfoDto.verifiedDomain',
+    label: '已验证域名',
+    isMulti: true,
+    parser: (data, key, label) => {
+      const result = [];
+      const cnt = validate.formatData(data, key);
+      cnt.split(',').forEach((d, i) => {
+        result.push({
+          key: key + '_' + i,
+          label: i === 0 ? label : <i>&nbsp;</i>,
+          content: () => (d),
+          realKey: 'verifiedDomain',
+          realValue: d
+        });
+      });
+      return result;
+    }
+  },
   {
     key: 'webSiteBasicInfoDto.auditContent',
     label: '前置或专项审批内容',
@@ -47,6 +74,43 @@ const WEBSITE_INFO_LIST = [
       let cnt = validate.formatData(data, key);
       if (!validate.isEmpty(cnt)) cnt = JSON.parse(cnt).value;
       return cnt;
+    },
+    isMulti: true,
+    parser: (data, key, label) => {
+      const result = [];
+      const cnt = JSON.parse(validate.formatData(data, key));
+      result.push({
+        key,
+        label,
+        content: () => (cnt.value),
+        realKey: 'websiteInfo',
+        realValue: 'auditContent'
+      });
+      const files = cnt.files;
+      files && files.forEach(f => {
+        const {name, approvalNumber, approvalFile} = f;
+        result.push({
+          key: key + '_' + name,
+          label: <i>&nbsp;</i>,
+          content: (d, k, checkMode, onChange) => {
+            const props = {
+              shadeText: '前置审批文件',
+              checkMode,
+              src: approvalFile,
+              onChange
+            };
+            return (
+              <div style={{marginBottom: 10}}>
+                <p>{`${AUDIT_INDUSTRY[name]}, ${approvalNumber}`}</p>
+                <PhotoFrame {...props} />
+              </div>
+            );
+          },
+          realKey: 'auditContent',
+          realValue: `${name}_approvalNumber`
+        });
+      });
+      return result;
     }
   },
   {key: 'webSiteBasicInfoDto.serviceContent', label: '网站服务内容'},
@@ -57,7 +121,6 @@ const WEBSITE_INFO_LIST = [
   {key: 'webSiteManagerInfoDto.mobilePhone', label: '手机号码'},
   {key: 'webSiteManagerInfoDto.email', label: '电子邮箱'}
 ];
-const MULTI_KEY = 'webSiteBasicInfoDto.verifiedDomain';
 const HOST_FRAMES = [
   {key: 'hostBusinessLicensePhotoPath', shadeText: '工商营业执照'},
   {key: 'hostManagerIDPhotoPath', shadeText: '身份证'}
@@ -78,9 +141,7 @@ const KEYS_MAPPER = {
 };
 const ID_MAPPER = {
   webSiteBasicInfoDto: 'webSiteBasicInfoDto.id',
-  webSiteManagerInfoDto: 'webSiteManagerInfoDto.id',
-  webSiteManagerPhotoPath: 'id',
-  webSiteFilingVerifyPhotoPath: 'id'
+  webSiteManagerInfoDto: 'webSiteManagerInfoDto.id'
 };
 
 class TrialDetail extends React.Component {
@@ -93,18 +154,19 @@ class TrialDetail extends React.Component {
       listWebSiteInfo: null,
       materialInfo: null
     };
+    this.name = this.constructor.name;
+    this.route = ROUTES;
+    this.anchor = ANCHORS;
+    this.isAuditReject = this.name === 'AuditReject';
     this.rejectReason = '信息有误,请重新填写';
     this.hostUnit = [];
     this.hostUnitManager = [];
     this.websiteManagerInfo = {};
     this.websiteInfo = {};
     this.verifiedDomain = {};
+    this.auditContent = {};
     this.hostManagerItems = [];
     this.webSitePhotoItems = {};
-    this.type = 'TrialDetail';
-    this.route = ROUTES;
-    this.anchor = ANCHORS;
-    this.isAuditReject = false;
   }
 
   // 首次挂载组件
@@ -119,7 +181,7 @@ class TrialDetail extends React.Component {
     });
 
     // 获取网站信息
-    if (this.type === 'RevokeSiteDetail' || this.type === 'RevokeAccessDetail') {
+    if (this.name === 'RevokeSiteDetail' || this.name === 'RevokeAccessDetail') {
       const siteId = this.getSiteId();
       apis.getWebsiteInfo({operId, siteId}).then(data => {
         const {listWebSiteManagerInfo} = data;
@@ -170,6 +232,9 @@ class TrialDetail extends React.Component {
   // 选择错误项
   checkWarningItem = (key, id, value) => {
     return (v) => {
+      console.log('key: ' + key);
+      console.log('id: ' + id);
+      console.log('value: ' + value);
       if (this[key] instanceof Array) {
         this.handleWarningItem(v, this[key], value);
       } else {
@@ -212,7 +277,7 @@ class TrialDetail extends React.Component {
   // 跳转到列表页
   switch2List = () => {
     const {history} = this.props;
-    switch (this.type) {
+    switch (this.name) {
       case 'TrialDetail':
         history.push('/trial');
         break;
@@ -292,6 +357,23 @@ class TrialDetail extends React.Component {
       }
     }
 
+    const auditContents = this.setRejectAuditContent();
+    if (auditContents.length > 0) {
+      if (result.hasOwnProperty('websiteInfo')) {
+        auditContents.forEach(d => {
+          const {auditContent} = d;
+          const index = websites.findIndex(({id}) => (id === d.id));
+          if (index > -1) {
+            websites[index].auditContent = auditContent;
+          } else {
+            websites.push(d);
+          }
+        });
+      } else {
+        result.websiteInfo = auditContents;
+      }
+    }
+
     if (hostManagerItems.length > 0) result.materialInfo = {hostManagerItems};
     const websitePhotos = this.obj2Arr(webSitePhotoItems, 'warnItems');
     if (websitePhotos.length > 0) {
@@ -316,15 +398,39 @@ class TrialDetail extends React.Component {
       }
     });
     return arr;
-  }
+  };
+
+  setRejectAuditContent = () => {
+    const result = this.obj2Arr(this.auditContent, 'auditContent');
+    if (result.length > 0) {
+      result.forEach(r => {
+        const {auditContent} = r;
+        const obj = {};
+        auditContent.forEach(comp => {
+          const compArr = comp.split('_');
+          const k = compArr[0];
+          if (!obj.hasOwnProperty(k)) obj[k] = [];
+          obj[k].push(compArr[1]);
+        });
+
+        const newAuditContent = [];
+        const {entries} = Object;
+        for (const [key, items] of entries(obj)) {
+          newAuditContent.push({key, items});
+        }
+        r.auditContent = newAuditContent;
+      });
+    }
+    return result;
+  };
 
   // 渲染资料
-  renderFrames = (className, frames, data) => {
+  renderFrames = (className, frames, data, id) => {
     const {checkMode} = this.state;
     const list = [];
+
     frames.forEach((d, i) => {
       const {shadeText, key} = d;
-      const id = this.setId(data, key);
       const props = {
         shadeText,
         checkMode,
@@ -333,6 +439,7 @@ class TrialDetail extends React.Component {
       };
       list.push(<li key={i}><PhotoFrame {...props} /></li>);
     });
+
     return <ul className={className}>{list}</ul>;
   };
 
@@ -341,14 +448,13 @@ class TrialDetail extends React.Component {
     const {checkMode} = this.state;
     const list = [];
     infoList.forEach(info => {
-      const {key, label, content} = info;
+      const {key, label, content, realKey, realValue} = info;
       const props = {key, label, checkMode};
-      const isMult = key.indexOf(MULTI_KEY) === 0;
       const ks = key.split('.');
       const id = this.setId(data, ks[0]);
-      const value = isMult && content ? content() : ks[ks.length - 1];
-      props.onChange = this.checkWarningItem(isMult ? 'verifiedDomain' : KEYS_MAPPER[ks[0]], id, value);
-      props.content = content ? content(data, key) : validate.formatData(data, key);
+      const value = realValue || ks[ks.length - 1];
+      props.onChange = this.checkWarningItem(realKey || KEYS_MAPPER[ks[0]], id, value);
+      props.content = content ? content(data, key, checkMode, props.onChange) : validate.formatData(data, key);
       list.push(<Info {...props} />);
     });
     return list;
@@ -382,12 +488,12 @@ class TrialDetail extends React.Component {
 
   // 渲染驳回与通过操作按钮
   renderButtons = () => {
-    if (this.type === 'AuditDetail') return null;
+    if (this.name === 'AuditDetail') return null;
     const {checkMode} = this.state;
 
     let rejectText = null;
     let resolveText = null;
-    switch (this.type) {
+    switch (this.name) {
       case 'TrialDetail':
         rejectText = '初审驳回';
         resolveText = '初审通过';
@@ -438,7 +544,7 @@ class TrialDetail extends React.Component {
         key: i,
         title: this.setCardTitle(websiteInfo, 'webSiteBasicInfoDto.name', '网站信息'),
         style: {marginTop: 50},
-        suffix: this.renderFrames(styles.websiteFrame, WEBSITE_FRAMES, webSiteMaterial)
+        suffix: this.renderFrames(styles.websiteFrame, WEBSITE_FRAMES, webSiteMaterial, webSiteId)
       };
       if (i === 0) props.classID = 'website';
 
@@ -455,7 +561,7 @@ class TrialDetail extends React.Component {
 
   // 渲染备案密码
   renderPassword = () => {
-    if (this.type === 'RevokeHostDetail' || this.type === 'RevokeSiteDetail' || this.type === 'RevokeAccessDetail') {
+    if (this.name === 'RevokeHostDetail' || this.name === 'RevokeSiteDetail' || this.name === 'RevokeAccessDetail') {
       const {hostInfo} = this.state;
       const filingPassword = validate.formatData(hostInfo, 'hostUnitFullDto.filingPassword');
       return (
@@ -470,7 +576,7 @@ class TrialDetail extends React.Component {
 
   // 渲染网站幕布照片
   renderCurtain = (websiteInfo) => {
-    if (this.type !== 'AuditDetail' && this.type !== 'AuditReject') return null;
+    if (this.name !== 'AuditDetail' && this.name !== 'AuditReject') return null;
     const {checkMode} = this.state;
     const props = {
       key: 'webSiteManagerInfoDto.photoPath',
@@ -490,21 +596,16 @@ class TrialDetail extends React.Component {
 
   // 生成网站信息列表
   genWebsiteInfo = (websiteInfo) => {
-    const websiteInfoList = [];
+    let websiteInfoList = [];
     WEBSITE_INFO_LIST.forEach(info => {
-      const {key, label} = info;
-      if (key === MULTI_KEY) {
-        const kv = validate.formatData(websiteInfo, key);
+      const {key, label, content, isMulti = false, parser} = info;
+      if (isMulti) {
+        const kv = content ? content(websiteInfo, key) : validate.formatData(websiteInfo, key);
         if (kv === '') {
           websiteInfoList.push(info);
         } else {
-          kv.split(',').forEach((d, i) => {
-            websiteInfoList.push({
-              key: key + '_' + i,
-              label: i === 0 ? label : <i>&nbsp;</i>,
-              content: () => (d)
-            });
-          });
+          const infoList = parser(websiteInfo, key, label);
+          websiteInfoList = websiteInfoList.concat(infoList);
         }
       } else {
         websiteInfoList.push(info);
@@ -526,7 +627,7 @@ class TrialDetail extends React.Component {
             classID='host'
             title={this.setCardTitle(hostInfo, 'hostUnitFullDto.hostUnitName', '主体信息')}
             style={{marginTop: 20}}
-            suffix={this.renderFrames(styles.hostFrame, HOST_FRAMES, materialInfo)}
+            suffix={this.renderFrames(styles.hostFrame, HOST_FRAMES, materialInfo, '')}
           >
             {this.renderInfoList(HOST_INFO_LIST, hostInfo)}
           </Card>

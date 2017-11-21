@@ -12,6 +12,7 @@ module.exports = app => {
 
     async action() {
       const {ctx} = this;
+      console.log('token: ', ctx.state.token);
       // 获取用户的信息
       const res = await app.curl(`${this.host}/userrest/view`, {
         method: 'GET',
@@ -21,7 +22,7 @@ module.exports = app => {
         }
       });
 
-      console.log(res);
+      console.log('用户信息: ' + res);
       this.ctx.restfulResultCheck(res);
 
       // 成功返回
