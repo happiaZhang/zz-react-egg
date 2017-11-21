@@ -27,6 +27,7 @@ class VerifyDetail extends TrialDetail {
       hostUnitName: null,
       listWebSiteInfo: null
     };
+    this.name = 'VerifyDetail';
     this.materialInfo = [];
   }
 

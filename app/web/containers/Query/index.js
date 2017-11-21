@@ -55,6 +55,7 @@ class Query extends BaseContainer {
     this.state.queryType = 4;
     this.state.startTime = startTime;
     this.state.endTime = endTime;
+    this.name = 'Query';
     this.title = '备案查询';
     this.errorMsg = '备案查询失败，请刷新重试';
     this.selectOptions = FILING_STATUS;

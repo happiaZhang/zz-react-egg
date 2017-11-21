@@ -3,6 +3,7 @@ import TrialDetail from '../TrialDetail';
 class AuditReject extends TrialDetail {
   constructor(props) {
     super(props);
+    this.name = 'AuditReject';
     this.route = [{key: 'audit', to: '/audit', text: '审核列表'}];
   }
 

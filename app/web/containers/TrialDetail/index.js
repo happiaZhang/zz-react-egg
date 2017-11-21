@@ -154,7 +154,7 @@ class TrialDetail extends React.Component {
       listWebSiteInfo: null,
       materialInfo: null
     };
-    this.name = this.constructor.name;
+    this.name = 'TrialDetail';
     this.route = ROUTES;
     this.anchor = ANCHORS;
     this.isAuditReject = this.name === 'AuditReject';

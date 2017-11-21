@@ -8,6 +8,7 @@ import apis from '../../utils/apis';
 class RevokeHostDetail extends TrialDetail {
   constructor(props) {
     super(props);
+    this.name = 'RevokeHostDetail';
     this.route = [{key: 'revokeHost', to: '/revoke/host', text: '注销主体'}];
     this.anchor = [
       {text: '主体信息', to: '#host'},

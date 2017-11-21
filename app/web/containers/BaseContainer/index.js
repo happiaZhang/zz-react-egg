@@ -21,7 +21,6 @@ const FILING_TYPE = {
 class BaseContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.name = this.constructor.name;
     this.state = {
       queryType: 1,
       filingType: '',
