@@ -6,75 +6,24 @@ import FormGroup from '../../components/FormGroup';
 import Select from '../../components/Select';
 import DateRange from '../../components/DateRange';
 import Input from '../../components/Input';
-import {REVOKE_TYPE} from '../RevokeHost';
 import datetime from '../../components/Datepicker/datetime';
-
-const QUERY_TYPE = [
-  {value: 4, text: '全部'},
-  {value: 1, text: '首次备案/新增网站/新增接入'},
-  {value: 1, text: '变更主体/变更网站'},
-  {value: 2, text: '注销主体/注销网站'},
-  {value: 3, text: '取消接入'}
-];
-
-const FILING_STATUS = [
-  {value: 10000, text: '开始备案'},
-  {value: 10010, text: '填写主体信息'},
-  {value: 10020, text: '填写网站信息'},
-  {value: 10030, text: '提交备案资料'},
-  {value: 10040, text: '待初审'},
-  {value: 10050, text: '待邮寄'},
-  {value: 10060, text: '初审驳回'},
-  {value: 10070, text: '待审核'},
-  {value: 10080, text: '幕布驳回'},
-  {value: 10090, text: '待管局审核'},
-  {value: 10100, text: '已完成'},
-  {value: 10110, text: '备案失败'},
-  {value: 10120, text: '撤销备案'},
-  {value: 20000, text: '未提交'},
-  {value: 20001, text: '待处理'},
-  {value: 20002, text: '待管局审核'},
-  {value: 20003, text: '审核通过'},
-  {value: 20004, text: '审核失败'},
-  {value: 30000, text: '未提交'},
-  {value: 30001, text: '待处理'},
-  {value: 30002, text: '待管局审核'},
-  {value: 30003, text: '审核通过'},
-  {value: 30004, text: '审核失败'},
-  {value: 40000, text: '未提交'},
-  {value: 40001, text: '待处理'},
-  {value: 40002, text: '待管局审核'},
-  {value: 40003, text: '审核通过'},
-  {value: 40004, text: '审核失败'}
-];
+import {QUERY_TYPE, QUERY_STATUS} from '../../utils/constants';
+import apis from '../../utils/apis';
+import validate from '../../utils/validate';
 
 class Query extends BaseContainer {
   constructor(props) {
     super(props);
     const {startTime, endTime} = this.lastWeek();
-    this.state.queryType = 4;
+    this.state.queryType = 3;
     this.state.startTime = startTime;
     this.state.endTime = endTime;
-    this.name = 'Query';
     this.title = '备案查询';
-    this.errorMsg = '备案查询失败，请刷新重试';
-    this.selectOptions = FILING_STATUS;
-    this.operations = this.setOperations;
-    this.genFilter = this.genFilter;
+    this.selectAll = [];
+    this.selectOptions = this.genOptions();
+    this.setFilter = this.genFilter;
+    this.loadFunc = apis.getRevoked;
   }
-
-  // overwrite
-  componentWillMount() {}
-
-  // overwrite
-  convertParams = (params) => {
-    let {startTime, endTime} = params;
-    if (startTime !== '') {
-      startTime += ' 00:00:00';
-      endTime += ' 23:59:59';
-    }
-    return {...params, startTime, endTime};
-  };
 
   // 获取最近一周日期
   lastWeek = () => {
@@ -86,30 +35,67 @@ class Query extends BaseContainer {
     };
   };
 
-  setOperations = (elm) => {
-    const {status} = elm;
-    if (status === 10040) {
-      return [{type: 'TRIAL_QUERY', text: '查看'}];
-    } else if (status === 10050) {
-      return [{type: 'DELIVERY', text: '填写快递单号'}];
-    } else if (status === 10070) {
-      return [{type: 'VERIFY_QUERY', text: '查看'}];
-    } else if (status === 10090) {
-      return [
-        {type: 'AUDIT_RESOLVE', text: '通过，填写备案号'},
-        {type: 'AUDIT_REJECT', text: '驳回'}
-      ];
-    } else if (status === 10100) {
-      return [{type: 'AUDIT_QUERY', text: '查看'}];
-    } else if (status === 20001 || status === 30001 || status === 40001) {
-      return [{type: REVOKE_TYPE[status], text: '查看'}];
-    } else if (status === 20002 || status === 30002 || status === 40002) {
-      return [{type: REVOKE_TYPE[status], text: '已完成'}];
+  // 改变备案类型
+  changeQueryType = (queryType) => {
+    switch (queryType) {
+      case 3:
+        this.selectAll = [];
+        this.selectOptions = this.genOptions();
+        break;
+      case 1:case 2:
+        this.selectAll = [1, 2, 3];
+        this.selectOptions = this.genOptions();
+        break;
+      case 4:case 5:
+        this.selectAll = [10040, 10060, 10055, 10070, 10080, 10090, 10100];
+        this.selectOptions = this.genOptions();
+        break;
     }
+    let filingType = '';
+    if (queryType === 4) filingType = [1, 2, 3];
+    if (queryType === 5) filingType = [4];
+    this.setState({queryType, status: '', filingType});
+  }
+
+  // 格式化请求参数 (overwrite)
+  convertParams = (params) => {
+    const data = {...params};
+    const {queryType, status, startTime} = data;
+    const statusEmpty = validate.isEmpty(status);
+    // 注销主体/注销网站/取消接入
+    if (queryType === 1 || queryType === 2) data.status = QUERY_STATUS[`${queryType}${status}`];
+    // 首次备案/新增网站/新增接入/变更主体/变更网站
+    if ((queryType === 4 || queryType === 5) && statusEmpty) data.status = this.selectAll;
+    // 日期精确到秒
+    if (startTime !== '') {
+      data.startTime += ' 00:00:00';
+      data.endTime += ' 23:59:59';
+    }
+    return data;
+  };
+
+  // 改变下拉框状态 (overwrite)
+  changeStatus = (status) => {
+    this.setState({status});
+  };
+
+  // 改变主体名称
+  changeHostname = (hostname) => {
+    this.setState({hostname});
+  };
+
+  // 改变关联域名
+  changeWebsite = (website) => {
+    this.setState({website});
+  };
+
+  // 改变查询日期
+  changeTime = ({startDate: startTime, endDate: endTime}) => {
+    this.setState({startTime, endTime});
   };
 
   genFilter = () => {
-    const {queryType, startTime, endTime, hostname, website} = this.state;
+    const {queryType, status, startTime, endTime, hostname, website} = this.state;
     const FILTER_ITEMS = [
       [
         {
@@ -121,22 +107,30 @@ class Query extends BaseContainer {
           value: queryType
         },
         {
+          label: '备案状态',
+          component: Select,
+          data: this.selectOptions,
+          style: {width: 300},
+          onChangeValue: this.changeStatus,
+          value: status,
+          disable: queryType === 3
+        },
+        {
           label: '主办单位',
           component: Input,
           style: {width: 300},
           onChange: this.changeHostname,
           value: hostname
-        },
+        }
+      ],
+      [
         {
           label: '关联域名',
           component: Input,
           style: {width: 300},
           onChange: this.changeWebsite,
           value: website
-        }
-
-      ],
-      [
+        },
         {
           label: '最近更新时间',
           component: DateRange,

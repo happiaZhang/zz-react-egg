@@ -6,6 +6,7 @@ import Menu from '../Menu';
 import Query from '../Query';
 import Trial from '../Trial';
 import TrialDetail from '../TrialDetail';
+import Modify from '../Modify';
 import Delivery from '../Delivery';
 import Verify from '../Verify';
 import VerifyDetail from '../VerifyDetail';
@@ -27,6 +28,7 @@ const ROUTES = [
   {path: '/', text: '备案查询', component: Query, menu: true},
   {path: '/trial', text: '备案初审', component: Trial, menu: true},
   {path: '/trial/detail/:id', component: TrialDetail},
+  {path: '/modify', text: '变更备案', component: Modify, menu: true},
   {path: '/delivery', text: '邮寄幕布', component: Delivery, menu: true},
   {path: '/verify', text: '审核幕布照片', component: Verify, menu: true},
   {path: '/verify/detail/:id', component: VerifyDetail},

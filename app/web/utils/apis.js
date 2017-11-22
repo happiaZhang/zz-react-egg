@@ -86,13 +86,22 @@ const setFilingStatus = function(data) {
   return genPromise(payload, 'setFilingStatus');
 };
 
-// 获取表格数据
-const getTableData = function(params) {
+// 获取非注销数据
+const getNonRevoked = function(params) {
   const queryString = genQueryString(params);
   const payload = {
-    url: `/api/icp-admin/filing-admin/info-summary?${queryString}`
+    url: `/api/icp-admin/filing-admin/info-summary-non-revoked?${queryString}`
   };
-  return genPromise(payload, 'getTableData');
+  return genPromise(payload, 'getNonRevoked');
+};
+
+// 获取注销数据
+const getRevoked = function(params) {
+  const queryString = genQueryString(params);
+  const payload = {
+    url: `/api/icp-admin/filing-admin/info-summary-revoked?${queryString}`
+  };
+  return genPromise(payload, 'getRevoked');
 };
 
 // 邮寄幕布
@@ -197,7 +206,8 @@ export default {
   getWebsiteInfo,
   setFilingStatus,
   getDispatch,
-  getTableData,
+  getNonRevoked,
+  getRevoked,
   setCurtainDelivery,
   getCurtainInfo,
   getHostMaterial,

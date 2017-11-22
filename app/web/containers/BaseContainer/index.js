@@ -8,21 +8,13 @@ import Table from '../../components/Table';
 import message from '../../components/Message';
 import apis from '../../utils/apis';
 import validate from '../../utils/validate';
+import {FILING_STATUS, FILING_TYPE, genOperations, handleOperations} from '../../utils/constants';
 
-const FILING_TYPE = {
-  1: '首次备案',
-  2: '新增网站',
-  3: '新增接入',
-  4: '备案变更',
-  5: '注销主体',
-  6: '注销网站',
-  7: '取消接入'
-};
 class BaseContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      queryType: 1,
+      queryType: '',
       filingType: '',
       status: '',
       operId: '',
@@ -36,20 +28,7 @@ class BaseContainer extends React.Component {
       startTime: '',
       endTime: ''
     };
-  }
-
-  // 组件即将挂载
-  componentWillMount() {
-    this.selectAll = this.setSelectAll();
-  }
-
-  // 设置下拉框为全部时status的值
-  setSelectAll = () => {
-    const all = [];
-    this.selectOptions.forEach(({value}) => {
-      if (!validate.isEmpty(value)) all.push(value);
-    });
-    return all;
+    this.loadFunc = apis.getNonRevoked;
   }
 
   // 组件初次挂载
@@ -62,12 +41,40 @@ class BaseContainer extends React.Component {
     this.searchTimer && clearTimeout(this.searchTimer);
   }
 
+  // 格式化请求参数
+  convertParams = (params) => {
+    const data = {...params};
+    if (validate.isEmpty(data.status)) data.status = this.selectAll;
+    return data;
+  };
+
+  // 设置下拉框列表
+  genOptions = () => {
+    const options = [{value: '', text: '全部'}];
+    this.selectAll.forEach(value => {
+      const {text} = FILING_STATUS.find(s => (s.value === value));
+      options.push({value, text});
+    });
+    return options;
+  };
+
   // 加载表格数据
   loadTableData = (newState) => {
-    const {queryType, pageSize, pageNumber, status, operId, startTime, endTime, hostname, website} = this.state;
+    const {
+      queryType,
+      filingType,
+      pageSize,
+      pageNumber,
+      status,
+      operId,
+      startTime,
+      endTime,
+      hostname,
+      website
+    } = this.state;
     const params = {
       queryType,
-      filingType: '',
+      filingType,
       hostname,
       website,
       startTime,
@@ -80,7 +87,7 @@ class BaseContainer extends React.Component {
     };
 
     // 获取表格数据
-    apis.getTableData(this.convertParams(params)).then(res => {
+    this.loadFunc(this.convertParams(params)).then(res => {
       const {elements, totalSize} = res;
       this.setState({
         totalSize,
@@ -89,17 +96,12 @@ class BaseContainer extends React.Component {
         pageNumber: params.pageNumber,
         status: params.status,
         operId: params.operId,
+        filingType: params.filingType,
         queryType: params.queryType
       });
     }).catch(() => {
-      message.error(this.errorMsg);
+      message.error(`获取${this.title}列表失败，请刷新重试`);
     });
-  };
-
-  // 格式化请求参数
-  convertParams = (params) => {
-    if (validate.isEmpty(params.status)) return {...params, status: this.selectAll};
-    return params;
   };
 
   // 设置表头内容
@@ -117,7 +119,7 @@ class BaseContainer extends React.Component {
         text: '状态',
         value: 'status',
         render: (value, item) => {
-          const status = this.selectOptions.find(s => s.value === item[value]);
+          const status = FILING_STATUS.find(s => s.value === item[value]);
           return status ? status.text : item[value];
         }
       },
@@ -144,7 +146,7 @@ class BaseContainer extends React.Component {
     const {elements} = this.state;
     if (elements.length === 0) return elements;
     return elements.map(elm => {
-      elm.operations = typeof this.operations === 'function' ? this.operations(elm) : this.operations;
+      elm.operations = genOperations(elm);
       return elm;
     });
   };
@@ -161,21 +163,6 @@ class BaseContainer extends React.Component {
     this.searchTimer = setTimeout(() => {
       this.loadTableData({operId});
     }, 300);
-  };
-
-  // 改变主体名称
-  changeHostname = (hostname) => {
-    this.setState({hostname});
-  };
-
-  // 改变关联域名
-  changeWebsite = (website) => {
-    this.setState({website});
-  };
-
-  // 改变查询日期
-  changeTime = ({startDate: startTime, endDate: endTime}) => {
-    this.setState({startTime, endTime});
   };
 
   //  改变每页显示数量
@@ -203,63 +190,13 @@ class BaseContainer extends React.Component {
   // 每行操作处理
   onRowOperation = (type, data) => {
     const {history} = this.props;
-    const {operId, siteId} = data;
-    switch (type) {
-      case 'TRIAL_QUERY':
-        history.push(`/trial/detail/${operId}`);
-        break;
-      case 'DELIVERY':
-        this.loadCurtain(operId);
-        break;
-      case 'VERIFY_QUERY':
-        history.push(`/verify/detail/${operId}`);
-        break;
-      case 'AUDIT_RESOLVE':
-        history.push(`/audit/resolve/${operId}`);
-        break;
-      case 'AUDIT_REJECT':
-        history.push(`/audit/reject/${operId}`);
-        break;
-      case 'AUDIT_QUERY':
-        history.push(`/audit/detail/${operId}`);
-        break;
-      case 'REVOKE_HOST_QUERY':
-        history.push(`/revoke/host/${operId}`);
-        break;
-      case 'REVOKE_SITE_QUERY':
-        history.push(`/revoke/site/${operId}/${siteId}`);
-        break;
-      case 'REVOKE_ACCESS_QUERY':
-        history.push(`/revoke/access/${operId}/${siteId}`);
-        break;
-      case 'REVOKE_DONE':
-        this.handleRevoke(data, true);
-        break;
-      case 'REVOKE_FAIL':
-        this.handleRevoke(data, false);
-        break;
-    }
+    handleOperations(type, data, history, this.implOperation);
   };
-
-  // 关闭模态框
-  onClose = (reload = false) => {
-    this.setState({showModal: false}, () => {
-      if (reload) {
-        const {history} = this.props;
-        history.push('/delivery');
-      }
-    });
-  };
-
-  // 改变备案类型
-  changeQueryType = (queryType) => {
-    this.setState({queryType});
-  }
 
   // 渲染过滤器
   renderFilter = () => {
     const {status, operId} = this.state;
-    return this.name === 'Query' ? this.genFilter() : (
+    return this.setFilter ? this.genFilter() : (
       <div className={styles.tableOperation}>
         <div className={styles.left}>
           <Select

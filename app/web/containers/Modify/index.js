@@ -1,14 +1,13 @@
 import BaseContainer from '../BaseContainer';
 
-class Trial extends BaseContainer {
-  // 构造方法
+class Modify extends BaseContainer {
   constructor(props) {
     super(props);
-    this.title = '备案初审';
+    this.title = '变更备案';
     this.selectAll = [10040];
     this.selectOptions = this.genOptions();
-    this.state.filingType = [1, 2, 3];
+    this.state.filingType = [4];
   }
 }
 
-export default Trial;
+export default Modify;

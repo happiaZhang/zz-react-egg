@@ -8,10 +8,6 @@ import message from '../../components/Message';
 import apis from '../../utils/apis';
 import validate from '../../utils/validate';
 
-const DELIVERY_STATUS = [
-  {value: '', text: '全部'},
-  {value: 10050, text: '待寄送'}
-];
 const DELIVERY_INFO = [
   {key: 'address', label: '幕布邮寄地址'},
   {key: 'postCode', label: '邮政编码'},
@@ -24,10 +20,10 @@ class Delivery extends BaseContainer {
   constructor(props) {
     super(props);
     this.title = '邮寄幕布';
-    this.selectOptions = DELIVERY_STATUS;
-    this.errorMsg = '获取邮寄幕布列表失败，请刷新重试';
-    this.operations = [{type: 'DELIVERY', text: '填写快递单号'}];
-    this.loadCurtain = this.loadCurtain;
+    this.selectAll = [10055];
+    this.selectOptions = this.genOptions();
+    this.state.filingType = [1, 2, 3, 4];
+    this.implOperation = this.loadCurtain;
   }
 
   // 加载幕布邮寄信息
@@ -54,6 +50,16 @@ class Delivery extends BaseContainer {
       });
     }).catch(() => {
       message.error('快递单号信息保存失败，请刷新重试');
+    });
+  };
+
+  // 关闭模态框
+  onClose = (reload = false) => {
+    this.setState({showModal: false}, () => {
+      if (reload) {
+        const {history} = this.props;
+        history.push('/delivery');
+      }
     });
   };
 

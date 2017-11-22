@@ -5,7 +5,8 @@ class Select extends React.Component {
   static defaultProps = {
     style: {},
     data: [],
-    value: ''
+    value: '',
+    disable: false
   };
   // 构造方法
   constructor(props) {
@@ -14,17 +15,21 @@ class Select extends React.Component {
     this.state = {
       listShowState: false,
       data: [...props.data],
-      value: props.value
+      value: props.value,
+      disable: props.disable
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    const {data, value} = nextProps;
+    const {data, value, disable} = nextProps;
     if (data !== this.props.data) {
       this.setState({data});
     }
     if (value !== this.props.value) {
       this.setState({value});
+    }
+    if (disable !== this.props.disable) {
+      this.setState({disable});
     }
   }
 
@@ -35,6 +40,8 @@ class Select extends React.Component {
 
   // 选项框文字点击操作
   handleTextClick = () => {
+    const {disable} = this.state;
+    if (disable) return;
     this.setState({listShowState: true});
   };
 
