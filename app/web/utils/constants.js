@@ -140,3 +140,12 @@ export const handleOperations = (type, data, history, func) => {
       break;
   }
 };
+export const AUDIT_INDUSTRY = {
+  news: '新闻',
+  bss: '电子公告服务',
+  culture: '文化',
+  publish: '出版',
+  education: '教育',
+  medicalCare: '医疗',
+  television: '广播电影电视节目'
+};

@@ -11,16 +11,8 @@ import Textarea from '../../components/Textarea';
 import message from '../../components/Message';
 import apis from '../../utils/apis';
 import validate from '../../utils/validate';
+import {AUDIT_INDUSTRY} from '../../utils/constants';
 
-const AUDIT_INDUSTRY = {
-  news: '新闻',
-  bss: '电子公告服务',
-  culture: '文化',
-  publish: '出版',
-  education: '教育',
-  medicalCare: '医疗',
-  television: '广播电影电视节目'
-};
 const ROUTES = [
   {key: 'trial', to: '/trial', text: '备案初审'}
 ];
@@ -123,10 +115,12 @@ const WEBSITE_INFO_LIST = [
 ];
 const HOST_FRAMES = [
   {key: 'hostBusinessLicensePhotoPath', shadeText: '工商营业执照'},
-  {key: 'hostManagerIDPhotoPath', shadeText: '身份证'}
+  {key: 'hostManagerIDPhotoFrontPath', shadeText: '身份证（正面）'},
+  {key: 'hostManagerIDPhotoBackPath', shadeText: '身份证（反面）'}
 ];
 const WEBSITE_FRAMES = [
-  {key: 'webSiteManagerPhotoPath', shadeText: '身份证'},
+  {key: 'webSiteManagerPhotoFrontPath', shadeText: '身份证（正面）'},
+  {key: 'webSiteManagerPhotoBlackPath', shadeText: '身份证（反面）'},
   {key: 'webSiteFilingVerifyPhotoPath', shadeText: '核验单'}
 ];
 const KEYS_MAPPER = {
@@ -135,8 +129,10 @@ const KEYS_MAPPER = {
   webSiteBasicInfoDto: 'websiteInfo',
   webSiteManagerInfoDto: 'websiteManagerInfo',
   hostBusinessLicensePhotoPath: 'hostManagerItems',
-  hostManagerIDPhotoPath: 'hostManagerItems',
-  webSiteManagerPhotoPath: 'webSitePhotoItems',
+  hostManagerIDPhotoFrontPath: 'hostManagerItems',
+  hostManagerIDPhotoBackPath: 'hostManagerItems',
+  webSiteManagerPhotoFrontPath: 'webSitePhotoItems',
+  webSiteManagerPhotoBlackPath: 'webSitePhotoItems',
   webSiteFilingVerifyPhotoPath: 'webSitePhotoItems'
 };
 const ID_MAPPER = {
