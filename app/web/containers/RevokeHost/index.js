@@ -10,28 +10,30 @@ class RevokeHost extends BaseContainer {
     this.selectAll = [20001, 20002];
     this.selectOptions = this.genOptions();
     this.loadFunc = apis.getHostRevokeInfo;
-    this.revokeFunc = apis.setHostRevoke;
     this.implOperation = this.handleRevoke;
   }
 
   // 处理注销状态
   handleRevoke = (row, isDone) => {
-    const {revoked, operId, siteId} = row;
+    const {status, operId} = row;
     const data = {
       checkPerson: 'zhangzheng',
+      rejectReason: '',
       operId: parseInt(operId),
-      status: isDone ? 20003 : 20004
+      filingStatus: isDone ? 20003 : 20004,
+      filingType: 1
     };
-    if (revoked !== 20002) data.siteId = parseInt(siteId);
-    if (revoked === 30002) data.status = isDone ? 30003 : 30004;
-    if (revoked === 40002) data.status = isDone ? 40003 : 40004;
+    if (status === 30002) data.filingStatus = isDone ? 30003 : 30004;
 
-    this.revokeFunc(data).then(() => {
-      message.success('处理成功', 1, () => {
+    const msgSuccess = `${this.title}${isDone ? '已通过' : '已驳回'}`;
+    const msgFailure = `${this.title}${isDone ? '' : '驳回'}失败，请刷新重试`;
+
+    apis.setFilingStatus(data).then(() => {
+      message.success(msgSuccess, 1, () => {
         this.loadTableData();
       });
     }).catch(() => {
-      message.error('处理失败，请刷新重试');
+      message.error(msgFailure);
     });
   };
 

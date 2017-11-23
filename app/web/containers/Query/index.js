@@ -41,14 +41,17 @@ class Query extends BaseContainer {
       case 3:
         this.selectAll = [];
         this.selectOptions = this.genOptions();
+        this.loadFunc = apis.getRevoked;
         break;
       case 1:case 2:
         this.selectAll = [1, 2, 3];
         this.selectOptions = this.genOptions();
+        this.loadFunc = apis.getRevoked;
         break;
       case 4:case 5:
         this.selectAll = [10040, 10060, 10055, 10070, 10080, 10090, 10100];
         this.selectOptions = this.genOptions();
+        this.loadFunc = apis.getNonRevoked;
         break;
     }
     let filingType = '';
@@ -60,17 +63,18 @@ class Query extends BaseContainer {
   // 格式化请求参数 (overwrite)
   convertParams = (params) => {
     const data = {...params};
-    const {queryType, status, startTime} = data;
+    const {queryType, status} = data;
     const statusEmpty = validate.isEmpty(status);
     // 注销主体/注销网站/取消接入
     if (queryType === 1 || queryType === 2) data.status = QUERY_STATUS[`${queryType}${status}`];
     // 首次备案/新增网站/新增接入/变更主体/变更网站
-    if ((queryType === 4 || queryType === 5) && statusEmpty) data.status = this.selectAll;
-    // 日期精确到秒
-    if (startTime !== '') {
-      data.startTime += ' 00:00:00';
-      data.endTime += ' 23:59:59';
+    if ((queryType === 4 || queryType === 5) && statusEmpty) {
+      data.status = this.selectAll;
+      delete data.queryType;
     }
+    // 日期精确到秒
+    data.startTime += ' 00:00:00';
+    data.endTime += ' 23:59:59';
     return data;
   };
 
@@ -94,6 +98,7 @@ class Query extends BaseContainer {
     this.setState({startTime, endTime});
   };
 
+  // 渲染过滤器
   genFilter = () => {
     const {queryType, status, startTime, endTime, hostname, website} = this.state;
     const FILTER_ITEMS = [

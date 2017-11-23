@@ -32,7 +32,7 @@ export const FILING_STATUS = [
   {value: 10020, text: '填写网站信息'},
   {value: 10030, text: '提交备案资料'},
   {value: 10040, text: '待初审'},
-  {value: 10050, text: '填写邮寄地址'},
+  {value: 10050, text: '办理照片'},
   {value: 10055, text: '待邮寄'},
   {value: 10060, text: '初审驳回'},
   {value: 10070, text: '待审核幕布'},
@@ -88,11 +88,12 @@ export const genOperations = (elm) => {
       operations.push({type: 'REVOKE_SITE_QUERY', text: '查看'});
       break;
     case 40001:
-      operations.push({type: 'REVOKE_ACCESS_QUERY', text: '查看'});
+      operations.push({type: 'REVOKE_ACCESS_RESOLVE', text: '通过'});
+      operations.push({type: 'REVOKE_ACCESS_REJECT', text: '驳回'});
       break;
-    case 20002:case 30002:case 40002:
+    case 20002:case 30002:
       operations.push({type: 'REVOKE_DONE', text: '通过'});
-      operations.push({type: 'REVOKE_FAIL', text: '失败'});
+      operations.push({type: 'REVOKE_FAIL', text: '驳回'});
       break;
   }
 
@@ -125,8 +126,11 @@ export const handleOperations = (type, data, history, func) => {
     case 'REVOKE_SITE_QUERY':
       history.push(`/revoke/site/${operId}/${siteId}`);
       break;
-    case 'REVOKE_ACCESS_QUERY':
-      history.push(`/revoke/access/${operId}/${siteId}`);
+    case 'REVOKE_ACCESS_RESOLVE':
+      history.push(`/revoke/access/resolve/${operId}/${siteId}`);
+      break;
+    case 'REVOKE_ACCESS_REJECT':
+      history.push(`/revoke/access/reject/${operId}/${siteId}`);
       break;
     case 'REVOKE_DONE':
       func(data, true);

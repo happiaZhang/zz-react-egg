@@ -8,7 +8,6 @@ class RevokeSite extends RevokeHost {
     this.selectAll = [30001, 30002];
     this.selectOptions = this.genOptions();
     this.loadFunc = apis.getSiteRevokeInfo;
-    this.revokeFunc = apis.setSiteRevoke;
   }
 }
 

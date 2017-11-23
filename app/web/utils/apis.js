@@ -67,15 +67,6 @@ const getWebsiteInfoByID = function(params) {
   return genPromise(payload, 'getWebsiteInfoByID');
 };
 
-// 获取注销网站信息
-const getWebsiteInfo = function(params) {
-  const queryString = genQueryString(params);
-  const payload = {
-    url: `/api/icp-admin/filing-admin/website-info?${queryString}`
-  };
-  return genPromise(payload, 'getWebsiteInfo');
-};
-
 // 设置初审验证
 const setFilingStatus = function(data) {
   const payload = {
@@ -169,41 +160,10 @@ const setFilingNo = function(data) {
   return genPromise(payload, 'setFilingNo');
 };
 
-// 设置主体注销状态
-const setHostRevoke = function(data) {
-  const payload = {
-    url: '/api/icp-admin/filing-admin/host-revoke',
-    method: 'POST',
-    data
-  };
-  return genPromise(payload, 'setHostRevoke');
-};
-
-// 设置网站注销状态
-const setSiteRevoke = function(data) {
-  const payload = {
-    url: '/api/icp-admin/filing-admin/site-revoke',
-    method: 'POST',
-    data
-  };
-  return genPromise(payload, 'setSiteRevoke');
-};
-
-// 设置网站备案号
-const setAccessRevoke = function(data) {
-  const payload = {
-    url: '/api/icp-admin/filing-admin/site-access-cancel',
-    method: 'POST',
-    data
-  };
-  return genPromise(payload, 'setAccessRevoke');
-};
-
 export default {
   getAdminInfo,
   getHostInfoByID,
   getWebsiteInfoByID,
-  getWebsiteInfo,
   setFilingStatus,
   getDispatch,
   getNonRevoked,
@@ -214,8 +174,5 @@ export default {
   getHostRevokeInfo,
   getSiteRevokeInfo,
   getAccessRevokeInfo,
-  setFilingNo,
-  setHostRevoke,
-  setSiteRevoke,
-  setAccessRevoke
+  setFilingNo
 };

@@ -15,38 +15,51 @@ class RevokeHostDetail extends TrialDetail {
       {text: '网站信息', to: '#website'},
       {text: '查看备案密码', to: '#password'}
     ];
-    this.apiFunc = apis.setHostRevoke;
+    this.btnGroup = [{key: 'commit', text: '提交至管局审核', onClick: this.onCommit, style: {width: 150}}];
   }
 
   onCommit = () => {
     const data = {
       checkPerson: 'zhangzheng',
+      rejectReason: '',
       operId: this.getOperId(),
-      status: 20002
+      filingStatus: 20002,
+      filingType: 1
     };
 
-    if (this.name !== 'RevokeHostDetail') data.siteId = this.getSiteId();
-    if (this.name === 'RevokeSiteDetail') data.status = 30002;
-    if (this.name === 'RevokeAccessDetail') data.status = 40002;
+    const msg = {
+      success: '提交管局审核成功',
+      failure: '提交管局审核失败，请刷新重试'
+    };
 
-    this.apiFunc(data).then(() => {
-      message.success('提交管局审核成功', 3, () => {
+    if (this.name === 'RevokeSiteDetail') data.filingStatus = 30002;
+    if (this.name === 'RevokeAccessReject' || this.name === 'RevokeAccessResolve') data.filingType = 2;
+    if (this.name === 'RevokeAccessReject') {
+      data.filingStatus = 40004;
+      msg.success = '取消接入驳回成功';
+      msg.success = '取消接入驳回失败，请刷新重试';
+    }
+    if (this.name === 'RevokeAccessResolve') {
+      data.filingStatus = 40003;
+      msg.success = '取消接入操作成功';
+      msg.success = '取消接入操作失败，请刷新重试';
+    }
+
+    apis.setFilingStatus(data).then(() => {
+      message.success(msg.success, 3, () => {
         const {history} = this.props;
         history.push(this.route[0].to);
       });
     }).catch(() => {
-      message.error('提交管局审核失败，请刷新重试');
+      message.error(msg.failure);
     });
   };
 
   renderButtons = () => {
-    const btnGroup = [
-      {key: 'commit', text: '提交至管局审核', onClick: this.onCommit, style: {width: 150}}
-    ];
     return (
       <div className={styles.toolBar}>
         {
-          btnGroup.map(props => {
+          this.btnGroup.map(props => {
             return <Button {...props} />;
           })
         }

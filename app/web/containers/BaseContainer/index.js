@@ -44,6 +44,8 @@ class BaseContainer extends React.Component {
   // 格式化请求参数
   convertParams = (params) => {
     const data = {...params};
+    delete data.startTime;
+    delete data.endTime;
     if (validate.isEmpty(data.status)) data.status = this.selectAll;
     return data;
   };
@@ -95,9 +97,7 @@ class BaseContainer extends React.Component {
         pageSize: params.pageSize,
         pageNumber: params.pageNumber,
         status: params.status,
-        operId: params.operId,
-        filingType: params.filingType,
-        queryType: params.queryType
+        website: params.website
       });
     }).catch(() => {
       message.error(`获取${this.title}列表失败，请刷新重试`);
@@ -157,11 +157,11 @@ class BaseContainer extends React.Component {
   };
 
   // 条件搜索
-  onSearch = (operId) => {
-    this.setState({operId});
+  onSearch = (website) => {
+    this.setState({website});
     this.searchTimer && clearTimeout(this.searchTimer);
     this.searchTimer = setTimeout(() => {
-      this.loadTableData({operId});
+      this.loadTableData({website});
     }, 300);
   };
 
@@ -195,7 +195,7 @@ class BaseContainer extends React.Component {
 
   // 渲染过滤器
   renderFilter = () => {
-    const {status, operId} = this.state;
+    const {status, website} = this.state;
     return this.setFilter ? this.genFilter() : (
       <div className={styles.tableOperation}>
         <div className={styles.left}>
@@ -206,8 +206,8 @@ class BaseContainer extends React.Component {
             onChangeValue={this.changeStatus} />
         </div>
         <Search
-          placeholder='请输入申请ID'
-          value={operId}
+          placeholder='请输入关联域名'
+          value={website}
           onChangeValue={this.onSearch} />
       </div>
     );

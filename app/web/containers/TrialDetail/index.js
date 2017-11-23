@@ -157,7 +157,6 @@ class TrialDetail extends React.Component {
     this.name = 'TrialDetail';
     this.route = ROUTES;
     this.anchor = ANCHORS;
-    this.isAuditReject = this.name === 'AuditReject';
     this.rejectReason = '信息有误,请重新填写';
     this.hostUnit = [];
     this.hostUnitManager = [];
@@ -181,27 +180,16 @@ class TrialDetail extends React.Component {
     });
 
     // 获取网站信息
-    if (this.name === 'RevokeSiteDetail' || this.name === 'RevokeAccessDetail') {
-      const siteId = this.getSiteId();
-      apis.getWebsiteInfo({operId, siteId}).then(data => {
-        const {listWebSiteManagerInfo} = data;
-        data.webSiteManagerInfoDto = listWebSiteManagerInfo[0] || {};
-        this.setState({listWebSiteInfo: [data]});
-      }).catch(() => {
-        message.error('获取网站信息失败，请刷新重试');
+    apis.getWebsiteInfoByID({operId}).then(data => {
+      const {listWebSiteInfo} = data;
+      listWebSiteInfo.forEach(websiteInfo => {
+        const {listWebSiteManagerInfo} = websiteInfo;
+        websiteInfo.webSiteManagerInfoDto = listWebSiteManagerInfo[0] || {};
       });
-    } else {
-      apis.getWebsiteInfoByID({operId}).then(data => {
-        const {listWebSiteInfo} = data;
-        listWebSiteInfo.forEach(websiteInfo => {
-          const {listWebSiteManagerInfo} = websiteInfo;
-          websiteInfo.webSiteManagerInfoDto = listWebSiteManagerInfo[0] || {};
-        });
-        this.setState({listWebSiteInfo});
-      }).catch(() => {
-        message.error('获取网站信息失败，请刷新重试');
-      });
-    }
+      this.setState({listWebSiteInfo});
+    }).catch(() => {
+      message.error('获取网站信息失败，请刷新重试');
+    });
 
     // 获取主体资料信息
     apis.getHostMaterial({operId}).then(materialInfo => {
@@ -223,18 +211,9 @@ class TrialDetail extends React.Component {
     return match.params.id;
   };
 
-  // 获取网站Id
-  getSiteId = () => {
-    const {match} = this.props;
-    return match.params.siteId;
-  };
-
   // 选择错误项
   checkWarningItem = (key, id, value) => {
     return (v) => {
-      console.log('key: ' + key);
-      console.log('id: ' + id);
-      console.log('value: ' + value);
       if (this[key] instanceof Array) {
         this.handleWarningItem(v, this[key], value);
       } else {
@@ -472,7 +451,7 @@ class TrialDetail extends React.Component {
   // 渲染错误理由文本框
   renderTextarea = () => {
     const {checkMode} = this.state;
-    return (checkMode || this.isAuditReject) ? <Textarea
+    return (checkMode || this.name === 'AuditReject') ? <Textarea
       className={styles.reason}
       width={635}
       height={150}
@@ -504,7 +483,7 @@ class TrialDetail extends React.Component {
         break;
     }
 
-    const btnGroup = (checkMode || this.isAuditReject) ? [
+    const btnGroup = (checkMode || this.name === 'AuditReject') ? [
       {key: 'cancel', text: '取消', type: 'default', onClick: this.onCheckMode(false)},
       {key: 'confirm', text: '确认驳回', onClick: this.handleClick(false)}
     ] : [
@@ -561,7 +540,10 @@ class TrialDetail extends React.Component {
 
   // 渲染备案密码
   renderPassword = () => {
-    if (this.name === 'RevokeHostDetail' || this.name === 'RevokeSiteDetail' || this.name === 'RevokeAccessDetail') {
+    if (this.name === 'RevokeHostDetail' ||
+      this.name === 'RevokeSiteDetail' ||
+      this.name === 'RevokeAccessResolve' ||
+      this.name === 'RevokeAccessReject') {
       const {hostInfo} = this.state;
       const filingPassword = validate.formatData(hostInfo, 'hostUnitFullDto.filingPassword');
       return (

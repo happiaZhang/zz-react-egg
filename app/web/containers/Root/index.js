@@ -19,7 +19,8 @@ import RevokeHostDetail from '../RevokeHostDetail';
 import RevokeSite from '../RevokeSite';
 import RevokeSiteDetail from '../RevokeSiteDetail';
 import RevokeAccess from '../RevokeAccess';
-import RevokeAccessDetail from '../RevokeAccessDetail';
+import RevokeAccessResolve from '../RevokeAccessResolve';
+import RevokeAccessReject from '../RevokeAccessReject';
 import Loading from '../Loading';
 import validate from '../../utils/validate';
 
@@ -41,7 +42,8 @@ const ROUTES = [
   {path: '/revoke/site', text: '注销网站', component: RevokeSite, menu: true},
   {path: '/revoke/site/:id/:siteId', component: RevokeSiteDetail},
   {path: '/revoke/access', text: '取消接入', component: RevokeAccess, menu: true},
-  {path: '/revoke/access/:id/:siteId', component: RevokeAccessDetail}
+  {path: '/revoke/access/resolve/:id/:siteId', component: RevokeAccessResolve},
+  {path: '/revoke/access/reject/:id/:siteId', component: RevokeAccessReject}
 ];
 
 export default class Root extends React.Component {

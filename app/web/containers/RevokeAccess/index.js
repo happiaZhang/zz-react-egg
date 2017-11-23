@@ -8,7 +8,6 @@ class RevokeAccess extends RevokeHost {
     this.selectAll = [40001, 40002];
     this.selectOptions = this.genOptions();
     this.loadFunc = apis.getAccessRevokeInfo;
-    this.revokeFunc = apis.setAccessRevoke;
   }
 }
 
