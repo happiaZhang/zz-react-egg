@@ -12,19 +12,12 @@ const genPromise = (payload, key) => {
   dispatch({type: types.LOADING, payload: key});
   return new Promise(function(resolve, reject) {
     // 调用API
-    http.fetch(payload).then((result) => {
+    http.fetch(payload).then(data => {
       dispatch({type: types.LOADED, payload: key});
-      switch (result.code) {
-        case 0:
-          resolve(result.data);
-          break;
-        default:
-          reject();
-          break;
-      }
-    }).catch(() => {
+      resolve(data);
+    }).catch(err => {
       dispatch({type: types.LOADED, payload: key});
-      reject();
+      reject(err);
     });
   });
 };

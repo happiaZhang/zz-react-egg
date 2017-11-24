@@ -27,6 +27,9 @@ const regex = {
   amount: /^(?!0+(?:\.0+)?$)(?:[1-9]\d*|0)(?:\.\d{1,2})?$/
 };
 
+const storage = window.localStorage;
+const storageKey = 'icpInfo';
+
 export default {
   regex,
   // url验证
@@ -104,5 +107,14 @@ export default {
   },
   isDev() {
     return location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+  },
+  setStore(obj) {
+    let icpInfo = storage.getItem(storageKey);
+    if (!this.isNil(icpInfo)) icpInfo = JSON.parse(icpInfo);
+    storage.setItem(storageKey, JSON.stringify({...icpInfo, ...obj}));
+  },
+  getStore(key) {
+    const icpInfo = JSON.parse(storage.getItem(storageKey));
+    return icpInfo[key];
   }
 };

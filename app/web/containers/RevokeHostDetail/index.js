@@ -23,8 +23,7 @@ class RevokeHostDetail extends TrialDetail {
       checkPerson: 'zhangzheng',
       rejectReason: '',
       operId: this.getOperId(),
-      filingStatus: 20002,
-      filingType: 1
+      filingStatus: 20002
     };
 
     const msg = {

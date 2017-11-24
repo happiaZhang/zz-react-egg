@@ -61,12 +61,12 @@ export const FILING_STATUS = [
   {value: 3, text: '审核通过'}
 ];
 export const genOperations = (elm) => {
-  const {status} = elm;
+  const {status, filingType} = elm;
   const operations = [];
 
   switch (status) {
     case 10040:
-      operations.push({type: 'TRIAL_QUERY', text: '查看'});
+      operations.push({type: filingType === 4 ? 'MODIFY_QUERY' : 'TRIAL_QUERY', text: '查看'});
       break;
     case 10055:
       operations.push({type: 'DELIVERY', text: '填写快递单号'});
@@ -104,6 +104,9 @@ export const handleOperations = (type, data, history, func) => {
   switch (type) {
     case 'TRIAL_QUERY':
       history.push(`/trial/detail/${operId}`);
+      break;
+    case 'MODIFY_QUERY':
+      history.push(`/modify/detail/${operId}`);
       break;
     case 'DELIVERY':
       func(operId);

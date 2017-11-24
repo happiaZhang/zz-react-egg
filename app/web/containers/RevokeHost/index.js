@@ -20,8 +20,7 @@ class RevokeHost extends BaseContainer {
       checkPerson: 'zhangzheng',
       rejectReason: '',
       operId: parseInt(operId),
-      filingStatus: isDone ? 20003 : 20004,
-      filingType: 1
+      filingStatus: isDone ? 20003 : 20004
     };
     if (status === 30002) data.filingStatus = isDone ? 30003 : 30004;
 

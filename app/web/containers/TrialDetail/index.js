@@ -82,7 +82,7 @@ const WEBSITE_INFO_LIST = [
       files && files.forEach(f => {
         const {name, approvalNumber, approvalFile} = f;
         result.push({
-          key: key + '_' + name,
+          key: key + '.' + name,
           label: <i>&nbsp;</i>,
           content: (d, k, checkMode, onChange) => {
             const props = {
@@ -120,7 +120,7 @@ const HOST_FRAMES = [
 ];
 const WEBSITE_FRAMES = [
   {key: 'webSiteManagerPhotoFrontPath', shadeText: '身份证（正面）'},
-  {key: 'webSiteManagerPhotoBlackPath', shadeText: '身份证（反面）'},
+  {key: 'webSiteManagerPhotoBackPath', shadeText: '身份证（反面）'},
   {key: 'webSiteFilingVerifyPhotoPath', shadeText: '核验单'}
 ];
 const KEYS_MAPPER = {
@@ -132,7 +132,7 @@ const KEYS_MAPPER = {
   hostManagerIDPhotoFrontPath: 'hostManagerItems',
   hostManagerIDPhotoBackPath: 'hostManagerItems',
   webSiteManagerPhotoFrontPath: 'webSitePhotoItems',
-  webSiteManagerPhotoBlackPath: 'webSitePhotoItems',
+  webSiteManagerPhotoBackPath: 'webSitePhotoItems',
   webSiteFilingVerifyPhotoPath: 'webSitePhotoItems'
 };
 const ID_MAPPER = {
@@ -255,6 +255,9 @@ class TrialDetail extends React.Component {
     switch (this.name) {
       case 'TrialDetail':
         history.push('/trial');
+        break;
+      case 'ModifyDetail':
+        history.push('/modify');
         break;
       case 'VerifyDetail':
         history.push('/verify');
@@ -429,7 +432,9 @@ class TrialDetail extends React.Component {
       const id = this.setId(data, ks[0]);
       const value = realValue || ks[ks.length - 1];
       props.onChange = this.checkWarningItem(realKey || KEYS_MAPPER[ks[0]], id, value);
-      props.content = content ? content(data, key, checkMode, props.onChange) : validate.formatData(data, key);
+      props.content = content
+        ? content(data, key, checkMode, this.checkWarningItem(realKey, id, `${ks[ks.length - 1]}_approvalFile`))
+        : validate.formatData(data, key);
       list.push(<Info {...props} />);
     });
     return list;
@@ -469,7 +474,7 @@ class TrialDetail extends React.Component {
     let rejectText = null;
     let resolveText = null;
     switch (this.name) {
-      case 'TrialDetail':
+      case 'TrialDetail':case 'ModifyDetail':
         rejectText = '初审驳回';
         resolveText = '初审通过';
         break;

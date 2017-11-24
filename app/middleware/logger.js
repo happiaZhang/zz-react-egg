@@ -5,7 +5,6 @@
  */
 module.exports = () => {
   return async function logger(ctx, next) {
-    console.log(`${ctx.request.host}${ctx.request.url}`);
     // 请求方法
     const method = `Method=${ctx.method}`;
     // 访问主机

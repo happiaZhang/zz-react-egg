@@ -14,28 +14,13 @@ export default {
         data: data,
         type: method,
         dataType: 'json',
-        success: resolve,
-        error: reject
+        success({code, msg, data}) {
+          code ? reject(msg) : resolve(data);
+        },
+        error() {
+          reject('网络连接失败，请稍候重试');
+        }
       });
-    });
-  },
-  // 文件上传
-  upload(url, data, success, error) {
-    let formData = new FormData();
-    formData.append('file', data.files[0]);
-    $.ajax({
-      beforeSend: (xhr) => {
-        xhr.setRequestHeader('x-csrf-token', tools.getCookie('csrfToken'));
-      },
-      url: url,
-      data: formData,
-      type: 'POST',
-      async: false,
-      cache: false,
-      contentType: false,
-      processData: false,
-      success: success,
-      error: error
     });
   }
 };
