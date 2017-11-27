@@ -119,8 +119,14 @@ class RejectModel {
     if (!this.isEmpty(websiteItems)) websiteInfo.otherItems = websiteItems;
     if (!this.isEmpty(websiteManagerItems)) websiteManagerInfo.warnItems = websiteManagerItems;
 
-    if (!this.isEmpty(websiteInfo)) this.websiteInfo.push({id, ...websiteInfo});
-    if (!this.isEmpty(websiteManagerInfo)) this.websiteManagerInfo.push({id, ...websiteManagerInfo});
+    if (!this.isEmpty(websiteInfo)) {
+      websiteInfo.id = id;
+      this.websiteInfo.push(websiteInfo);
+    }
+    if (!this.isEmpty(websiteManagerInfo)) {
+      websiteManagerInfo.id = id;
+      this.websiteManagerInfo.push(websiteManagerInfo);
+    }
     if (!this.isEmpty(webSitePhotoItems)) this.webSitePhotoItems.push({id, warnItems: webSitePhotoItems});
   }
 }

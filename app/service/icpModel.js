@@ -8,11 +8,11 @@ class IcpModel {
     const keySet = key.split('.');
     const counter = keySet.length;
     let result = '';
-    let d = {...data};
+    let d = Object.assign({}, data);
     for (let i = 0; i < counter; i++) {
       const k = keySet[i];
       if (d[k] == null) break;
-      (i === counter - 1) ? result = d[k] : d = {...d[k]};
+      (i === counter - 1) ? result = d[k] : d = Object.assign({}, d[k]);
     }
     return result;
   }
