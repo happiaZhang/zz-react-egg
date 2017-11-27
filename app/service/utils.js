@@ -1,14 +1,15 @@
 module.exports = app => {
   class Utils extends app.Service {
     async request(url, opts) {
-      const {host, search, ...other} = opts;
+      const {host, search, method, data} = opts;
       url = `${host}${url}${search}`;
       const payload = {
         headers: {
           'content-type': 'application/json'
         },
         dataType: 'json',
-        ...other
+        method,
+        data
       };
       return this.ctx.curl(url, payload);
     }
