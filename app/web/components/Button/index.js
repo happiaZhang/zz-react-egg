@@ -1,59 +1,34 @@
 import styles from './index.scss';
 import React from 'react';
-import validate from '../../utils/validate';
 
 class Button extends React.Component {
   static defaultProps = {
     text: 'Submit',
-    type: 'primary',
-    style: {}
+    type: 'primary'
   };
-
-  // 构造方法
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      loadingState: props.loadingState || false,
-      disabled: props.disabled || false
-    };
-  }
-
-  // 接收新的参数
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      loadingState: nextProps.loadingState || false,
-      disabled: nextProps.disabled || false
-    });
-  }
 
   // 点击处理
   handleClick = (e) => {
     e.preventDefault();
     const {onClick} = this.props;
-
     onClick && onClick();
   };
 
   // 页面渲染
   render() {
-    let {text, type, style, className} = this.props;
-    let {loadingState, disabled} = this.state;
+    const {text, type, disabled, loading, style} = this.props;
 
-    let loadingClass = loadingState ? styles.loading : '';
-    let disabledClass = disabled ? styles.disabled : '';
-
-    let classNames = `${styles.button} ${styles[type]} ${loadingClass} ${disabledClass}`;
-    if (!validate.isNil(className)) classNames += ' ' + className;
+    let className = `${styles.button} ${styles[type]}`;
+    if (loading) className += ' ' + styles.loading;
+    if (disabled) className += ' ' + styles.disabled;
 
     return (
       <button
         type='button'
-        className={classNames}
+        className={className}
         style={style}
         onClick={this.handleClick}>
-        <span className={styles.text}>{text}</span>
-        <span className={styles.loadingIcon} />
+        {loading ? <span className={styles.loadingIcon} /> : text}
       </button>
     );
   }

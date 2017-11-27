@@ -49,6 +49,11 @@
     }
 }
 
+.disable {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
 .focusing {
     .text {
         border: 1px solid #3d70b2;

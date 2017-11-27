@@ -4,7 +4,7 @@ class AuditDetail extends TrialDetail {
   constructor(props) {
     super(props);
     this.name = 'AuditDetail';
-    this.route = [{key: 'audit', to: '/audit', text: '审核列表'}];
+    this.route = [{key: 'audit', to: '/audit', text: '管局审核'}];
   }
 }
 

@@ -87,16 +87,18 @@ class Select extends React.Component {
 
   // 页面渲染
   render() {
-    let {type, style} = this.props;
-    let {listShowState, data, value} = this.state;
+    const {type, style} = this.props;
+    const {listShowState, data, value, disable} = this.state;
 
-    let currentValue = this.getCurrentValue(data, value); // 获取当前显示值
-    let typeClass = type ? styles[type] : '';
-    let focusingClass = listShowState ? styles.focusing : '';
+    const currentValue = this.getCurrentValue(data, value); // 获取当前显示值
+    let classNames = styles.selectBox;
+    if (type) classNames += ' ' + styles[type];
+    if (listShowState) classNames += ' ' + styles.focusing;
+    if (disable) classNames += ' ' + styles.disable;
 
     return (
       <div
-        className={`${styles.selectBox} ${typeClass} ${focusingClass}`}
+        className={classNames}
         style={style}
         onMouseLeave={this.handleMouseLeave}>
         <p className={styles.text} onClick={this.handleTextClick}>{currentValue}</p>

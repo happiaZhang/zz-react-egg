@@ -42,10 +42,10 @@ const ROUTES = [
   {path: '/revoke/host', text: '注销主体', component: RevokeHost, menu: true},
   {path: '/revoke/host/:id', component: RevokeHostDetail},
   {path: '/revoke/site', text: '注销网站', component: RevokeSite, menu: true},
-  {path: '/revoke/site/:id/:siteId', component: RevokeSiteDetail},
+  {path: '/revoke/site/:id', component: RevokeSiteDetail},
   {path: '/revoke/access', text: '取消接入', component: RevokeAccess, menu: true},
-  {path: '/revoke/access/resolve/:id/:siteId', component: RevokeAccessResolve},
-  {path: '/revoke/access/reject/:id/:siteId', component: RevokeAccessReject}
+  {path: '/revoke/access/resolve/:id', component: RevokeAccessResolve},
+  {path: '/revoke/access/reject/:id', component: RevokeAccessReject}
 ];
 
 export default class Root extends React.Component {

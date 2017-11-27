@@ -25,14 +25,13 @@ class RevokeHost extends BaseContainer {
     if (status === 30002) data.filingStatus = isDone ? 30003 : 30004;
 
     const msgSuccess = `${this.title}${isDone ? '已通过' : '已驳回'}`;
-    const msgFailure = `${this.title}${isDone ? '' : '驳回'}失败，请刷新重试`;
 
     apis.setFilingStatus(data).then(() => {
-      message.success(msgSuccess, 1, () => {
+      message.success(msgSuccess, 2, () => {
         this.loadTableData();
       });
-    }).catch(() => {
-      message.error(msgFailure);
+    }).catch(error => {
+      message.error(error);
     });
   };
 

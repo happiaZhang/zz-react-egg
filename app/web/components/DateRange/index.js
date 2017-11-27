@@ -8,6 +8,7 @@ import datetime from '../Datepicker/datetime';
  * @param {string | number} endDate
  * @param {number} width
  * @param {function} onChange
+ * @param {boolean} clear: default value is true
  */
 
 class DateRange extends React.Component {
@@ -69,7 +70,7 @@ class DateRange extends React.Component {
   };
 
   render() {
-    const {width, gap, paddingRight} = this.props;
+    const {width, gap, paddingRight, clear} = this.props;
     const {startDate, endDate} = this.state;
     const dtWidth = parseFloat(((width - gap - paddingRight) / 2).toFixed(2));
     const style = {width, paddingRight};
@@ -82,7 +83,7 @@ class DateRange extends React.Component {
       endDate
     };
     let classNames = styles.dateRange;
-    if (startDate !== '') classNames += ' ' + styles.hover;
+    if (startDate !== '' && clear) classNames += ' ' + styles.hover;
     return (
       <div className={classNames} style={style}>
         <Datepicker {...props} value={startDate} />

@@ -7,7 +7,7 @@ class RevokeAccess extends RevokeHost {
     this.title = '取消接入';
     this.selectAll = [40001, 40002];
     this.selectOptions = this.genOptions();
-    this.loadFunc = apis.getAccessRevokeInfo;
+    this.loadFunc = apis.getSiteAccesscancelledInfo;
   }
 }
 

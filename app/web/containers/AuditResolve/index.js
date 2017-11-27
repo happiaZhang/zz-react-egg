@@ -3,57 +3,49 @@ import React from 'react';
 import TrialDetail from '../TrialDetail';
 import Breadcrumb from '../../components/Breadcrumb';
 import MainHeader from '../MainHeader';
-import Card from '../../components/Card';
-import Info from '../../components/Info';
-import Button from '../../components/Button';
-import InputBox from '../../components/InputBox';
+import FormGroup from '../../components/FormGroup';
+import Input from '../../components/Input';
 import message from '../../components/Message';
 import apis from '../../utils/apis';
 import validate from '../../utils/validate';
 
-const ROUTES = [
-  {key: 'audit', to: '/audit', text: '审核列表'}
+const HOST_INFO_LIST = [
+  {key: 'hostUnitName', label: '主办单位'},
+  {key: 'hostType', label: '主办单位性质'},
+  {key: 'hostCredentialType', label: '主办单位证件类型'},
+  {key: 'hostCredentialNumber', label: '主办单位证件号码'}
 ];
-const AUDIT_HOST = [
-  {key: 'hostUnitFullDto.hostUnitName', label: '主办单位或主办人名称'},
-  {key: 'hostUnitFullDto.hostUnitBasicDto.hostType', label: '主办单位性质'},
-  {key: 'hostUnitFullDto.hostUnitBasicDto.credentialType', label: '主办单位证件类型'},
-  {key: 'hostUnitFullDto.hostUnitBasicDto.credentialNumber', label: '主办单位证件号码'}
-];
-const AUDIT_SITE = [
-  {key: 'webSiteBasicInfoDto.name', label: '网站名称'},
-  {key: 'webSiteBasicInfoDto.indexUrl', label: '网站首页URL'},
-  {key: 'webSiteBasicInfoDto.verifiedDomain', label: '已验证域名'}
+const SITE_INFO_LIST = [
+  {key: 'siteName', label: '网站名称'},
+  {key: 'siteIndexUrl', label: '网站首页URL'},
+  {
+    key: 'siteVerifiedDomain',
+    label: '已验证域名',
+    parser: (key, label, data, other) => {
+      const result = [];
+      const domain = data[key] || '';
+      domain.split(',').forEach((d, i) => {
+        result.push({
+          key: key + '_' + d,
+          label: i === 0 ? label : <i>&nbsp;</i>,
+          content: d,
+          other
+        });
+      });
+      return result;
+    }
+  }
 ];
 
-class AuditDetail extends TrialDetail {
+class AuditResolve extends TrialDetail {
   constructor(props) {
     super(props);
-    this.state = {
-      hostInfo: null,
-      listWebSiteInfo: null
-    };
-    this.filingHostNo = {};
-    this.filingSiteNo = {};
-  }
-
-  componentDidMount() {
-    const operId = this.getOperId();
-
-    // 获取主体信息
-    apis.getHostInfoByID({operId}).then(hostInfo => {
-      this.setState({hostInfo});
-    }).catch(() => {
-      message.error('获取主体信息失败，请刷新重试');
-    });
-
-    // 获取网站信息
-    apis.getWebsiteInfoByID({operId}).then(data => {
-      const {listWebSiteInfo} = data;
-      this.setState({listWebSiteInfo});
-    }).catch(() => {
-      message.error('获取网站信息失败，请刷新重试');
-    });
+    this.name = 'AuditResolve';
+    this.route = [
+      {key: 'audit', to: '/audit', text: '管局审核'}
+    ];
+    this.initApi = apis.getAuditResolveInfo;
+    this.host = {};
   }
 
   onAudit = () => {
@@ -62,14 +54,14 @@ class AuditDetail extends TrialDetail {
       operId: this.getOperId()
     };
 
-    Object.keys(this.filingHostNo).forEach(operId => {
-      data.hostFilingNo = this.filingHostNo[operId];
+    Object.keys(this.host).forEach(operId => {
+      data.hostFilingNo = this.host[operId];
     });
 
     const filingSiteNoDtoList = [];
-    Object.keys(this.filingSiteNo).forEach(siteId => {
+    Object.keys(this.site).forEach(siteId => {
       filingSiteNoDtoList.push({
-        siteFilingNo: this.filingSiteNo[siteId],
+        siteFilingNo: this.site[siteId],
         siteId: parseInt(siteId)
       });
     });
@@ -78,103 +70,76 @@ class AuditDetail extends TrialDetail {
 
     apis.setFilingNo(data).then(() => {
       message.success('备案号保存成功', 2, () => {
-        const {history} = this.props;
-        history.push('/audit');
+        this.switch2List();
       });
-    }).catch(() => {
-      message.error('保存备案号失败，请刷新重试');
+    }).catch(error => {
+      message.error(error);
     });
   };
 
-  renderButtons = () => {
-    const btnGroup = [
+  // 生成按钮组 （overwrite）
+  genBtnGroup = () => {
+    this.btnGroup = [
       {key: 'confirm', text: '确定', onClick: this.onAudit}
     ];
-    return (
-      <div className={styles.toolBar}>
-        {
-          btnGroup.map(props => {
-            return <Button {...props} />;
-          })
-        }
-      </div>
-    );
-  };
-
-  renderWebsiteInfo = () => {
-    const {listWebSiteInfo} = this.state;
-    const websiteList = [];
-    listWebSiteInfo && listWebSiteInfo.forEach(website => {
-      const siteId = validate.formatData(website, 'webSiteBasicInfoDto.id');
-      const suffixProps = {
-        label: '网站备案号',
-        inputPlaceholder: '请输入网站备案号',
-        onBlur: this.handleFilingNo(false, siteId)
-      };
-      const props = {
-        key: siteId,
-        title: '备案网站',
-        style: {marginTop: 50},
-        suffix: this.renderSuffix(suffixProps)
-      };
-
-      websiteList.push(
-        <Card {...props}>
-          {this.renderList(AUDIT_SITE, website)}
-        </Card>
-      );
-    });
-
-    return websiteList;
-  };
-
-  renderList = (infoList, data) => {
-    const list = [];
-    infoList.forEach((props) => {
-      const {key} = props;
-      const content = validate.formatData(data, key);
-      list.push(<Info {...props} content={content} />);
-    });
-    return list;
   };
 
   handleFilingNo = (isHost, id) => {
     return (v) => {
       if (isHost) {
-        this.filingHostNo[id] = v;
+        this.host[id] = v;
       } else {
-        this.filingSiteNo[id] = v;
+        this.site[id] = v;
       }
     };
   }
 
-  renderSuffix = (other = {}) => {
-    const id = this.getOperId();
+  // overwrite
+  renderPhoto = (photos, data, isHost) => {
+    let label = '主体备案号';
+    let id = this.getOperId();
+    const siteName = data.siteName || '';
+
+    if (!isHost) {
+      label = '网站备案号';
+      id = data.siteId || '';
+    }
+
+    if (!validate.isEmpty(siteName)) label += ` (${siteName})`;
+
     const props = {
-      label: '主体备案号',
-      inputPlaceholder: '请输入主体备案号',
-      style: {
-        position: 'absolute',
-        top: 0,
-        left: '100%',
-        marginLeft: 50
-      },
-      onBlur: this.handleFilingNo(true, id)
+      label,
+      component: Input,
+      placeholder: `请输入${label}`,
+      onBlur: this.handleFilingNo(isHost, id)
     };
-    return <InputBox {...props} {...other} />;
+    return <div className={styles.photoFrame}><FormGroup {...props} /></div>;
   };
 
   render() {
-    const {hostInfo} = this.state;
+    const {host, sites} = this.state;
+    const hostInfo = {
+      data: [host],
+      title: '备案主体',
+      style: {marginTop: 20},
+      infoList: HOST_INFO_LIST,
+      photoClassName: true // alternation
+    };
+    const siteInfo = {
+      data: sites,
+      title: '备案网站',
+      style: {marginTop: 50},
+      infoList: SITE_INFO_LIST,
+      photoClassName: false // alternation
+    };
+
     return (
       <div className={styles.recordTrailDetail}>
-        <Breadcrumb routes={ROUTES} style={{marginTop: 15}} />
+        <Breadcrumb routes={this.route} style={{marginTop: 15}} />
         <MainHeader title='填写备案号' style={{paddingTop: 5}} />
         <div style={{width: 500}}>
-          <Card title='备案主体' style={{marginTop: 20}} suffix={this.renderSuffix()}>
-            {this.renderList(AUDIT_HOST, hostInfo)}
-          </Card>
-          {this.renderWebsiteInfo()}
+          {this.renderCardInfo(hostInfo)}
+          {this.renderCardInfo(siteInfo)}
         </div>
         {this.renderButtons()}
       </div>
@@ -182,4 +147,4 @@ class AuditDetail extends TrialDetail {
   }
 }
 
-export default AuditDetail;
+export default AuditResolve;

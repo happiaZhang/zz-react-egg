@@ -42,85 +42,114 @@ const getAdminInfo = function() {
   return genPromise(payload, 'getAdminInfo');
 };
 
-// 获取主体信息
-const getHostInfoByID = function(params) {
-  const queryString = genQueryString(params);
-  const payload = {
-    url: `/api/icp-admin/filing-admin/host-info?${queryString}`
-  };
-  return genPromise(payload, 'getHostInfoByID');
-};
-
-// 获取网站信息
-const getWebsiteInfoByID = function(params) {
-  const queryString = genQueryString(params);
-  const payload = {
-    url: `/api/icp-admin/filing-admin/all-website-info?${queryString}`
-  };
-  return genPromise(payload, 'getWebsiteInfoByID');
-};
-
-// 设置初审验证
-const setFilingStatus = function(data) {
-  const payload = {
-    url: '/api/icp-admin/filing-admin/filing-status',
-    method: 'POST',
-    data
-  };
-  return genPromise(payload, 'setFilingStatus');
-};
-
 // 获取非注销数据
-const getNonRevoked = function(params) {
+const getInfoSummaryNonRevoked = function(params) {
   const queryString = genQueryString(params);
   const payload = {
-    url: `/api/icp-admin/filing-admin/info-summary-non-revoked?${queryString}`
+    url: `/api/icp-admin/getInfoSummaryNonRevoked?${queryString}`
   };
-  return genPromise(payload, 'getNonRevoked');
+  return genPromise(payload, 'getInfoSummaryNonRevoked');
 };
 
 // 获取注销数据
-const getRevoked = function(params) {
+const getInfoSummaryRevoked = function(params) {
   const queryString = genQueryString(params);
   const payload = {
-    url: `/api/icp-admin/filing-admin/info-summary-revoked?${queryString}`
+    url: `/api/icp-admin/getInfoSummaryRevoked?${queryString}`
   };
-  return genPromise(payload, 'getRevoked');
+  return genPromise(payload, 'getInfoSummaryRevoked');
 };
 
-// 邮寄幕布
-const setCurtainDelivery = function(data) {
+// 获取初审详情信息
+const getTrialInfo = function(params) {
+  const queryString = genQueryString(params);
   const payload = {
-    url: '/api/icp-admin/filing-admin/curtain-delivery-info',
+    url: `/api/icp-admin/getTrialInfo?${queryString}`
+  };
+  return genPromise(payload, 'getTrialInfo');
+};
+
+// 获取审核幕布详情信息
+const getVerifyInfo = function(params) {
+  const queryString = genQueryString(params);
+  const payload = {
+    url: `/api/icp-admin/getVerifyInfo?${queryString}`
+  };
+  return genPromise(payload, 'getVerifyInfo');
+};
+
+// 获取管局通过详情信息
+const getAuditResolveInfo = function(params) {
+  const queryString = genQueryString(params);
+  const payload = {
+    url: `/api/icp-admin/getAuditResolveInfo?${queryString}`
+  };
+  return genPromise(payload, 'getAuditResolveInfo');
+};
+
+// 导出excel文件
+const getExcel = function(params) {
+  const queryString = genQueryString(params);
+  const payload = {
+    url: `/api/icp-admin/getExcel?${queryString}`
+  };
+  return genPromise(payload, 'getExcel');
+};
+
+// 设置初审状态
+const setTrailStatus = function(data) {
+  const payload = {
+    url: '/api/icp-admin/setTrailStatus',
     method: 'POST',
     data
   };
-  return genPromise(payload, 'setCurtainDelivery');
+  return genPromise(payload, 'setTrailStatus');
+};
+
+// 邮寄幕布
+const setCurtainDeliveryInfo = function(data) {
+  const payload = {
+    url: '/api/icp-admin/setCurtainDeliveryInfo',
+    method: 'POST',
+    data
+  };
+  return genPromise(payload, 'setCurtainDeliveryInfo');
 };
 
 // 获取幕布邮寄信息
 const getCurtainInfo = (params) => {
   const queryString = genQueryString(params);
   const payload = {
-    url: `/api/icp-admin/filing-admin/curtain-info?${queryString}`
+    url: `/api/icp-admin/getCurtainInfo?${queryString}`
   };
   return genPromise(payload, 'getCurtainInfo');
 };
 
-// 获取主体资料信息
-const getHostMaterial = function(params) {
-  const queryString = genQueryString(params);
+// 设置备案状态
+const setFilingStatus = function(data) {
   const payload = {
-    url: `/api/icp-admin/filing-admin/host-info-material?${queryString}`
+    url: '/api/icp-admin/setFilingStatus',
+    method: 'POST',
+    data
   };
-  return genPromise(payload, 'getHostMaterial');
+  return genPromise(payload, 'setFilingStatus');
+};
+
+// 设置主体或网站备案号
+const setFilingNo = function(data) {
+  const payload = {
+    url: '/api/icp-admin/setFilingNo',
+    method: 'POST',
+    data
+  };
+  return genPromise(payload, 'setFilingNo');
 };
 
 // 获取注销主体信息
 const getHostRevokeInfo = function(params) {
   const queryString = genQueryString(params);
   const payload = {
-    url: `/api/icp-admin/filing-admin/host-revoke-info?${queryString}`
+    url: `/api/icp-admin/getHostRevokeInfo?${queryString}`
   };
   return genPromise(payload, 'getHostRevokeInfo');
 };
@@ -129,43 +158,35 @@ const getHostRevokeInfo = function(params) {
 const getSiteRevokeInfo = function(params) {
   const queryString = genQueryString(params);
   const payload = {
-    url: `/api/icp-admin/filing-admin/site-revoke-info?${queryString}`
+    url: `/api/icp-admin/getSiteRevokeInfo?${queryString}`
   };
   return genPromise(payload, 'getSiteRevokeInfo');
 };
 
 // 获取取消接入信息
-const getAccessRevokeInfo = function(params) {
+const getSiteAccesscancelledInfo = function(params) {
   const queryString = genQueryString(params);
   const payload = {
-    url: `/api/icp-admin/filing-admin/site-accesscancelled-info?${queryString}`
+    url: `/api/icp-admin/getSiteAccesscancelledInfo?${queryString}`
   };
-  return genPromise(payload, 'getAccessRevokeInfo');
-};
-
-// 设置主体或网站备案号
-const setFilingNo = function(data) {
-  const payload = {
-    url: '/api/icp-admin/filing-admin/filing-no',
-    method: 'POST',
-    data
-  };
-  return genPromise(payload, 'setFilingNo');
+  return genPromise(payload, 'getSiteAccesscancelledInfo');
 };
 
 export default {
   getAdminInfo,
-  getHostInfoByID,
-  getWebsiteInfoByID,
-  setFilingStatus,
   getDispatch,
-  getNonRevoked,
-  getRevoked,
-  setCurtainDelivery,
+  getTrialInfo,
+  getVerifyInfo,
+  getAuditResolveInfo,
+  getExcel,
+  getInfoSummaryNonRevoked,
+  getInfoSummaryRevoked,
+  setTrailStatus,
+  setCurtainDeliveryInfo,
   getCurtainInfo,
-  getHostMaterial,
+  setFilingStatus,
+  setFilingNo,
   getHostRevokeInfo,
   getSiteRevokeInfo,
-  getAccessRevokeInfo,
-  setFilingNo
+  getSiteAccesscancelledInfo
 };

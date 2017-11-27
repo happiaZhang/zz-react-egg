@@ -6,7 +6,6 @@ import Card from '../../components/Card';
 import Info from '../../components/Info';
 import message from '../../components/Message';
 import apis from '../../utils/apis';
-import validate from '../../utils/validate';
 
 const DELIVERY_INFO = [
   {key: 'address', label: '幕布邮寄地址'},
@@ -32,8 +31,8 @@ class Delivery extends BaseContainer {
       this.curtainMailDto = res.curtainMailDto;
       this.param = {operId, checkPerson: 'zhangzheng'};
       this.setState({showModal: true});
-    }).catch(() => {
-      message.error('获取幕布邮寄信息失败，请刷新重试');
+    }).catch(error => {
+      message.error(error);
     });
   };
 
@@ -44,23 +43,20 @@ class Delivery extends BaseContainer {
 
   // 邮寄幕布
   onConfirm = () => {
-    apis.setCurtainDelivery(this.param).then(() => {
-      message.success('快递单号填写完成，已标记为已寄送，请尽快寄送', 3, () => {
-        this.onClose(true);
+    apis.setCurtainDeliveryInfo(this.param).then(() => {
+      this.onClose();
+      message.success('快递单号填写完成，已标记为已寄送，请尽快寄送', 2, () => {
+        const {history} = this.props;
+        history.push('/delivery');
       });
-    }).catch(() => {
-      message.error('快递单号信息保存失败，请刷新重试');
+    }).catch((error) => {
+      message.error(error);
     });
   };
 
   // 关闭模态框
-  onClose = (reload = false) => {
-    this.setState({showModal: false}, () => {
-      if (reload) {
-        const {history} = this.props;
-        history.push('/delivery');
-      }
-    });
+  onClose = () => {
+    this.setState({showModal: false});
   };
 
   // 填写快递信息
@@ -73,8 +69,8 @@ class Delivery extends BaseContainer {
   // 渲染模态框
   renderModal = () => {
     const footer = [
-      {text: '取消', type: 'default', onClick: this.onReject},
-      {text: '确定', type: 'primary', onClick: this.onConfirm}
+      {key: 'cancel', text: '取消', type: 'default', onClick: this.onReject},
+      {key: 'confirm', text: '确定', type: 'primary', onClick: this.onConfirm}
     ];
     return (
       <Modal width={720} showState onCloseClick={this.onClose} footer={footer}>
@@ -114,7 +110,8 @@ class Delivery extends BaseContainer {
   renderInfoList = () => {
     const infoList = [];
     DELIVERY_INFO.forEach(props => {
-      const content = validate.formatData(this.curtainMailDto, props.key);
+      const {key} = props;
+      const content = this.curtainMailDto ? this.curtainMailDto[key] || '' : '';
       infoList.push(<Info {...props} content={content} />);
     });
     return infoList;

@@ -5,8 +5,12 @@ class RevokeAccessReject extends RevokeHostDetail {
     super(props);
     this.name = 'RevokeAccessReject';
     this.route = [{key: 'revokeAccess', to: '/revoke/access', text: '取消接入'}];
-    this.btnGroup = [{key: 'commit', text: '审核驳回', onClick: this.onCommit}];
   }
+
+  // overwrite
+  genBtnGroup = () => {
+    this.btnGroup = [{key: 'commit', text: '审核驳回', onClick: this.onCommit}];
+  };
 }
 
 export default RevokeAccessReject;

@@ -28,7 +28,7 @@ class BaseContainer extends React.Component {
       startTime: '',
       endTime: ''
     };
-    this.loadFunc = apis.getNonRevoked;
+    this.loadFunc = apis.getInfoSummaryNonRevoked;
   }
 
   // 组件初次挂载
@@ -99,8 +99,8 @@ class BaseContainer extends React.Component {
         status: params.status,
         website: params.website
       });
-    }).catch(() => {
-      message.error(`获取${this.title}列表失败，请刷新重试`);
+    }).catch(error => {
+      message.error(error);
     });
   };
 

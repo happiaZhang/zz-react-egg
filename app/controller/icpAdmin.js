@@ -13,25 +13,16 @@ module.exports = app => {
 
     async action() {
       const {ctx} = this;
-      const body = ctx.request.body;
-      const url = this.host + ctx.url.substr(this.prefix.length);
-      const payload = {
-        dataType: 'json',
-        method: ctx.method,
-        headers: {
-          'content-type': 'application/json'
-        }
-      };
-      if (body) payload.data = ctx.request.body;
-      console.log(payload.data);
-      // 获取数据
-      const res = await app.curl(url, payload);
-
-      console.log(res);
-      ctx.restfulResultCheck(res);
-
-      // 成功返回
-      ctx.helper.json(0, 'success', res.data);
+      const search = ctx.request.search;
+      const method = ctx.method;
+      const data = ctx.request.body;
+      const svcName = ctx.request.path.substr(this.prefix.length + 1);
+      ctx.body = await ctx.service.icpAdmin[svcName]({
+        host: this.host,
+        search,
+        method,
+        data
+      });
     }
   };
 };

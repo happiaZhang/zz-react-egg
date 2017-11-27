@@ -34,6 +34,7 @@ export const FILING_STATUS = [
   {value: 10040, text: '待初审'},
   {value: 10050, text: '办理照片'},
   {value: 10055, text: '待邮寄'},
+  {value: 10057, text: '已邮寄'},
   {value: 10060, text: '初审驳回'},
   {value: 10070, text: '待审核幕布'},
   {value: 10080, text: '幕布驳回'},

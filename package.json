@@ -9,9 +9,11 @@
         "egg-scripts": "^1.1.1",
         "egg-validate": "^1.0.0",
         "egg-view-nunjucks": "^2.1.3",
+        "file-saver": "^1.3.3",
         "formstream": "^1.1.0",
         "jsonwebtoken": "^7.4.3",
-        "stream-wormhole": "^1.0.3"
+        "stream-wormhole": "^1.0.3",
+        "xlsx": "^0.11.10"
     },
     "devDependencies": {
         "autod": "^2.9.0",

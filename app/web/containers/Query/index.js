@@ -1,15 +1,22 @@
 import styles from './index.scss';
 import React from 'react';
 import BaseContainer from '../BaseContainer';
-import Button from '../../components/Button';
+import ButtonGroup from '../../components/ButtonGroup';
 import FormGroup from '../../components/FormGroup';
 import Select from '../../components/Select';
 import DateRange from '../../components/DateRange';
 import Input from '../../components/Input';
 import datetime from '../../components/Datepicker/datetime';
+import message from '../../components/Message';
 import {QUERY_TYPE, QUERY_STATUS} from '../../utils/constants';
 import apis from '../../utils/apis';
 import validate from '../../utils/validate';
+
+let btnGroup = [
+  {key: 'query', text: '查询'},
+  {key: 'export', text: '导出'}
+];
+let btnExportDisabled = true;
 
 class Query extends BaseContainer {
   constructor(props) {
@@ -22,7 +29,7 @@ class Query extends BaseContainer {
     this.selectAll = [];
     this.selectOptions = this.genOptions();
     this.setFilter = this.genFilter;
-    this.loadFunc = apis.getRevoked;
+    this.loadFunc = apis.getInfoSummaryRevoked;
   }
 
   // 获取最近一周日期
@@ -41,17 +48,17 @@ class Query extends BaseContainer {
       case 3:
         this.selectAll = [];
         this.selectOptions = this.genOptions();
-        this.loadFunc = apis.getRevoked;
+        this.loadFunc = apis.getInfoSummaryRevoked;
         break;
       case 1:case 2:
         this.selectAll = [1, 2, 3];
         this.selectOptions = this.genOptions();
-        this.loadFunc = apis.getRevoked;
+        this.loadFunc = apis.getInfoSummaryRevoked;
         break;
       case 4:case 5:
         this.selectAll = [10040, 10060, 10055, 10070, 10080, 10090, 10100];
         this.selectOptions = this.genOptions();
-        this.loadFunc = apis.getNonRevoked;
+        this.loadFunc = apis.getInfoSummaryNonRevoked;
         break;
     }
     let filingType = '';
@@ -75,6 +82,7 @@ class Query extends BaseContainer {
     // 日期精确到秒
     data.startTime += ' 00:00:00';
     data.endTime += ' 23:59:59';
+    this.exportParams = data;
     return data;
   };
 
@@ -98,9 +106,40 @@ class Query extends BaseContainer {
     this.setState({startTime, endTime});
   };
 
+  // 导出
+  onExport = () => {
+    const {totalSize} = this.state;
+    this.exportParams.pageSize = totalSize;
+    this.exportParams.pageNumber = 1;
+    apis.getExcel(this.exportParams).then(data => {
+      validate.save2Xlsx(data, '备案查询');
+    }).catch(error => {
+      message.error(error);
+    });
+  };
+
+  genBtnGroup = () => {
+    const {totalSize} = this.state;
+    const disabled = totalSize === 0;
+    if (btnExportDisabled !== disabled) {
+      btnExportDisabled = disabled;
+      btnGroup = [...btnGroup];
+    }
+
+    btnGroup.forEach(btn => {
+      const {key} = btn;
+      if (key === 'query') btn.onClick = this.loadTableData.bind(this);
+      if (key === 'export') {
+        btn.onClick = this.onExport.bind(this);
+        btn.disabled = disabled;
+      }
+    });
+  };
+
   // 渲染过滤器
   genFilter = () => {
     const {queryType, status, startTime, endTime, hostname, website} = this.state;
+    this.genBtnGroup();
     const FILTER_ITEMS = [
       [
         {
@@ -141,12 +180,12 @@ class Query extends BaseContainer {
           component: DateRange,
           onChange: this.changeTime,
           startDate: startTime,
-          endDate: endTime
+          endDate: endTime,
+          clear: false
         },
         {
-          component: Button,
-          onClick: this.loadTableData,
-          text: '查询'
+          component: ButtonGroup,
+          btns: btnGroup
         }
       ]
     ];
