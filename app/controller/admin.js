@@ -16,7 +16,7 @@ module.exports = app => {
       const data = ctx.request.body;
       ctx.body = await ctx.service.admin.getAdminInfo({
         host: this.host,
-        search: '?' + querystring.stringify({token: this.state.token}),
+        search: '?' + querystring.stringify({token: ctx.state.token}),
         method,
         data
       });
