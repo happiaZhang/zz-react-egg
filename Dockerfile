@@ -1,5 +1,5 @@
 #使用基础镜像
-From registry01.cloud.wanda.cn:8081/node:8.1.3
+From registry01.cloud.wanda.cn:8081/node:8.9.1
 
 #创建目录，并且指定工作目录
 RUN mkdir -p /user/src/app
