@@ -9,8 +9,8 @@ module.exports = app => {
   class IcpAdmin extends app.Service {
     constructor(ctx) {
       super(ctx);
-      this.request = this.ctx.service.utils.request;
-      this.checkResponse = this.ctx.service.utils.checkResponse;
+      this.request = this.ctx.fetch;
+      this.checkResponse = this.ctx.checkFetch;
     }
 
     async getAllWebsiteInfo(opts) {

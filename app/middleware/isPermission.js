@@ -1,4 +1,4 @@
-'use strict';
+const querystring = require('querystring');
 
 /**
  * 判断是否为登录用户
@@ -17,9 +17,10 @@ module.exports = () => {
     // 判断用户权限
     const token = ctx.state.token;
     // 判断用户是否有管理权限
-    const result = await ctx.http(`${ctx.app.config.adminHost}/userrest/judgePermission`, {
-      token,
-      permissionStr
+    const result = await ctx.fetch('/userrest/judgePermission', {
+      host: ctx.app.config.adminHost,
+      search: '?' + querystring.stringify({token, permissionStr}),
+      method: 'GET'
     });
     // 用户没有权限
     if (result.status !== 200 || !result.data || result.data.code !== '0') {
