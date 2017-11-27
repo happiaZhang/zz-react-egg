@@ -21,7 +21,6 @@ module.exports = () => {
       // 获取用户登录token
       const loginData = await ctx.helper.redis(amsid);
       const loginInfo = JSON.parse(loginData);
-      console.log('loginInfo = ', loginInfo);
       ctx.state.token = loginInfo.token;
     } catch (error) {
       if (ctx.url.indexOf('/api/') !== -1) {

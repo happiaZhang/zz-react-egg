@@ -37,7 +37,7 @@ const genQueryString = (params) => {
 // 获取用户信息
 const getAdminInfo = function() {
   const payload = {
-    url: '/api/admin/get'
+    url: '/api/admin/view'
   };
   return genPromise(payload, 'getAdminInfo');
 };

@@ -1,5 +1,7 @@
 import {saveAs} from 'file-saver';
 
+const USER_INFO_ID = '__USER_INFO__';
+
 export default {
   // url验证
   isURL(str) {
@@ -51,5 +53,18 @@ export default {
   },
   save2Xlsx(str, name) {
     saveAs(new Blob([this.s2ab(str)], {type: 'application/octet-stream'}), name + '.xlsx');
+  },
+  setUserInfo(data) {
+    const userInfo = JSON.stringify(data);
+    const _input = document.createElement('input');
+    _input.id = USER_INFO_ID;
+    _input.type = 'text';
+    _input.hidden = true;
+    _input.value = userInfo;
+    document.body.appendChild(_input);
+  },
+  getUserInfo() {
+    const userInfo = document.getElementById(USER_INFO_ID).value;
+    return JSON.parse(userInfo);
   }
 };

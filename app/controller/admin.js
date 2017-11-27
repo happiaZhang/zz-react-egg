@@ -1,4 +1,4 @@
-'use strict';
+const querystring = require('querystring');
 
 /**
  * 管理员模块控制器
@@ -12,21 +12,14 @@ module.exports = app => {
 
     async action() {
       const {ctx} = this;
-      console.log('token: ', ctx.state.token);
-      // 获取用户的信息
-      const res = await app.curl(`${this.host}/userrest/view`, {
-        method: 'GET',
-        dataType: 'json',
-        data: {
-          token: ctx.state.token
-        }
+      const method = ctx.method;
+      const data = ctx.request.body;
+      ctx.body = await ctx.service.admin.getAdminInfo({
+        host: this.host,
+        search: '?' + querystring.stringify({token: this.state.token}),
+        method,
+        data
       });
-
-      console.log('用户信息: ' + res);
-      this.ctx.restfulResultCheck(res);
-
-      // 成功返回
-      ctx.helper.json(0, 'success', res.data);
     }
   };
 };

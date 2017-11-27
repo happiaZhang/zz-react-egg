@@ -7,7 +7,7 @@ module.exports = app => {
   /**
    * 管理员信息
    */
-  app.get('/api/admin/get', 'admin.action');
+  app.get('/api/admin/view', 'admin.action');
 
   /**
    * ICP备案后台信息

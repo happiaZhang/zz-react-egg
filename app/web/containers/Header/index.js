@@ -13,7 +13,7 @@ export default class Header extends React.Component {
     super(props);
 
     this.state = {
-      adminName: ''
+      adminName: 'unknown'
     };
   }
 
@@ -27,12 +27,14 @@ export default class Header extends React.Component {
 
   // 获取管理员信息
   getAdminInfo() {
-    apis.getAdminInfo().then((data) => {
+    apis.getAdminInfo().then(res => {
+      const {data} = res;
+      validate.setUserInfo(data);
       this.setState({
         adminName: data.name
       });
-    }).catch(() => {
-      message.error('获取用户信息失败，请刷新重试');
+    }).catch(error => {
+      message.error(error);
     });
   }
 
