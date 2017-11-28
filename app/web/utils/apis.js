@@ -88,12 +88,12 @@ const getAuditResolveInfo = function(params) {
 };
 
 // 导出excel文件
-const getExcel = function(params) {
+const export2Excel = function(params) {
   const queryString = genQueryString(params);
   const payload = {
     url: `/api/icp-admin/getExcel?${queryString}`
   };
-  return genPromise(payload, 'getExcel');
+  return genPromise(payload, 'export2Excel');
 };
 
 // 设置初审状态
@@ -182,7 +182,7 @@ export default {
   getTrialInfo,
   getVerifyInfo,
   getAuditResolveInfo,
-  getExcel,
+  export2Excel,
   getInfoSummaryNonRevoked,
   getInfoSummaryRevoked,
   setTrailStatus,

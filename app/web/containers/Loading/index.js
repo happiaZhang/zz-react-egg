@@ -1,9 +1,10 @@
+import styles from './index.scss';
 import React from 'react';
 import {connect} from 'react-redux';
 import message from '../../components/Message';
 import apis from '../../utils/apis';
 
-const DEFAULT_CONTENT = '数据正在加载中，请耐心等待';
+let DEFAULT_CONTENT = '数据正在加载中，请耐心等待';
 const DEFAULT_DURATION = 0;
 
 class Loader extends React.Component {
@@ -18,11 +19,27 @@ class Loader extends React.Component {
   componentWillReceiveProps(nextProps) {
     const {loading} = nextProps;
     const showLoading = loading.length > 0;
+    if (showLoading) DEFAULT_CONTENT = this.setMsgContent(loading[0].substring(0, 3));
     if (showLoading !== this.state.showLoading) {
       this.state.showLoading = showLoading;
       this.showMessage();
     }
   }
+
+  setMsgContent = (type) => {
+    let action = '加载';
+    switch (type) {
+      case 'set':
+        action = '处理';
+        break;
+      case 'exp':
+        action = '导出';
+        break;
+    }
+    return (
+      <span>数据正在{action}中，请耐心等待<i className={styles.loading}>...</i></span>
+    );
+  };
 
   showMessage = () => {
     const {showLoading} = this.state;

@@ -1,0 +1,14 @@
+.loading {
+  display: inline-block;
+  width: 15px;
+  animation: curtain 1s linear infinite;
+}
+
+@keyframes curtain{
+  0% {
+    width: 0;
+  }
+  to {
+    width: 15px;
+  }
+}

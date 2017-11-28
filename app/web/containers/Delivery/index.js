@@ -45,9 +45,8 @@ class Delivery extends BaseContainer {
   onConfirm = () => {
     apis.setCurtainDeliveryInfo(this.param).then(() => {
       this.onClose();
-      message.success('快递单号填写完成，已标记为已寄送，请尽快寄送', 2, () => {
-        const {history} = this.props;
-        history.push('/delivery');
+      message.success('快递单号已填写完成，请尽快寄送', 2, () => {
+        this.loadTableData();
       });
     }).catch((error) => {
       message.error(error);

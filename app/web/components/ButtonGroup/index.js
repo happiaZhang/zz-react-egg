@@ -1,18 +1,19 @@
 import styles from './index.scss';
 import React from 'react';
+import {connect} from 'react-redux';
 import Button from '../Button';
 
 class ButtonGroup extends React.Component {
   static defaultProps = {
     btns: [],
-    loading: false
+    isLoading: false
   };
 
   constructor(props) {
     super(props);
     this.state = {
       btns: props.btns,
-      loading: props.loading
+      isLoading: props.isLoading
     };
   }
 
@@ -21,8 +22,10 @@ class ButtonGroup extends React.Component {
     if (btns !== this.props.btns) {
       this.setState({btns});
     }
-    if (loading !== this.props.loading) {
-      this.setState({loading});
+
+    const isLoading = loading.length > 0;
+    if (isLoading !== this.state.isLoading) {
+      this.setState({isLoading});
     }
   }
 
@@ -33,11 +36,11 @@ class ButtonGroup extends React.Component {
 
   render() {
     const {style} = this.props;
-    const {btns, loading} = this.state;
+    const {btns, isLoading} = this.state;
     if (btns.length === 0) return null;
 
     btns.forEach(btn => {
-      btn.loading = loading;
+      btn.loading = isLoading;
     });
 
     return (
@@ -48,4 +51,11 @@ class ButtonGroup extends React.Component {
   }
 }
 
-export default ButtonGroup;
+function mapStateToProps(state) {
+  return {
+    ...state.loader.loading,
+    loaded: state.loader.loaded
+  };
+}
+
+export default connect(mapStateToProps)(ButtonGroup);

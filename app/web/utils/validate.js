@@ -1,7 +1,6 @@
 import {saveAs} from 'file-saver';
 
 const USER_INFO_ID = '__USER_INFO__';
-let config = null;
 
 export default {
   // url验证
@@ -37,7 +36,6 @@ export default {
     return kvList.join('&');
   },
   prefix() {
-    if (config === null) return '';
     return config.basePath.backoffice_icp;
   },
   isDev() {

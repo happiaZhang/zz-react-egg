@@ -12,12 +12,6 @@ import {QUERY_TYPE, QUERY_STATUS} from '../../utils/constants';
 import apis from '../../utils/apis';
 import validate from '../../utils/validate';
 
-let btnGroup = [
-  {key: 'query', text: '查询'},
-  {key: 'export', text: '导出'}
-];
-let btnExportDisabled = true;
-
 class Query extends BaseContainer {
   constructor(props) {
     super(props);
@@ -30,6 +24,14 @@ class Query extends BaseContainer {
     this.selectOptions = this.genOptions();
     this.setFilter = this.genFilter;
     this.loadFunc = apis.getInfoSummaryRevoked;
+    // 按钮状态
+    this.btnState = {
+      btns: [
+        {key: 'query', text: '查询', onClick: this.loadTableData},
+        {key: 'export', text: '导出', onClick: this.onExport}
+      ],
+      disabled: true
+    };
   }
 
   // 获取最近一周日期
@@ -111,35 +113,33 @@ class Query extends BaseContainer {
     const {totalSize} = this.state;
     this.exportParams.pageSize = totalSize;
     this.exportParams.pageNumber = 1;
-    apis.getExcel(this.exportParams).then(data => {
+    apis.export2Excel(this.exportParams).then(data => {
       validate.save2Xlsx(data, '备案查询');
     }).catch(error => {
       message.error(error);
     });
   };
 
-  genBtnGroup = () => {
+  setBtnProps = () => {
+    const {btns, disabled} = this.btnState;
     const {totalSize} = this.state;
-    const disabled = totalSize === 0;
-    if (btnExportDisabled !== disabled) {
-      btnExportDisabled = disabled;
-      btnGroup = [...btnGroup];
+    if (disabled !== (totalSize === 0)) {
+      this.btnState = {
+        disabled: !disabled,
+        btns: [...btns]
+      };
     }
 
-    btnGroup.forEach(btn => {
+    this.btnState.btns.forEach(btn => {
       const {key} = btn;
-      if (key === 'query') btn.onClick = this.loadTableData.bind(this);
-      if (key === 'export') {
-        btn.onClick = this.onExport.bind(this);
-        btn.disabled = disabled;
-      }
+      if (key === 'export') btn.disabled = this.btnState.disabled;
     });
   };
 
   // 渲染过滤器
   genFilter = () => {
+    this.setBtnProps();
     const {queryType, status, startTime, endTime, hostname, website} = this.state;
-    this.genBtnGroup();
     const FILTER_ITEMS = [
       [
         {
@@ -185,7 +185,7 @@ class Query extends BaseContainer {
         },
         {
           component: ButtonGroup,
-          btns: btnGroup
+          btns: this.btnState.btns
         }
       ]
     ];

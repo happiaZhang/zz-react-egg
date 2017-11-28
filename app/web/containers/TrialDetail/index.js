@@ -112,7 +112,8 @@ class TrialDetail extends React.Component {
     this.state = {
       checkMode: false,
       host: {},
-      sites: [{}]
+      sites: [{}],
+      showBtn: false
     };
     this.name = 'TrialDetail';
     this.route = [
@@ -133,9 +134,8 @@ class TrialDetail extends React.Component {
   componentDidMount() {
     const operId = this.getOperId();
     this.initApi({operId}).then(data => {
-      console.log(data);
       const {host = {}, sites} = data;
-      this.setState({host, sites});
+      this.setState({host, sites, showBtn: true});
     }).catch(error => {
       message.error(error);
     });
@@ -244,7 +244,8 @@ class TrialDetail extends React.Component {
 
   // 渲染驳回与通过操作按钮
   renderButtons = () => {
-    if (this.name === 'AuditDetail') return null;
+    const {showBtn} = this.state;
+    if (this.name === 'AuditDetail' || !showBtn) return null;
 
     this.genBtnGroup();
 
