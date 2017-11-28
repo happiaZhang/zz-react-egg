@@ -50,7 +50,6 @@ class AuditResolve extends TrialDetail {
 
   onAudit = () => {
     const data = {
-      checkPerson: 'zhangzheng',
       operId: this.getOperId()
     };
 

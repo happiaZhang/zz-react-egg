@@ -24,7 +24,6 @@ class RevokeHostDetail extends TrialDetail {
 
   onCommit = () => {
     const data = {
-      checkPerson: 'zhangzheng',
       rejectReason: '',
       operId: this.getOperId(),
       filingStatus: 20002

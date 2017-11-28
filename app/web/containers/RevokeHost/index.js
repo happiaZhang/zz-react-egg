@@ -17,7 +17,6 @@ class RevokeHost extends BaseContainer {
   handleRevoke = (row, isDone) => {
     const {status, operId} = row;
     const data = {
-      checkPerson: 'zhangzheng',
       rejectReason: '',
       operId: parseInt(operId),
       filingStatus: isDone ? 20003 : 20004

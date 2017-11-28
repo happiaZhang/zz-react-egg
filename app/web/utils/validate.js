@@ -1,6 +1,7 @@
 import {saveAs} from 'file-saver';
 
 const USER_INFO_ID = '__USER_INFO__';
+let config = null;
 
 export default {
   // url验证
@@ -17,10 +18,6 @@ export default {
   // null or undefined
   isNil(v) {
     return v == null;
-  },
-  // function
-  isFunction(v) {
-    return typeof v === 'function';
   },
   encode(obj) {
     const kvList = [];
@@ -40,7 +37,8 @@ export default {
     return kvList.join('&');
   },
   prefix() {
-    return config.basePath.backoffice_icp || '';
+    if (config === null) return '';
+    return config.basePath.backoffice_icp;
   },
   isDev() {
     return location.hostname === 'localhost' || location.hostname === '127.0.0.1';
@@ -56,15 +54,16 @@ export default {
   },
   setUserInfo(data) {
     const userInfo = JSON.stringify(data);
-    const _input = document.createElement('input');
-    _input.id = USER_INFO_ID;
-    _input.type = 'text';
-    _input.hidden = true;
-    _input.value = userInfo;
-    document.body.appendChild(_input);
+    document.getElementById(USER_INFO_ID).value = userInfo;
   },
   getUserInfo() {
     const userInfo = document.getElementById(USER_INFO_ID).value;
+    if (this.isEmpty(userInfo)) return userInfo;
     return JSON.parse(userInfo);
+  },
+  getCheckPerson() {
+    const userInfo = this.getUserInfo();
+    if (this.isEmpty(userInfo)) return 'Dev';
+    return userInfo.account;
   }
 };

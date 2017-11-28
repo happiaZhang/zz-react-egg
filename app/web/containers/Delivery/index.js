@@ -29,7 +29,7 @@ class Delivery extends BaseContainer {
   loadCurtain = (operId) => {
     apis.getCurtainInfo({operId}).then((res) => {
       this.curtainMailDto = res.curtainMailDto;
-      this.param = {operId, checkPerson: 'zhangzheng'};
+      this.param = {operId};
       this.setState({showModal: true});
     }).catch(error => {
       message.error(error);

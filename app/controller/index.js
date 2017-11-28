@@ -5,12 +5,10 @@
  */
 module.exports = app => {
   return class IndexController extends app.Controller {
-    /**
-     * 静态页面加载视图
-     */
     async indexView() {
+      const {ctx} = this;
       // 生成视图
-      await this.ctx.render('index');
+      await ctx.render('index');
     }
   };
 };

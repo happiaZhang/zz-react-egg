@@ -98,6 +98,7 @@ const getExcel = function(params) {
 
 // 设置初审状态
 const setTrailStatus = function(data) {
+  data.checkPerson = validate.getCheckPerson();
   const payload = {
     url: '/api/icp-admin/setTrailStatus',
     method: 'POST',
@@ -108,6 +109,7 @@ const setTrailStatus = function(data) {
 
 // 邮寄幕布
 const setCurtainDeliveryInfo = function(data) {
+  data.checkPerson = validate.getCheckPerson();
   const payload = {
     url: '/api/icp-admin/setCurtainDeliveryInfo',
     method: 'POST',
@@ -127,6 +129,7 @@ const getCurtainInfo = (params) => {
 
 // 设置备案状态
 const setFilingStatus = function(data) {
+  data.checkPerson = validate.getCheckPerson();
   const payload = {
     url: '/api/icp-admin/setFilingStatus',
     method: 'POST',
@@ -137,6 +140,7 @@ const setFilingStatus = function(data) {
 
 // 设置主体或网站备案号
 const setFilingNo = function(data) {
+  data.checkPerson = validate.getCheckPerson();
   const payload = {
     url: '/api/icp-admin/setFilingNo',
     method: 'POST',

@@ -13,20 +13,14 @@ export default class Header extends React.Component {
     super(props);
 
     this.state = {
-      adminName: 'unknown'
+      adminName: ''
     };
   }
 
   // 组件加载完成以后
   componentDidMount() {
+    if (isDev) return;
     // 获取管理员信息
-    if (!isDev) {
-      this.getAdminInfo();
-    }
-  }
-
-  // 获取管理员信息
-  getAdminInfo() {
     apis.getAdminInfo().then(res => {
       const {data} = res;
       validate.setUserInfo(data);
@@ -45,7 +39,7 @@ export default class Header extends React.Component {
       <div className={styles.headerBox}>
         <div className={styles.logo}><img src={logoImage} /></div>
         <div className={styles.user}>
-          欢迎您，{adminName}
+          欢迎您，{isDev ? 'Dev' : adminName}
           <a href={isDev ? 'javascript:;' : location.origin + '/logout'}>退出</a>
         </div>
       </div>

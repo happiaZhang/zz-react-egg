@@ -184,7 +184,6 @@ class TrialDetail extends React.Component {
   // 处理驳回或通过
   handleClick = (isResolve) => {
     const data = {
-      checkPerson: 'ZhangZheng',
       operId: this.getOperId(),
       filingStatus: this.setFilingStatus(isResolve),
       rejectReason: ''
