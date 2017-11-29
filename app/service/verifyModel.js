@@ -50,7 +50,7 @@ class VerifyModel {
     const {webSiteManagerMaterialList} = materialInfo;
     webSiteManagerMaterialList.forEach(siteMaterial => {
       const {id} = siteMaterial;
-      const site = this.sites.find(s => (s.siteId === id));
+      const site = this.sites.find(s => (s['site.id'] === id));
       site.webSiteManagerPhotoFrontPath = icpModel.convert(siteMaterial, 'webSiteManagerPhotoFrontPath');
     });
 
