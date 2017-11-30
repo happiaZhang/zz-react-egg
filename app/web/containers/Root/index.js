@@ -1,7 +1,6 @@
 import styles from './index.scss';
 import React from 'react';
 import {Route, BrowserRouter} from 'react-router-dom';
-import Header from '../Header';
 import Menu from '../Menu';
 import Query from '../Query';
 import Trial from '../Trial';
@@ -80,7 +79,6 @@ export default class Root extends React.Component {
       <BrowserRouter basename={prefix}>
         <div className={styles.wrapper}>
           <Loading />
-          <Header />
           <div className={styles.content}>
             <Menu links={this.setMenu()} />
             <div ref={ref => (this.scrElm = ref)} className={styles.mainContent}>
