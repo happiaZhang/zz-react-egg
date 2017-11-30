@@ -32,7 +32,7 @@ export const FILING_STATUS = [
   {value: 10020, text: '填写网站信息'},
   {value: 10030, text: '提交备案资料'},
   {value: 10040, text: '待初审'},
-  {value: 10050, text: '办理照片'},
+  {value: 10050, text: '办理拍照'},
   {value: 10055, text: '待邮寄'},
   {value: 10057, text: '已邮寄'},
   {value: 10060, text: '初审驳回'},

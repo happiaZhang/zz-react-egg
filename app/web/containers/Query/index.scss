@@ -1,14 +1,16 @@
-.table {
-  display: table;
-  width: 100%;
-}
 .row {
-  display: table-row;
-  margin-top: 15px
+  margin: 0 -10px;
+  &:after {
+    content: '';
+    display: table;
+    width: 0;
+    height: 0;
+    border: 0;
+    clear: both;
+  }
 }
-.col {
-  display: table-cell;
+.col4 {
+  float: left;
   width: 33.33333%;
-  padding-top: 15px;
-  padding-right: 20px;
+  padding: 15px 10px 0;
 }

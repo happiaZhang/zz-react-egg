@@ -1,7 +1,8 @@
 import React from 'react';
 import BaseContainer from '../BaseContainer';
 import Modal from '../../components/Modal';
-import InputBox from '../../components/InputBox';
+import FormGroup from '../../components/FormGroup';
+import Input from '../../components/Input';
 import Card from '../../components/Card';
 import Info from '../../components/Info';
 import message from '../../components/Message';
@@ -81,25 +82,28 @@ class Delivery extends BaseContainer {
 
   // 渲染输入框
   renderInputBox = () => {
-    const inputBoxes = [
+    const items = [
       {
-        key: 'deliveryCompany',
         label: '快递公司',
-        inputPlaceholder: '请填写快递公司，如顺丰速运',
+        required: true,
+        formStyle: {width: 300},
+        component: Input,
+        placeholder: '请填写快递公司，如顺丰速运',
         onBlur: this.handleBlur('deliveryCompany')
       },
       {
-        key: 'deliveryId',
         label: '快递单号',
-        inputPlaceholder: '请填写准确的快递单号',
-        onBlur: this.handleBlur('deliveryId'),
-        style: {marginLeft: 20}
+        required: true,
+        formStyle: {width: 300, marginLeft: 20},
+        component: Input,
+        placeholder: '请填写准确的快递单号',
+        onBlur: this.handleBlur('deliveryId')
       }
     ];
 
     const list = [];
-    inputBoxes.forEach(props => {
-      list.push(<InputBox {...props} />);
+    items.forEach((props, i) => {
+      list.push(<FormGroup key={i} {...props} />);
     });
 
     return <div style={{display: 'flex', marginBottom: 10}}>{list}</div>;

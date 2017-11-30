@@ -218,7 +218,7 @@ class BaseContainer extends React.Component {
     const {pageSize, pageNumber, totalSize, showModal} = this.state;
 
     return (
-      <div>
+      <div style={{minWidth: 900}}>
         <MainHeader title={this.title} />
         {this.renderFilter()}
         <Pagination

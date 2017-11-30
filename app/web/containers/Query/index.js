@@ -141,71 +141,60 @@ class Query extends BaseContainer {
     this.setBtnProps();
     const {queryType, status, startTime, endTime, hostname, website} = this.state;
     const FILTER_ITEMS = [
-      [
-        {
-          label: '备案类型',
-          component: Select,
-          data: QUERY_TYPE,
-          style: {width: 300},
-          onChangeValue: this.changeQueryType,
-          value: queryType
-        },
-        {
-          label: '备案状态',
-          component: Select,
-          data: this.selectOptions,
-          style: {width: 300},
-          onChangeValue: this.changeStatus,
-          value: status,
-          disable: queryType === 3
-        },
-        {
-          label: '主办单位',
-          component: Input,
-          style: {width: 300},
-          onChange: this.changeHostname,
-          value: hostname
-        }
-      ],
-      [
-        {
-          label: '关联域名',
-          component: Input,
-          style: {width: 300},
-          onChange: this.changeWebsite,
-          value: website
-        },
-        {
-          label: '最近更新时间',
-          component: DateRange,
-          onChange: this.changeTime,
-          startDate: startTime,
-          endDate: endTime,
-          clear: false
-        },
-        {
-          component: ButtonGroup,
-          btns: this.btnState.btns
-        }
-      ]
+      {
+        label: '备案类型',
+        component: Select,
+        data: QUERY_TYPE,
+        onChangeValue: this.changeQueryType,
+        value: queryType
+      },
+      {
+        label: '备案状态',
+        component: Select,
+        data: this.selectOptions,
+        onChangeValue: this.changeStatus,
+        value: status,
+        disable: queryType === 3
+      },
+      {
+        label: '主办单位',
+        component: Input,
+        onChange: this.changeHostname,
+        value: hostname
+      },
+      {
+        label: '关联域名',
+        component: Input,
+        onChange: this.changeWebsite,
+        value: website
+      },
+      {
+        label: '最近更新时间',
+        component: DateRange,
+        onChange: this.changeTime,
+        startDate: startTime,
+        endDate: endTime,
+        clear: false
+      },
+      {
+        label: <i>&nbsp;</i>,
+        component: ButtonGroup,
+        btns: this.btnState.btns
+      }
     ];
 
-    const rows = [];
-    FILTER_ITEMS.forEach((r, j) => {
-      const cols = [];
-      r.forEach((props, i) => {
-        cols.push(
-          <div key={i} className={styles.col}>
-            <FormGroup {...props} />
-          </div>
-        );
-      });
-      rows.push(<div key={j} className={styles.row}>{cols}</div>);
+    const cols = [];
+    FILTER_ITEMS.forEach((props, i) => {
+      cols.push(
+        <div key={i} className={styles.col4}>
+          <FormGroup {...props} />
+        </div>
+      );
     });
 
     return (
-      <div className={styles.table}>
-        {rows}
+      <div className={styles.row}>
+        {cols}
       </div>
     );
   };

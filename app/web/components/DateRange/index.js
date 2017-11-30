@@ -13,8 +13,6 @@ import datetime from '../Datepicker/datetime';
 
 class DateRange extends React.Component {
   static defaultProps = {
-    width: 300,
-    gap: 5,
     paddingRight: 27
   };
 
@@ -70,12 +68,11 @@ class DateRange extends React.Component {
   };
 
   render() {
-    const {width, gap, paddingRight, clear} = this.props;
+    const {width, paddingRight, clear} = this.props;
     const {startDate, endDate} = this.state;
-    const dtWidth = parseFloat(((width - gap - paddingRight) / 2).toFixed(2));
-    const style = {width, paddingRight};
+    const style = {paddingRight};
+    if (width) style.width = width;
     const props = {
-      width: dtWidth,
       type: datetime.RANGE,
       showIcon: false,
       onChange: this.handleChange,
@@ -86,8 +83,8 @@ class DateRange extends React.Component {
     if (startDate !== '' && clear) classNames += ' ' + styles.hover;
     return (
       <div className={classNames} style={style}>
-        <Datepicker {...props} value={startDate} />
-        <Datepicker {...props} value={endDate} />
+        <div className={styles.date}><Datepicker {...props} value={startDate} /></div>
+        <div className={styles.date}><Datepicker {...props} value={endDate} /></div>
         <svg className={`${styles.icon} ${styles.calendarIcon}`}>
           <path d='M12 0h2v2.7h-2zM3 0h2v2.7H3z' />
           <path d='M0 2v17h17V2H0zm15 15H2V7h13v10z' />

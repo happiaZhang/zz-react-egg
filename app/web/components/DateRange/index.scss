@@ -1,9 +1,17 @@
 .dateRange {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  margin: 0 -3px;
   box-sizing: border-box;
+  &:after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+  .date {
+    float: left;
+    width: 50%;
+    padding: 0 3px;
+  }
   .icon {
     position: absolute;
     right: 2px;

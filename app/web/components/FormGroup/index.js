@@ -3,7 +3,8 @@ import React from 'react';
 
 class FormGroup extends React.Component {
   static defaultProps = {
-    required: false
+    required: false,
+    formStyle: {}
   };
 
   constructor(props) {
@@ -47,10 +48,10 @@ class FormGroup extends React.Component {
   };
 
   render() {
-    const {label, component, required, ...other} = this.props;
+    const {label, component, required, formStyle, ...other} = this.props;
     const {value, startDate, endDate, data, btns} = this.state;
     return (
-      <div className={styles.formGroup}>
+      <div className={styles.formGroup} style={formStyle}>
         {label ? <label>{required ? <i>*</i> : null}{label}</label> : null}
         {React.createElement(component, {
           onChange: this.handleChange,
