@@ -8,6 +8,10 @@ const getDispatch = (func) => {
   dispatch = func;
 };
 
+const genModal = (payload) => {
+  dispatch({type: types.MODAL, payload});
+};
+
 const genPromise = (payload, key) => {
   dispatch({type: types.LOADING, payload: key});
   return new Promise(function(resolve, reject) {
@@ -192,5 +196,6 @@ export default {
   setFilingNo,
   getHostRevokeInfo,
   getSiteRevokeInfo,
-  getSiteAccesscancelledInfo
+  getSiteAccesscancelledInfo,
+  genModal
 };

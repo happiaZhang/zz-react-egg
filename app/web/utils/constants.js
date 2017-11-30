@@ -1,5 +1,6 @@
 export const LOADING = 'loading';
 export const LOADED = 'loaded';
+export const MODAL = 'modal';
 export const FILING_TYPE = {
   1: '首次备案',
   2: '新增网站',
@@ -100,7 +101,7 @@ export const genOperations = (elm) => {
 
   return operations;
 };
-export const handleOperations = (type, data, history, func) => {
+export const handleOperations = (type, data, history) => {
   const {operId, siteId} = data;
   switch (type) {
     case 'TRIAL_QUERY':
@@ -108,9 +109,6 @@ export const handleOperations = (type, data, history, func) => {
       break;
     case 'MODIFY_QUERY':
       history.push(`/modify/detail/${operId}`);
-      break;
-    case 'DELIVERY':
-      func(operId);
       break;
     case 'VERIFY_QUERY':
       history.push(`/verify/detail/${operId}`);
@@ -135,12 +133,6 @@ export const handleOperations = (type, data, history, func) => {
       break;
     case 'REVOKE_ACCESS_REJECT':
       history.push(`/revoke/access/reject/${operId}/${siteId}`);
-      break;
-    case 'REVOKE_DONE':
-      func(data, true);
-      break;
-    case 'REVOKE_FAIL':
-      func(data, false);
       break;
   }
 };

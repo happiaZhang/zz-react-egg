@@ -21,7 +21,6 @@ class BaseContainer extends React.Component {
       pageSize: 10,
       pageNumber: 1,
       totalSize: 0,
-      showModal: false,
       elements: [],
       hostname: '',
       website: '',
@@ -190,7 +189,43 @@ class BaseContainer extends React.Component {
   // 每行操作处理
   onRowOperation = (type, data) => {
     const {history} = this.props;
-    handleOperations(type, data, history, this.implOperation);
+    if (type === 'DELIVERY') {
+      apis.genModal({
+        show: true,
+        data: {
+          ...data,
+          name: 'ModalDelivery',
+          callback: this.loadTableData.bind(this)
+        }
+      });
+    } else if (type === 'REVOKE_DONE') {
+      this.handleRevoke(data, true);
+    } else if (type === 'REVOKE_FAIL') {
+      this.handleRevoke(data, false);
+    } else {
+      handleOperations(type, data, history);
+    }
+  };
+
+  // 处理注销状态
+  handleRevoke = (row, isDone) => {
+    const {status, operId} = row;
+    const data = {
+      rejectReason: '',
+      operId: parseInt(operId),
+      filingStatus: isDone ? 20003 : 20004
+    };
+    if (status === 30002) data.filingStatus = isDone ? 30003 : 30004;
+
+    const msgSuccess = `${this.title}${isDone ? '已通过' : '已驳回'}`;
+
+    apis.setFilingStatus(data).then(() => {
+      message.success(msgSuccess, 2, () => {
+        this.loadTableData();
+      });
+    }).catch(error => {
+      message.error(error);
+    });
   };
 
   // 渲染过滤器
@@ -215,7 +250,7 @@ class BaseContainer extends React.Component {
 
   // 页面渲染
   render() {
-    const {pageSize, pageNumber, totalSize, showModal} = this.state;
+    const {pageSize, pageNumber, totalSize} = this.state;
 
     return (
       <div style={{minWidth: 900}}>
@@ -241,7 +276,6 @@ class BaseContainer extends React.Component {
           pageNumber={pageNumber}
           totalSize={totalSize}
           onPageNumberSwitch={this.changePageNumber} />
-        {showModal ? this.renderModal() : ''}
       </div>
     );
   }

@@ -15,6 +15,7 @@ class Input extends React.Component {
     super(props);
 
     this.state = {
+      value: props.value,
       focusing: props.focusing,
       warning: props.warning
     };
@@ -26,9 +27,12 @@ class Input extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {warning} = nextProps;
+    const {value, warning} = nextProps;
     if (warning !== this.props.warning) {
       this.setState({warning});
+    }
+    if (value !== this.props.value) {
+      this.setState({value});
     }
   }
 
@@ -53,8 +57,8 @@ class Input extends React.Component {
 
   // 页面渲染
   render() {
-    const {style, placeholder, value} = this.props;
-    const {focusing, warning} = this.state;
+    const {style, placeholder} = this.props;
+    const {focusing, warning, value} = this.state;
 
     let classNames = styles.inputText;
     if (focusing) classNames += ' ' + styles.focusing;
