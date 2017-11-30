@@ -2,6 +2,10 @@ import styles from './index.scss';
 import React from 'react';
 
 class FormGroup extends React.Component {
+  static defaultProps = {
+    required: false
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -9,7 +13,8 @@ class FormGroup extends React.Component {
       startDate: props.startDate,
       endDate: props.endDate,
       data: props.data,
-      btns: props.btns
+      btns: props.btns,
+      required: props.required
     };
   }
 
@@ -42,11 +47,11 @@ class FormGroup extends React.Component {
   };
 
   render() {
-    const {label, component, ...other} = this.props;
+    const {label, component, required, ...other} = this.props;
     const {value, startDate, endDate, data, btns} = this.state;
     return (
       <div className={styles.formGroup}>
-        {label ? <label>{label}</label> : null}
+        {label ? <label>{required ? <i>*</i> : null}{label}</label> : null}
         {React.createElement(component, {
           onChange: this.handleChange,
           ...other,

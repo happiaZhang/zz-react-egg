@@ -36,6 +36,7 @@ export default {
     return kvList.join('&');
   },
   prefix() {
+    if (!window.config) return '/icp';
     return config.basePath.backoffice_icp;
   },
   isDev() {

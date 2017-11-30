@@ -1,12 +1,13 @@
-import React from 'react';
 import styles from './index.scss';
+import React from 'react';
 
 class Input extends React.Component {
   static defaultProps = {
     style: {},
     placeholder: '',
     value: '',
-    warning: false
+    warning: false,
+    focusing: false
   };
 
   // 构造方法
@@ -14,8 +15,21 @@ class Input extends React.Component {
     super(props);
 
     this.state = {
-      focusing: false
+      focusing: props.focusing,
+      warning: props.warning
     };
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    const stateKey = Object.keys(nextState).find(k => nextState[k] !== this.state[k]);
+    return stateKey != null;
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const {warning} = nextProps;
+    if (warning !== this.props.warning) {
+      this.setState({warning});
+    }
   }
 
   // 输入表单聚焦
@@ -39,19 +53,16 @@ class Input extends React.Component {
 
   // 页面渲染
   render() {
-    let {style, placeholder, value, warning} = this.props;
-    let {focusing} = this.state;
+    const {style, placeholder, value} = this.props;
+    const {focusing, warning} = this.state;
 
-    let focusingClass = focusing
-      ? styles.focusing
-      : '';
-    let warningClass = warning
-      ? styles.warning
-      : '';
+    let classNames = styles.inputText;
+    if (focusing) classNames += ' ' + styles.focusing;
+    if (warning) classNames += ' ' + styles.warning;
 
     return <input
       type='text'
-      className={`${styles.inputText} ${focusingClass} ${warningClass}`}
+      className={classNames}
       style={style}
       placeholder={placeholder}
       value={value}

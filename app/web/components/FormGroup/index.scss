@@ -7,5 +7,9 @@
     line-height: 20px;
     font-weight: 600;
     color: #152935;
+    & > i {
+      color: #e71d32;
+      margin-right: 3px;
+    }
   }
 }

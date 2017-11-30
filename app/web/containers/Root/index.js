@@ -24,6 +24,7 @@ import RevokeAccessResolve from '../RevokeAccessResolve';
 import RevokeAccessReject from '../RevokeAccessReject';
 import Loading from '../Loading';
 import validate from '../../utils/validate';
+import {initScrElm, addScroll} from '../../utils/scroller';
 
 const prefix = validate.prefix();
 const ROUTES = [
@@ -69,6 +70,11 @@ export default class Root extends React.Component {
     return routes;
   };
 
+  componentDidMount() {
+    initScrElm(this.scrElm);
+    addScroll();
+  }
+
   render() {
     return (
       <BrowserRouter basename={prefix}>
@@ -77,7 +83,7 @@ export default class Root extends React.Component {
           <Header />
           <div className={styles.content}>
             <Menu links={this.setMenu()} />
-            <div className={styles.mainContent}>
+            <div ref={ref => (this.scrElm = ref)} className={styles.mainContent}>
               {this.renderRoutes()}
             </div>
           </div>

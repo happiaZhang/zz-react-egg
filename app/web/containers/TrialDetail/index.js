@@ -120,8 +120,8 @@ class TrialDetail extends React.Component {
       {key: 'trial', to: '/trial', text: '备案初审'}
     ];
     this.anchor = [
-      {text: '主体信息', to: '#host'},
-      {text: '网站信息', to: '#website'}
+      {text: '主体信息', to: 'host'},
+      {text: '网站信息', to: 'website'}
     ];
     this.initApi = apis.getTrialInfo;
     this.rejectReason = '信息有误,请重新填写';
@@ -427,7 +427,7 @@ class TrialDetail extends React.Component {
       <div className={styles.recordTrailDetail}>
         <Breadcrumb routes={this.route} style={{marginTop: 15}} />
         <MainHeader title='查看备案信息' style={{paddingTop: 5}} />
-        <Anchor items={this.anchor} activeKey='#host' style={{marginTop: 30}} />
+        <Anchor items={this.anchor} style={{marginTop: 30}} />
         <div style={{width: 500}}>
           {this.renderCardInfo(hostInfo)}
           {this.renderCardInfo(siteInfo)}

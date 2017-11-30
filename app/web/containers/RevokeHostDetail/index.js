@@ -8,9 +8,9 @@ class RevokeHostDetail extends TrialDetail {
     this.name = 'RevokeHostDetail';
     this.route = [{key: 'revokeHost', to: '/revoke/host', text: '注销主体'}];
     this.anchor = [
-      {text: '主体信息', to: '#host'},
-      {text: '网站信息', to: '#website'},
-      {text: '查看备案密码', to: '#password'}
+      {text: '主体信息', to: 'host'},
+      {text: '网站信息', to: 'website'},
+      {text: '查看备案密码', to: 'password'}
     ];
   }
 
