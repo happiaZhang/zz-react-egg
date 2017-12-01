@@ -94,12 +94,12 @@ class RejectModel {
       if (category !== null) {
         if (!auditContent.hasOwnProperty(name)) auditContent[name] = [];
         auditContent[name].push(category);
-        break;
+        continue;
       }
 
       if (name !== null) {
         verifiedDomain.push(name);
-        break;
+        continue;
       }
 
       const type = key.split('.')[0];
@@ -107,7 +107,7 @@ class RejectModel {
 
       if (this.sitePhoto.findIndex(path => path === field) > -1) {
         webSitePhotoItems.push(field);
-        break;
+        continue;
       }
 
       if (type === 'site') websiteItems.push(field);
