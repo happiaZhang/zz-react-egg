@@ -53,5 +53,11 @@ module.exports = appInfo => {
     disableConsoleAfterReady: false
   };
 
+  config.security = {
+    xframe: {
+      enable: false
+    }
+  };
+
   return config;
 };
