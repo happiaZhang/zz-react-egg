@@ -1,6 +1,7 @@
 import styles from './index.scss';
 import React from 'react';
 import {Link} from 'react-router-dom';
+import {expandingContent} from '../../utils/scroller';
 
 class Menu extends React.Component {
   static defaultProps = {
@@ -11,57 +12,54 @@ class Menu extends React.Component {
     super(props);
 
     this.state = {
-      showState: true,
-      linkIndex: this.getDefalutLink()
+      expanded: true,
+      activeLink: props.activeLink
     };
+    this.isExpanding = false;
   }
 
-  // 打开侧边栏
-  handleOpen = () => {
-    if (!this.state.showState) {
-      this.setState({showState: true});
-    }
-  };
-
-  // 关闭侧边栏
-  handleClose = () => {
-    if (this.state.showState) {
-      this.setState({showState: false});
-    }
-  };
-
-  // 导航链接点击
-  handleLinkClick = (index) => {
-    this.setState({linkIndex: index});
-  };
-
-  // 获取默认的link
-  getDefalutLink() {
-    const {links} = this.props;
-    const pathname = window.location.pathname;
-
-    for (let i = links.length - 1; i >= 0; i--) {
-      if (pathname.indexOf(links[i].link) !== -1) {
-        return i;
-      }
+  componentWillReceiveProps(nextProps) {
+    const {activeLink} = nextProps;
+    if (activeLink !== this.props.activeLink) {
+      this.setState({activeLink});
     }
   }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    const stateKey = Object.keys(nextState).find(k => nextState[k] !== this.state[k]);
+    return stateKey != null;
+  }
+
+  componentDidUpdate() {
+    if (this.isExpanding) {
+      const {expanded} = this.state;
+      expandingContent(expanded ? 200 : 50);
+      this.isExpanding = false;
+    }
+  }
+
+  // 伸缩侧边栏
+  onExpand = () => {
+    const {expanded} = this.state;
+    this.setState({expanded: !expanded});
+    this.isExpanding = true;
+  };
 
   // 导航列表
-  renderNavList(links) {
-    let {linkIndex} = this.state;
+  renderNavList() {
+    const {links} = this.props;
+    const {activeLink} = this.state;
 
-    return links.map((item, index) => {
-      let selectedClass = index === linkIndex ? styles.selected : '';
+    return links.map((item, i) => {
+      const {path, text} = item;
+      const props = {
+        to: path
+      };
+      if (path === activeLink) props.className = styles.selected;
 
       return (
-        <li key={index}>
-          <Link
-            className={selectedClass}
-            to={item.link}
-            onClick={this.handleLinkClick.bind(this, index)}>
-            {item.text}
-          </Link>
+        <li key={i}>
+          <Link {...props}>{text}</Link>
         </li>
       );
     });
@@ -69,16 +67,15 @@ class Menu extends React.Component {
 
   // 页面渲染
   render() {
-    let {links} = this.props;
-    let {showState} = this.state;
-    let showClass = showState ? styles.show : styles.hidden;
+    const {expanded} = this.state;
+    const showClass = expanded ? styles.show : styles.hidden;
 
     return (
-      <div className={`${styles.menuBox} ${showClass}`} onClick={this.handleOpen}>
+      <div className={`${styles.menuBox} ${showClass}`}>
         <ul className={styles.navList}>
-          {this.renderNavList(links)}
+          {this.renderNavList()}
         </ul>
-        <a className={styles.switch} onClick={this.handleClose}>
+        <a className={styles.switch} onClick={this.onExpand}>
           <i className={styles.switchIcon}>&rsaquo;</i>
         </a>
       </div>

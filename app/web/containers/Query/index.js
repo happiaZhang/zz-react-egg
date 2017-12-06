@@ -186,7 +186,7 @@ class Query extends BaseContainer {
     const cols = [];
     FILTER_ITEMS.forEach((props, i) => {
       cols.push(
-        <div key={i} className={styles.col4}>
+        <div key={i} className={styles.col}>
           <FormGroup {...props} />
         </div>
       );

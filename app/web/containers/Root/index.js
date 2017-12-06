@@ -49,14 +49,12 @@ const ROUTES = [
   {path: '/revoke/access/reject/:id', component: RevokeAccessReject}
 ];
 
-export default class Root extends React.Component {
+class Root extends React.Component {
   setMenu = () => {
     const menuList = [];
     ROUTES.forEach(route => {
       const {path, text, menu = false} = route;
-      menu && menuList.push({
-        text, link: path
-      });
+      menu && menuList.push({text, path});
     });
     return menuList;
   };
@@ -75,20 +73,38 @@ export default class Root extends React.Component {
     addScroll();
   }
 
+  getActiveLink = () => {
+    const {pathname} = this.props.location;
+    if (pathname.length === 1) return pathname;
+
+    let activeLink = null;
+    ROUTES.forEach(rt => {
+      const {path, menu} = rt;
+      if (menu && pathname.indexOf(path) > -1) activeLink = path;
+    });
+    return activeLink;
+  };
+
   render() {
     return (
-      <BrowserRouter basename={prefix}>
-        <div className={styles.wrapper}>
-          <Loading />
-          <div className={styles.content}>
-            <Menu links={this.setMenu()} />
-            <div ref={ref => (this.scrElm = ref)} className={styles.mainContent}>
-              {this.renderRoutes()}
-            </div>
+      <div className={styles.wrapper}>
+        <Loading />
+        <div className={styles.content}>
+          <Menu links={this.setMenu()} activeLink={this.getActiveLink()} />
+          <div ref={ref => (this.scrElm = ref)} className={styles.mainContent}>
+            {this.renderRoutes()}
           </div>
-          <ModalContainer />
         </div>
-      </BrowserRouter>
+        <ModalContainer />
+      </div>
     );
   }
 }
+
+const Routes = (
+  <BrowserRouter basename={prefix}>
+    <Route path='/' component={Root} />
+  </BrowserRouter>
+);
+
+export default Routes;

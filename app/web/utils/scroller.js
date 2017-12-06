@@ -74,3 +74,7 @@ export const hideHanging = (props) => {
   const {node, ...other} = props;
   ReactDOM.render(<Anchor {...other} show={false} />, node);
 };
+
+export const expandingContent = (marginLeft) => {
+  scrollHandler.scrElm.self.style.marginLeft = marginLeft + 'px';
+};

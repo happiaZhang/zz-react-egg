@@ -69,7 +69,9 @@ class Anchor extends React.Component {
 
   componentWillUnmount() {
     removeScroll();
-    hideHanging({node: nodeContainer});
+    if (nodeContainer !== null) {
+      hideHanging({node: nodeContainer});
+    }
   }
 
   getActiveKey = () => {

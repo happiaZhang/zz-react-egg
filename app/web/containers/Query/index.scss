@@ -8,9 +8,17 @@
     border: 0;
     clear: both;
   }
+  .col {
+    float: left;
+    width: 50%;
+    padding: 15px 10px 0;
+  }
 }
-.col4 {
-  float: left;
-  width: 33.33333%;
-  padding: 15px 10px 0;
+@media screen and (min-width: 1120px) {
+  .row {
+    .col {
+      width: 33.33333%;
+    }
+  }
 }
+
