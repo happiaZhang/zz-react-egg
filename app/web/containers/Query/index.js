@@ -8,14 +8,14 @@ import DateRange from '../../components/DateRange';
 import Input from '../../components/Input';
 import datetime from '../../components/Datepicker/datetime';
 import message from '../../components/Message';
-import {QUERY_TYPE, QUERY_STATUS} from '../../utils/constants';
+import {QUERY_TYPE, QUERY_STATUS, FILING_STATUS} from '../../utils/constants';
 import apis from '../../utils/apis';
 import validate from '../../utils/validate';
 
 class Query extends BaseContainer {
   constructor(props) {
     super(props);
-    const {startTime, endTime} = this.lastWeek();
+    const {startTime, endTime} = this.lastMonth();
     this.state.queryType = 3;
     this.state.startTime = startTime;
     this.state.endTime = endTime;
@@ -34,10 +34,10 @@ class Query extends BaseContainer {
     };
   }
 
-  // 获取最近一周日期
-  lastWeek = () => {
+  // 获取最近一个月日期
+  lastMonth = () => {
     const startTime = new Date();
-    datetime.add(startTime, -7);
+    datetime.add(startTime, -30);
     return {
       startTime: datetime.format(startTime, datetime.DEFAULT_OUTPUT_FORMAT),
       endTime: datetime.format(new Date(), datetime.DEFAULT_OUTPUT_FORMAT)
@@ -58,7 +58,7 @@ class Query extends BaseContainer {
         this.loadFunc = apis.getInfoSummaryRevoked;
         break;
       case 4:case 5:
-        this.selectAll = [10040, 10060, 10055, 10070, 10080, 10090, 10100];
+        this.selectAll = this.genSelectAll();
         this.selectOptions = this.genOptions();
         this.loadFunc = apis.getInfoSummaryNonRevoked;
         break;
@@ -68,6 +68,15 @@ class Query extends BaseContainer {
     if (queryType === 5) filingType = [4];
     this.setState({queryType, status: '', filingType});
   }
+
+  genSelectAll = () => {
+    const selectAll = [];
+    FILING_STATUS.forEach(status => {
+      const {value} = status;
+      if (value >= 10000 && value < 20000) selectAll.push(value);
+    });
+    return selectAll;
+  };
 
   // 格式化请求参数 (overwrite)
   convertParams = (params) => {
