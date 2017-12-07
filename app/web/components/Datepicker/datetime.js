@@ -1,3 +1,8 @@
+const OFFSET = (function() {
+  const _now = new Date();
+  return _now.getTimezoneOffset() * -1 * 60;
+})();
+
 const TRANSLATOR = {
   1: 'JANUARY',
   2: 'FEBRUARY',
@@ -80,6 +85,12 @@ const min = () => (new Date(1900, 0, 1).getTime());
 
 const max = () => (new Date(9999, 11, 31).getTime());
 
+const utc = (str, fmt = 'yyyy-MM-dd hh:mm') => {
+  const dt = new Date(str);
+  dt.setSeconds(OFFSET);
+  return format(dt, fmt);
+};
+
 export default {
   format,
   year,
@@ -91,6 +102,7 @@ export default {
   add,
   currentTime,
   validDate,
+  utc,
   'DEFAULT_OUTPUT_FORMAT': 'yyyy-MM-dd',
   RANGE: 'range',
   SINGLE: 'single',

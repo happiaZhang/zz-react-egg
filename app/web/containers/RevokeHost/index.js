@@ -1,6 +1,7 @@
 import BaseContainer from '../BaseContainer';
 import apis from '../../utils/apis';
 import {FILING_STATUS} from '../../utils/constants';
+import datetime from '../../components/Datepicker/datetime';
 
 class RevokeHost extends BaseContainer {
   constructor(props) {
@@ -21,7 +22,7 @@ class RevokeHost extends BaseContainer {
         value: 'website',
         render: this.handleMultipleLine()
       },
-      {text: '最近更新时间', value: 'updateTime'},
+      {text: '最近更新时间', value: 'updateTime', render: (value, item) => (datetime.utc(item[value]))},
       {
         text: '状态',
         value: 'status',

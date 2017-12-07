@@ -9,6 +9,7 @@ import message from '../../components/Message';
 import apis from '../../utils/apis';
 import validate from '../../utils/validate';
 import {FILING_STATUS, FILING_TYPE, genOperations, handleOperations} from '../../utils/constants';
+import datetime from '../../components/Datepicker/datetime';
 
 class BaseContainer extends React.Component {
   constructor(props) {
@@ -113,7 +114,7 @@ class BaseContainer extends React.Component {
         render: this.handleMultipleLine()
       },
       {text: '备案类型', value: 'filingType', render: (value, item) => (FILING_TYPE[item[value]] || '')},
-      {text: '最近更新时间', value: 'updateTime'},
+      {text: '最近更新时间', value: 'updateTime', render: (value, item) => (datetime.utc(item[value]))},
       {
         text: '状态',
         value: 'status',
