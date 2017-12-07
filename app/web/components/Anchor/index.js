@@ -6,13 +6,10 @@ import {
   activeTarget,
   fixAnchor,
   removeScroll,
-  getEvtStatus,
   addScroll,
   showHanging,
   hideHanging
 } from '../../utils/scroller';
-
-let nodeContainer = null;
 
 class Anchor extends React.Component {
   static defaultProps = {
@@ -63,15 +60,12 @@ class Anchor extends React.Component {
       getFixInfo: this.getFixInfo.bind(this)
     });
 
-    const noEvt = getEvtStatus();
-    if (noEvt) addScroll();
+    addScroll();
   };
 
   componentWillUnmount() {
     removeScroll();
-    if (nodeContainer !== null) {
-      hideHanging({node: nodeContainer});
-    }
+    hideHanging();
   }
 
   getActiveKey = () => {
@@ -81,29 +75,14 @@ class Anchor extends React.Component {
   };
 
   getFixInfo = () => {
-    const {isFixed, top, left, width, anchorLeft} = fixAnchor();
-    if (!nodeContainer) {
-      nodeContainer = document.createElement('div');
-      nodeContainer.style.position = 'fixed';
-      nodeContainer.style.top = top + 'px';
-      nodeContainer.style.left = left + 'px';
-      nodeContainer.style.backgroundColor = '#f5f7fa';
-      nodeContainer.style.zIndex = 1000;
-      document.body.appendChild(nodeContainer);
-    }
-    nodeContainer.style.width = width + 'px';
-
+    const {isFixed, anchorStyle} = fixAnchor();
     const {items} = this.props;
     const {activeKey} = this.state;
     const props = {
       items,
       activeKey,
       hanging: true,
-      node: nodeContainer,
-      style: {
-        paddingTop: 20,
-        marginLeft: anchorLeft - left
-      }
+      style: anchorStyle
     };
 
     isFixed ? showHanging(props) : hideHanging(props);

@@ -1,7 +1,7 @@
 import styles from './index.scss';
 import React from 'react';
 import {Link} from 'react-router-dom';
-import {expandingContent} from '../../utils/scroller';
+import {flexingContent} from '../../utils/scroller';
 
 class Menu extends React.Component {
   static defaultProps = {
@@ -13,9 +13,10 @@ class Menu extends React.Component {
 
     this.state = {
       expanded: true,
-      activeLink: props.activeLink
+      activeLink: props.activeLink,
+      isMin: false
     };
-    this.isExpanding = false;
+    this.MIN_WIDTH = 840;
   }
 
   componentWillReceiveProps(nextProps) {
@@ -30,32 +31,59 @@ class Menu extends React.Component {
     return stateKey != null;
   }
 
-  componentDidUpdate() {
-    if (this.isExpanding) {
-      const {expanded} = this.state;
-      expandingContent(expanded ? 200 : 50);
-      this.isExpanding = false;
-    }
+  componentDidMount() {
+    this.emitter = this.handleResize;
+    this.emitter();
+    this.handleContentWidth();
+    window.addEventListener('resize', this.emitter);
   }
 
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.emitter);
+  }
+
+  handleResize = () => {
+    const isMin = window.innerWidth < this.MIN_WIDTH;
+    if (isMin !== this.state.isMin) {
+      this.setState({isMin, expanded: !isMin});
+    }
+  };
+
+  componentDidUpdate() {
+    this.handleContentWidth();
+  }
+
+  handleContentWidth = () => {
+    const {expanded, isMin} = this.state;
+    if (isMin) {
+      flexingContent(50);
+    } else {
+      flexingContent(expanded ? 200 : 50);
+    }
+  };
+
   // 伸缩侧边栏
-  onExpand = () => {
+  onExpand = (e) => {
+    e.stopPropagation();
     const {expanded} = this.state;
     this.setState({expanded: !expanded});
-    this.isExpanding = true;
   };
 
   // 导航列表
   renderNavList() {
     const {links} = this.props;
-    const {activeLink} = this.state;
+    const {activeLink, isMin} = this.state;
 
     return links.map((item, i) => {
       const {path, text} = item;
       const props = {
         to: path
       };
-      if (path === activeLink) props.className = styles.selected;
+      if (path === activeLink) {
+        props.className = styles.selected;
+      } else {
+        if (isMin) props.onClick = this.onExpand;
+      }
 
       return (
         <li key={i}>
@@ -67,7 +95,7 @@ class Menu extends React.Component {
 
   // 页面渲染
   render() {
-    const {expanded} = this.state;
+    const {expanded, isMin} = this.state;
     const showClass = expanded ? styles.show : styles.hidden;
 
     return (
@@ -78,6 +106,7 @@ class Menu extends React.Component {
         <a className={styles.switch} onClick={this.onExpand}>
           <i className={styles.switchIcon}>&rsaquo;</i>
         </a>
+        {isMin && expanded ? <div className={styles.cover} onClick={this.onExpand} /> : null}
       </div>
     );
   }

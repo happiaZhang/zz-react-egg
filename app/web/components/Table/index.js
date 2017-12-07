@@ -138,11 +138,13 @@ class Table extends React.Component {
         if (value === 'OPERATION_COLUMN') {
           return (
             <td key={`td_${tdIndex}`} className={styles.center}>
-              <ButtonDropdown
-                buttons={item.operations}
-                onItemClick={(type) => {
-                  this.handleItemClick(type, item);
-                }} />
+              {
+                item.operations && item.operations.length > 0
+                  ? <ButtonDropdown buttons={item.operations}
+                    onItemClick={(type) => {
+                      this.handleItemClick(type, item);
+                    }} /> : null
+              }
             </td>
           );
         }

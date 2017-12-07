@@ -10,6 +10,7 @@
   border-right: solid 1px #dfe3e6;
   font-size: 14px;
   color: #152935;
+  z-index: 100;
   transition: width 0.25s;
   .navList {
     flex: 1;
@@ -83,4 +84,12 @@
       transform: rotate(0deg);
     }
   }
+}
+
+.cover {
+  position: fixed;
+  top: 50px;
+  left: 200px;
+  right: 0;
+  bottom: 0;
 }
