@@ -130,10 +130,10 @@ module.exports = app => {
       let summary = null;
       const {search} = opts;
       const {queryType} = querystring.parse(search.substr(1));
-      if (queryType === '4' || queryType === '5') {
-        summary = await this.getInfoSummaryNonRevoked(opts);
-      } else {
+      if (queryType) {
         summary = await this.getInfoSummaryRevoked(opts);
+      } else {
+        summary = await this.getInfoSummaryNonRevoked(opts);
       }
       if (summary.code) return summary;
 
