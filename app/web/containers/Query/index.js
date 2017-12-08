@@ -168,13 +168,13 @@ class Query extends BaseContainer {
       {
         label: '主办单位',
         component: Input,
-        onChange: this.changeHostname,
+        onBlur: this.changeHostname,
         value: hostname
       },
       {
         label: '关联域名',
         component: Input,
-        onChange: this.changeWebsite,
+        onBlur: this.changeWebsite,
         value: website
       },
       {
