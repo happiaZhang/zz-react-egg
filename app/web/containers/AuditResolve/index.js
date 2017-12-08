@@ -40,19 +40,40 @@ const SITE_INFO_LIST = [
 class AuditResolve extends TrialDetail {
   constructor(props) {
     super(props);
+    this.state.warningKey = null;
     this.name = 'AuditResolve';
     this.route = [
       {key: 'audit', to: '/audit', text: '管局审核'}
     ];
     this.initApi = apis.getAuditResolveInfo;
     this.host = {};
+    this.siteIds = [];
   }
 
-  onAudit = () => {
-    const data = {
-      operId: this.getOperId()
-    };
+  isInvalid = () => {
+    const operId = this.getOperId();
+    let isInvalid = validate.isEmpty(this.host) || validate.isEmpty(this.host[operId]);
+    if (isInvalid) {
+      this.setState({warningKey: 'host.' + operId});
+      return true;
+    }
 
+    const counter = this.siteIds.length;
+    for (let i = 0; i < counter; i++) {
+      const id = this.siteIds[i];
+      if (validate.isEmpty(this.site) || validate.isNil(this.site[id]) || validate.isEmpty(this.site[id])) {
+        this.setState({warningKey: 'site.' + id});
+        isInvalid = true;
+        break;
+      }
+    }
+    return isInvalid;
+  };
+
+  onAudit = () => {
+    if (this.isInvalid()) return;
+
+    const data = {operId: this.getOperId()};
     Object.keys(this.host).forEach(operId => {
       data.hostFilingNo = this.host[operId];
     });
@@ -65,7 +86,7 @@ class AuditResolve extends TrialDetail {
       });
     });
 
-    if (filingSiteNoDtoList.length > 0) data.filingSiteNoDtoList = filingSiteNoDtoList;
+    data.filingSiteNoDtoList = filingSiteNoDtoList;
 
     apis.setFilingNo(data).then(() => {
       message.success('备案号保存成功', 2, () => {
@@ -108,11 +129,23 @@ class AuditResolve extends TrialDetail {
 
     const props = {
       label,
+      required: true,
       component: Input,
-      placeholder: `请输入${label}`,
+      warningMsg: `请输入${label}`,
+      warning: this.state.warningKey === `${isHost ? 'host' : 'site'}.${id}`,
+      warningScroll: true,
       onBlur: this.handleFilingNo(isHost, id)
     };
-    return <div className={styles.photoFrame}><FormGroup {...props} /></div>;
+    return <div className={styles.photoFrame} style={{width: 180}}>
+      <FormGroup {...props} />
+    </div>;
+  };
+
+  collectSiteIds = (sites) => {
+    this.siteIds.length = 0;
+    sites.forEach(site => {
+      this.siteIds.push(site.siteId);
+    });
   };
 
   render() {
@@ -131,6 +164,8 @@ class AuditResolve extends TrialDetail {
       infoList: SITE_INFO_LIST,
       photoClassName: false // alternation
     };
+
+    this.collectSiteIds(sites);
 
     return (
       <div className={styles.recordTrailDetail}>
