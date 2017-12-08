@@ -18,41 +18,53 @@ class Pagination extends React.Component {
 
   // 页面切换
   handlePageSizeChange = (value) => {
-    let {onPageSizeSwitch} = this.props;
+    const {onPageSizeSwitch} = this.props;
 
     onPageSizeSwitch && onPageSizeSwitch(value);
   };
 
   // 页码切换
   handleChangePageNumber = (value) => {
-    let {onPageNumberSwitch} = this.props;
-    const v = isNaN(parseInt(value)) ? value : parseInt(value);
-    onPageNumberSwitch && onPageNumberSwitch(v);
+    const {onPageNumberSwitch, totalSize, pageSize} = this.props;
+    const totalPage = Math.ceil(totalSize / pageSize);
+    const cvtValue = parseInt(value, 10);
+    let pageNumber = isNaN(cvtValue) ? 1 : cvtValue;
+    if (pageNumber < 1) pageNumber = 1;
+    if (pageNumber > totalPage) pageNumber = totalPage;
+    if (pageNumber !== this.props.pageNumber) {
+      onPageNumberSwitch && onPageNumberSwitch(pageNumber);
+    }
+    this.refs.input.resetValue(pageNumber);
+  };
+
+  // 生成校验模型
+  genPattern = (totalPage) => {
+    return (v) => {
+      let isValid = /^[1-9]\d*$/g.test(v);
+      if (isValid) isValid = totalPage >= parseInt(v, 10);
+      return isValid;
+    };
   };
 
   // 页面渲染
   render() {
-    let {
+    const {
       type,
       style,
       pageSizeSelectData,
+      pageNumber,
       pageSize,
-      totalSize,
-      pageNumber
+      totalSize
     } = this.props;
 
-    let typeShowState = type === 'simple';
-    let totalPage = Math.ceil(totalSize / pageSize);
-    let disabledPreClass = (!pageNumber || isNaN(pageNumber) || pageNumber <= 1 || pageNumber > totalPage)
-      ? styles.disabled
-      : '';
-    let disabledNextClass = (!pageNumber || isNaN(pageNumber) || pageNumber < 1 || pageNumber >= totalPage)
-      ? styles.disabled
-      : '';
+    const isSimple = type === 'simple';
+    const totalPage = Math.ceil(totalSize / pageSize);
+    const disabledPreClass = (pageNumber <= 1 || pageNumber > totalPage) ? styles.disabled : '';
+    const disabledNextClass = pageNumber >= totalPage ? styles.disabled : '';
 
     return (
       <div className={styles.paginationBox} style={style}>
-        {typeShowState && <div className={styles.sizeSwitch}>
+        {isSimple && <div className={styles.sizeSwitch}>
           <Select
             type='small'
             data={pageSizeSelectData}
@@ -67,9 +79,12 @@ class Pagination extends React.Component {
             className={`${styles.link} ${disabledPreClass}`}
             onClick={this.handleChangePageNumber.bind(this, pageNumber - 1)}>&lt;</a>
           <Input
-            style={{width: 24, height: 24, marginLeft: 20, padding: 0, textAlign: 'center'}}
+            ref='input'
+            style={{width: 24, marginLeft: 20}}
+            inputStyle={{height: 24, padding: 0, textAlign: 'center'}}
             value={pageNumber}
-            onChange={this.handleChangePageNumber} />
+            pattern={this.genPattern(totalPage)}
+            onBlur={this.handleChangePageNumber} />
           <a
             className={`${styles.link} ${disabledNextClass}`}
             onClick={this.handleChangePageNumber.bind(this, pageNumber + 1)}>&gt;</a>

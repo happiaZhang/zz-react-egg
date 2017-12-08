@@ -3,6 +3,7 @@ import React from 'react';
 import TrialDetail from '../TrialDetail';
 import Breadcrumb from '../../components/Breadcrumb';
 import MainHeader from '../MainHeader';
+import message from '../../components/Message';
 import apis from '../../utils/apis';
 import validate from '../../utils/validate';
 
@@ -51,6 +52,18 @@ class VerifyDetail extends TrialDetail {
       curtainInfo
     });
   }
+
+  // 数据有效性检验（overwrite）
+  validData = () => {
+    // 验证是否输入驳回理由
+    let isValid = !validate.isEmpty(this.rejectReason);
+    if (!isValid) return isValid;
+
+    // 验证是否勾选幕布照片
+    isValid = !validate.isEmpty(this.site);
+    if (!isValid) message.error('请至少选择一项驳回的幕布照片');
+    return isValid;
+  };
 
   // 选择信息项 （overwrite）
   checkInfoItem = (key, id) => {

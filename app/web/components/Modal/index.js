@@ -19,13 +19,6 @@ class Modal extends React.Component {
     onCloseClick && onCloseClick();
   };
 
-  // 确认点击处理
-  handleSubmitClick = () => {
-    let {onSubmitClick} = this.props;
-
-    onSubmitClick && onSubmitClick();
-  };
-
   // 页面渲染
   render() {
     let {title, children, showState, width, footer} = this.props;

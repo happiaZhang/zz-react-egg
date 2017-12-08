@@ -5,7 +5,7 @@ class Trial extends BaseContainer {
   constructor(props) {
     super(props);
     this.title = '备案初审';
-    this.selectAll = [10040];
+    this.selectAll = [10040, 10060];
     this.selectOptions = this.genOptions();
     this.state.filingType = [1, 2, 3];
   }

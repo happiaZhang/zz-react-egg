@@ -98,3 +98,10 @@ export const flexingContent = (marginLeft) => {
     nodeContainer.style.left = marginLeft + 'px';
   }
 };
+
+export const scrollToTarget = (target) => {
+  const scrElm = scrollHandler.scrElm.self;
+  const {top} = target.getBoundingClientRect();
+  const {top: scrTop} = scrElm.getBoundingClientRect();
+  scrElm.scrollTop = top - scrTop + 77;
+};

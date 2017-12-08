@@ -175,16 +175,8 @@ class BaseContainer extends React.Component {
     this.setState({pageNumber});
     this._timer && clearTimeout(this._timer);
     this._timer = setTimeout(() => {
-      const isValid = this.validPageNumber(pageNumber);
-      isValid && this.loadTableData({pageNumber});
+      this.loadTableData({pageNumber});
     }, 300);
-  };
-
-  // 检验页码合理性
-  validPageNumber = (PageNumber) => {
-    const {pageSize, totalSize} = this.state;
-    const pageNumberMax = Math.ceil(totalSize / pageSize);
-    return PageNumber >= 1 && PageNumber <= pageNumberMax;
   };
 
   // 每行操作处理

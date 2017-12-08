@@ -1,22 +1,21 @@
 import styles from './index.scss';
 import React from 'react';
+import Warn from '../Warn';
 
 class Input extends React.Component {
   static defaultProps = {
-    style: {},
     placeholder: '',
     value: '',
     warning: false,
-    focusing: false
+    warningMsg: '',
+    type: 'INPUT' // TEXTAREA | INPUT
   };
 
   // 构造方法
   constructor(props) {
     super(props);
-
     this.state = {
       value: props.value,
-      focusing: props.focusing,
       warning: props.warning
     };
   }
@@ -27,52 +26,50 @@ class Input extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {value, warning} = nextProps;
+    const {warning} = nextProps;
     if (warning !== this.props.warning) {
       this.setState({warning});
     }
-    if (value !== this.props.value) {
-      this.setState({value});
-    }
   }
 
-  // 输入表单聚焦
-  handleFocus = () => {
-    this.setState({focusing: true});
-  };
+  // 重置数值
+  resetValue = (value) => {
+    this.setState({value, warning: false});
+  }
 
   // 输入表单失去焦点
   handleBlur = (e) => {
-    let {onBlur} = this.props;
-    this.setState({focusing: false});
-    onBlur && onBlur(e.target.value);
+    const value = e.target.value;
+    const {onBlur} = this.props;
+    onBlur && onBlur(value);
   };
 
   // 输入表单值改变
   handleChange = (e) => {
-    let {onChange} = this.props;
-
-    onChange && onChange(e.target.value);
+    const value = e.target.value;
+    const {pattern} = this.props;
+    this.setState({value, warning: pattern ? !pattern(value) : false});
   };
 
   // 页面渲染
   render() {
-    const {style, placeholder} = this.props;
-    const {focusing, warning, value} = this.state;
+    const {style, placeholder, warningMsg, type, inputStyle} = this.props;
+    const {warning, value} = this.state;
+    const isTextarea = type === 'TEXTAREA';
+    const props = {
+      placeholder,
+      value,
+      onChange: this.handleChange,
+      onBlur: this.handleBlur
+    };
+    if (!isTextarea) props.style = inputStyle;
 
-    let classNames = styles.inputText;
-    if (focusing) classNames += ' ' + styles.focusing;
-    if (warning) classNames += ' ' + styles.warning;
-
-    return <input
-      type='text'
-      className={classNames}
-      style={style}
-      placeholder={placeholder}
-      value={value}
-      onFocus={this.handleFocus}
-      onBlur={this.handleBlur}
-      onChange={this.handleChange} />;
+    return (
+      <div className={styles.inputContainer} style={style}>
+        {isTextarea ? <textarea {...props} /> : <input type='text' {...props} />}
+        {warning ? <Warn content={warningMsg} /> : null}
+      </div>
+    );
   }
 }
 

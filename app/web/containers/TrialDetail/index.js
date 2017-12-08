@@ -7,7 +7,8 @@ import Card from '../../components/Card';
 import Info from '../../components/Info';
 import PhotoFrame from '../../components/PhotoFrame';
 import ButtonGroup from '../../components/ButtonGroup';
-import Textarea from '../../components/Textarea';
+import FormGroup from '../../components/FormGroup';
+import Input from '../../components/Input';
 import message from '../../components/Message';
 import apis from '../../utils/apis';
 import validate from '../../utils/validate';
@@ -124,7 +125,6 @@ class TrialDetail extends React.Component {
       {text: '网站信息', to: 'website'}
     ];
     this.initApi = apis.getTrialInfo;
-    this.rejectReason = '信息有误,请重新填写';
     this.host = [];
     this.site = {};
     this.rejFunc = apis.setTrailStatus;
@@ -181,6 +181,23 @@ class TrialDetail extends React.Component {
     });
   }
 
+  // 数据有效性验证
+  validData = () => {
+    // 验证是否输入驳回理由
+    let isValid = !validate.isEmpty(this.rejectReason);
+    if (!isValid) return isValid;
+
+    // 验证是否勾选了主体信息
+    if (!validate.isEmpty(this.host)) return true;
+    // 验证是否勾选了网站信息
+    Object.keys(this.site).forEach(id => {
+      if (validate.isEmpty(this.site[id])) delete this.site.id;
+    });
+    isValid = !validate.isEmpty(this.site);
+    if (!isValid) message.error('请至少选择一项用户所需要修改的内容');
+    return isValid;
+  };
+
   // 处理驳回或通过
   handleClick = (isResolve) => {
     const data = {
@@ -190,6 +207,7 @@ class TrialDetail extends React.Component {
     };
     return () => {
       if (!isResolve) data.rejectReason = this.setRejectReason();
+      if (!isResolve && !this.validData()) return;
       this.rejFunc(data).then(() => {
         message.success(this.setMsg(isResolve), 2, this.switch2List);
       }).catch(error => {
@@ -203,13 +221,22 @@ class TrialDetail extends React.Component {
     const {checkMode} = this.state;
 
     if (checkMode || this.name === 'AuditReject') {
-      return <Textarea
-        className={styles.reason}
-        width={635}
-        height={150}
-        header='请勾选需要用户修改的内容，并输入驳回理由'
-        value={this.rejectReason}
-        onBlur={this.setReason} />;
+      this.rejectReason = '信息有误，请重新填写';
+      const props = {
+        formStyle: {marginTop: 35},
+        required: true,
+        label: '请勾选需要用户修改的内容，并输入驳回理由',
+        value: this.rejectReason,
+        component: Input,
+        type: 'TEXTAREA',
+        style: {
+          width: 635,
+          height: 150
+        },
+        onBlur: this.setReason,
+        warningMsg: '请输入驳回理由'
+      };
+      return <FormGroup {...props} />;
     }
 
     return null;

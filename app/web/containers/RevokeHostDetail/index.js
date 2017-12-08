@@ -18,7 +18,7 @@ class RevokeHostDetail extends TrialDetail {
   setMsg = () => {
     let msg = '提交管局审核已成功';
     if (this.name === 'RevokeAccessReject') msg = '取消接入已驳回';
-    if (this.name === 'RevokeAccessResolve') msg.success = '取消接入已通过';
+    if (this.name === 'RevokeAccessResolve') msg = '取消接入已通过';
     return msg;
   };
 
