@@ -11,24 +11,19 @@ module.exports = () => {
       return;
     }
     // 获取配置信息
-    const {config} = ctx.app;
-    // 返回跳转地址
-    const loginURI = `${ctx.getCookieDomain(ctx)}/admin/login`;
-
+    const {redis, logger} = ctx.app;
     try {
       // 获取根域的用户状态sid
       const amsid = ctx.cookies.get('amsid');
       // 获取用户登录token
-      const loginData = await ctx.helper.redis(amsid);
+      const loginData = await redis.get(amsid);
       const loginInfo = JSON.parse(loginData);
       ctx.state.token = loginInfo.token;
     } catch (error) {
-      if (ctx.url.indexOf('/api/') !== -1) {
-        ctx.throw(config.errors.NoLogin_Error, 'user nologin');
-      }
-      return ctx.redirect(loginURI);
+      logger.info('not logged in');
+      await ctx.redirectLogin();
+      return;
     }
-
     await next();
   };
 };

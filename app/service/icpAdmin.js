@@ -13,6 +13,11 @@ module.exports = app => {
       this.checkResponse = this.ctx.checkFetch;
     }
 
+    async getAdminInfo(opts) {
+      const result = await this.request('/userrest/view', opts);
+      return this.checkResponse(result);
+    }
+
     async getAllWebsiteInfo(opts) {
       const result = await this.request('/filing-admin/all-website-info', opts);
       return this.checkResponse(result);

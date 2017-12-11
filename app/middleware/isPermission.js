@@ -10,24 +10,22 @@ module.exports = () => {
       await next();
       return;
     }
-    const {config} = ctx.app;// 获取配置信息
+    const {config, logger} = ctx.app;// 获取配置信息
     // 返回跳转地址
-    const loginURI = `${ctx.getCookieDomain(ctx)}/admin/login`;
     const permissionStr = config.permission.uri;
     // 判断用户权限
     const token = ctx.state.token;
     // 判断用户是否有管理权限
     const result = await ctx.fetch('/userrest/judgePermission', {
-      host: ctx.app.config.adminHost,
+      host: config.adminHost,
       search: '?' + querystring.stringify({token, permissionStr}),
       method: 'GET'
     });
     // 用户没有权限
     if (result.status !== 200 || !result.data || result.data.code !== '0') {
-      if (ctx.url.indexOf('/api/') !== -1) {
-        ctx.throw(config.errors.NoPermission_Error, 'user nopermission');
-      }
-      return ctx.redirect(loginURI);
+      logger.info('no permission');
+      await ctx.redirectLogin();
+      return;
     }
     // 用户拥有权限
     await next();

@@ -56,7 +56,7 @@ const genQueryString = (params) => {
 // 获取用户信息
 const getAdminInfo = function() {
   const payload = {
-    url: '/api/admin/view'
+    url: '/api/icp-admin/getAdminInfo'
   };
   return genPromise(payload, 'getAdminInfo');
 };

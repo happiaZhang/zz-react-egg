@@ -14,11 +14,6 @@ module.exports = appInfo => {
     defaultViewEngine: 'nunjucks',
     defaultExtension: '.html'
   };
-
-  // 统一错误定义
-  config.errors = require('./errors/config');
-  // 正则表达式
-  config.regex = require('./regex/config');
   // 用户权限
   config.permission = require('./permission/config');
 
@@ -27,10 +22,7 @@ module.exports = appInfo => {
   config.icpAdminHost = 'icp-admin-svc:8080';
 
   // middleware
-  config.middleware = ['errorHandler', 'logger', 'isLogin', 'isPermission'];
-  config.errorHandler = {
-    match: '/api'
-  };
+  config.middleware = ['logger', 'isLogin', 'isPermission'];
 
   // redis
   config.redis = {

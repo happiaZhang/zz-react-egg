@@ -34,11 +34,13 @@ module.exports = {
     return content;
   },
   //  获取主域名
-  getCookieDomain(ctx) {
-    const ip = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
-    const protocol = ctx.request.protocol;
-    const hostname = ctx.request.hostname;
-    if (ip.test(hostname) || hostname.indexOf('localhost') === 0) return '';
+  getDomain() {
+    const {protocol, hostname} = this.request;
     return protocol + '://' + hostname;
+  },
+  // 重定向
+  redirectLogin() {
+    const loginURI = `${this.getDomain()}/admin/login`;
+    return this.redirect(loginURI);
   }
 };
