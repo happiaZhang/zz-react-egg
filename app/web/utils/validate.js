@@ -64,5 +64,16 @@ export default {
     const userInfo = this.getUserInfo();
     if (this.isEmpty(userInfo)) return 'Dev';
     return userInfo.account;
+  },
+  getCookie(name) {
+    const cookieArr = document.cookie.split(';');
+
+    for (const item of cookieArr) {
+      let temp = item.split('=');
+      if (temp[0] === name) {
+        return decodeURI(temp[1]);
+      }
+    }
+    return '';
   }
 };

@@ -1,7 +1,9 @@
-import http from './http';
+import 'whatwg-fetch';
 import validate from './validate';
 import * as types from './constants';
 
+const fetchApi = self.fetch.bind(self);
+const prefix = validate.prefix();
 let dispatch = null;
 
 const getDispatch = (func) => {
@@ -13,16 +15,29 @@ const genModal = (payload) => {
 };
 
 const genPromise = (payload, key) => {
+  const {url, method = 'GET', data = {}} = payload;
+  const opts = {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      'x-csrf-token': validate.getCookie('csrfToken')
+    },
+    credentials: 'same-origin'
+  };
+  if (method === 'POST') opts.body = JSON.stringify(data);
   dispatch({type: types.LOADING, payload: key});
   return new Promise(function(resolve, reject) {
     // 调用API
-    http.fetch(payload).then(data => {
-      dispatch({type: types.LOADED, payload: key});
-      resolve(data);
-    }).catch(err => {
-      dispatch({type: types.LOADED, payload: key});
-      reject(err);
-    });
+    fetchApi(prefix + url, opts)
+      .then(res => res.json())
+      .then(json => {
+        dispatch({type: types.LOADED, payload: key});
+        const {code, msg, data} = json;
+        code ? reject(msg) : resolve(data);
+      }).catch(() => {
+        dispatch({type: types.LOADED, payload: key});
+        reject('网络连接失败，请稍候重试');
+      });
   });
 };
 
