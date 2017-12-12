@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ImageminPlugin = require('imagemin-webpack-plugin').default;
 const OUTPUT_PATH = path.resolve(__dirname, './app/public/');
 const PUBLIC_PATH = '//10.209.242.72/bss-backoffice-icp-node/public/';
 const vendor = require('./vendor');
@@ -114,6 +115,11 @@ const _plugin = [
   new webpack.HashedModuleIdsPlugin(),
   new webpack.optimize.CommonsChunkPlugin({
     names: ['vendor', 'manifest']
+  }),
+  new ImageminPlugin({
+    pngquant: {
+      quality: '95-100'
+    }
   })
 ];
 

@@ -45,11 +45,5 @@ module.exports = appInfo => {
     disableConsoleAfterReady: false
   };
 
-  config.security = {
-    csrf: {
-      enable: false
-    }
-  };
-
   return config;
 };
