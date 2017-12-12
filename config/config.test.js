@@ -8,6 +8,9 @@ module.exports = {
   adminHost: 'http://10.214.169.111:31747',
   adminInvoiceHost: 'http://10.214.169.111:31725',
 
+  // middleware
+  middleware: [],
+
   // redis
   redis: {
     client: {

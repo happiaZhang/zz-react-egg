@@ -70,7 +70,7 @@
         "stop": "egg-scripts stop",
         "dev": "cross-env EGG_SERVER_ENV=local egg-bin dev",
         "debug": "egg-bin debug",
-        "test": "EGG_SERVER_ENV=test egg-bin test",
+        "test": "cross-env EGG_SERVER_ENV=test egg-bin test",
         "cov": "cross-env EGG_SERVER_ENV=test egg-bin cov",
         "lint": "eslint ./",
         "ci": "npm run lint && npm run cov",
