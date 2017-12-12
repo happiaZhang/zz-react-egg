@@ -1,5 +1,5 @@
-import React from 'react';
 import styles from './index.scss';
+import React from 'react';
 
 class Search extends React.Component {
   static defaultProps = {
@@ -54,10 +54,10 @@ class Search extends React.Component {
 
   // 页面渲染
   render() {
-    let {placeholder, value} = this.props;
-    let {inputShowState} = this.state;
+    const {placeholder, value} = this.props;
+    const {inputShowState} = this.state;
 
-    let showClass = inputShowState ? styles.show : '';
+    const showClass = inputShowState ? styles.show : '';
 
     return (
       <div className={`${styles.searchBox} ${showClass}`}>

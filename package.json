@@ -71,11 +71,11 @@
         "debug": "egg-bin debug",
         "test": "EGG_SERVER_ENV=test egg-bin test",
         "cov": "cross-env EGG_SERVER_ENV=test egg-bin cov",
-        "lint": "eslint app/web/.",
+        "lint": "eslint ./",
         "ci": "npm run lint && npm run cov",
         "autod": "autod",
         "web": "cross-env NODE_ENV=development webpack-dev-server --open",
-        "build": "cross-env NODE_ENV=production webpack --config ./webpack.production.config.js --progress"
+        "build": "cross-env NODE_ENV=production webpack --progress"
     },
     "ci": {
         "version": "6, 8"
@@ -84,6 +84,6 @@
         "type": "git",
         "url": ""
     },
-    "author": "zhangzheng",
+    "author": "zhangzheng44",
     "license": "MIT"
 }
