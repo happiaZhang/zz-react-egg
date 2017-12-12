@@ -41,6 +41,9 @@ module.exports = {
   // 重定向
   redirectLogin() {
     const loginURI = `${this.getDomain()}/admin/login`;
-    return this.redirect(loginURI);
+    this.body = {
+      code: 300,
+      msg: loginURI
+    };
   }
 };

@@ -33,6 +33,7 @@ const genPromise = (payload, key) => {
       .then(json => {
         dispatch({type: types.LOADED, payload: key});
         const {code, msg, data} = json;
+        if (code === 300) location.href = msg;
         code ? reject(msg) : resolve(data);
       }).catch(() => {
         dispatch({type: types.LOADED, payload: key});
