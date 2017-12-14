@@ -72,7 +72,7 @@ class IcpModel {
 
     siteInfo.forEach(site => {
       const {listWebSiteManagerInfo} = site;
-      if (listWebSiteManagerInfo.length > 0) site.webSiteManagerInfo = listWebSiteManagerInfo[0];
+      if (listWebSiteManagerInfo && listWebSiteManagerInfo.length > 0) site.webSiteManagerInfo = listWebSiteManagerInfo[0];
 
       const obj = {};
       Object.keys(SITE_MAPPING).forEach(key => {

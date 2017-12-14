@@ -11,7 +11,10 @@ class Button extends React.Component {
   handleClick = (e) => {
     e.preventDefault();
     const {onClick} = this.props;
-    onClick && onClick();
+    if (onClick) {
+      clearTimeout(this.timer);
+      this.timer = setTimeout(onClick, 200);
+    }
   };
 
   // 页面渲染

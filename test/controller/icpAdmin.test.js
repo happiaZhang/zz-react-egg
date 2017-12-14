@@ -1,8 +1,8 @@
 const {app, assert} = require('egg-mock/bootstrap');
 
 describe('test/controller/icpAdmin.test.js', () => {
-  it('GET /api/icp-admin/getAdminInfo', async () => {
-    app.mockService('icpAdmin', 'getAdminInfo', (params) => {
+  it('GET /api/icp-admin/getAdminInfo', async() => {
+    app.mockService('icpAdmin', 'getAdminInfo', params => {
       return params;
     });
 
@@ -17,8 +17,8 @@ describe('test/controller/icpAdmin.test.js', () => {
       });
   });
 
-  it('GET /api/icp-admin/getTrialInfo', async () => {
-    app.mockService('icpAdmin', 'getTrialInfo', (params) => {
+  it('GET /api/icp-admin/getTrialInfo', async() => {
+    app.mockService('icpAdmin', 'getTrialInfo', params => {
       return params;
     });
 
@@ -33,8 +33,8 @@ describe('test/controller/icpAdmin.test.js', () => {
       });
   });
 
-  it('POST /api/icp-admin/setTrailStatus', async () => {
-    app.mockService('icpAdmin', 'setTrailStatus', (params) => {
+  it('POST /api/icp-admin/setTrailStatus', async() => {
+    app.mockService('icpAdmin', 'setTrailStatus', params => {
       return params;
     });
 

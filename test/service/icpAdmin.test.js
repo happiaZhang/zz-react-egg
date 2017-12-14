@@ -2,7 +2,7 @@ const {app} = require('egg-mock/bootstrap');
 const data = {foo: 'bar'}; // response body
 
 describe('test/service/icpAdmin.test.js', () => {
-  it('getAdminInfo()', async () => {
+  it('getAdminInfo()', async() => {
     app.mockHttpclient(`${app.config.adminHost}/userrest/view?token=`, {
       data: JSON.stringify(data)
     });
@@ -12,7 +12,7 @@ describe('test/service/icpAdmin.test.js', () => {
       .expect(200);
   });
 
-  it('getAllWebsiteInfo()', async () => {
+  it('getAllWebsiteInfo()', async() => {
     app.mockHttpclient(`${app.config.icpAdminHost}/filing-admin/all-website-info`, {
       data: JSON.stringify(data)
     });
@@ -22,7 +22,7 @@ describe('test/service/icpAdmin.test.js', () => {
       .expect(200);
   });
 
-  it('setCurtainDeliveryInfo()', async () => {
+  it('setCurtainDeliveryInfo()', async() => {
     app.mockHttpclient(`${app.config.icpAdminHost}/filing-admin/curtain-delivery-info`, {
       data: JSON.stringify(data)
     });
@@ -32,7 +32,7 @@ describe('test/service/icpAdmin.test.js', () => {
       .expect(200);
   });
 
-  it('getCurtainInfo()', async () => {
+  it('getCurtainInfo()', async() => {
     app.mockHttpclient(`${app.config.icpAdminHost}/filing-admin/curtain-info`, {
       data: JSON.stringify(data)
     });
@@ -42,7 +42,7 @@ describe('test/service/icpAdmin.test.js', () => {
       .expect(200);
   });
 
-  it('setFilingNo()', async () => {
+  it('setFilingNo()', async() => {
     app.mockHttpclient(`${app.config.icpAdminHost}/filing-admin/filing-no`, {
       data: JSON.stringify(data)
     });
@@ -52,7 +52,7 @@ describe('test/service/icpAdmin.test.js', () => {
       .expect(200);
   });
 
-  it('setFilingStatus()', async () => {
+  it('setFilingStatus()', async() => {
     app.mockHttpclient(`${app.config.icpAdminHost}/filing-admin/filing-status`, {
       data: JSON.stringify(data)
     });
@@ -62,7 +62,7 @@ describe('test/service/icpAdmin.test.js', () => {
       .expect(200);
   });
 
-  it('getHostInfo()', async () => {
+  it('getHostInfo()', async() => {
     app.mockHttpclient(`${app.config.icpAdminHost}/filing-admin/host-info`, {
       data: JSON.stringify(data)
     });
@@ -72,7 +72,7 @@ describe('test/service/icpAdmin.test.js', () => {
       .expect(200);
   });
 
-  it('getHostInfoMaterial()', async () => {
+  it('getHostInfoMaterial()', async() => {
     app.mockHttpclient(`${app.config.icpAdminHost}/filing-admin/host-info-material`, {
       data: JSON.stringify(data)
     });
@@ -82,7 +82,7 @@ describe('test/service/icpAdmin.test.js', () => {
       .expect(200);
   });
 
-  it('getHostRevokeInfo()', async () => {
+  it('getHostRevokeInfo()', async() => {
     app.mockHttpclient(`${app.config.icpAdminHost}/filing-admin/host-revoke-info`, {
       data: JSON.stringify(data)
     });
@@ -92,7 +92,7 @@ describe('test/service/icpAdmin.test.js', () => {
       .expect(200);
   });
 
-  it('getInfoSummaryNonRevoked()', async () => {
+  it('getInfoSummaryNonRevoked()', async() => {
     app.mockHttpclient(`${app.config.icpAdminHost}/filing-admin/info-summary-non-revoked`, {
       data: JSON.stringify(data)
     });
@@ -102,7 +102,7 @@ describe('test/service/icpAdmin.test.js', () => {
       .expect(200);
   });
 
-  it('getInfoSummaryRevoked()', async () => {
+  it('getInfoSummaryRevoked()', async() => {
     app.mockHttpclient(`${app.config.icpAdminHost}/filing-admin/info-summary-revoked`, {
       data: JSON.stringify(data)
     });
@@ -112,7 +112,7 @@ describe('test/service/icpAdmin.test.js', () => {
       .expect(200);
   });
 
-  it('getSiteAccesscancelledInfo()', async () => {
+  it('getSiteAccesscancelledInfo()', async() => {
     app.mockHttpclient(`${app.config.icpAdminHost}/filing-admin/site-accesscancelled-info`, {
       data: JSON.stringify(data)
     });
@@ -122,7 +122,7 @@ describe('test/service/icpAdmin.test.js', () => {
       .expect(200);
   });
 
-  it('getSiteRevokeInfo()', async () => {
+  it('getSiteRevokeInfo()', async() => {
     app.mockHttpclient(`${app.config.icpAdminHost}/filing-admin/site-revoke-info`, {
       data: JSON.stringify(data)
     });

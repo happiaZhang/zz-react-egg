@@ -1,5 +1,5 @@
 const {assert} = require('egg-mock/bootstrap');
-const AuditModel = require('../../app/service/auditModel')
+const AuditModel = require('../../app/service/auditModel');
 
 describe('test/service/auditModel.test.js', () => {
   describe('parseHost()', () => {
@@ -12,12 +12,11 @@ describe('test/service/auditModel.test.js', () => {
     it('parameter >>> {}', () => {
       const auditModel = new AuditModel();
       const hostInfo = auditModel.parseHost({});
-      assert.deepEqual(hostInfo, {host: {
-        hostUnitName: '',
-        hostType: '',
-        hostCredentialType: '',
-        hostCredentialNumber: ''
-      }, sites: [{}]});
+      assert(hostInfo.host);
+      assert(Object.keys(hostInfo.host).length === 4);
+      Object.keys(hostInfo.host).forEach(k => {
+        assert(hostInfo.host[k] === '');
+      });
     });
 
     it('parameter >>> normal', () => {
@@ -32,12 +31,15 @@ describe('test/service/auditModel.test.js', () => {
           }
         }
       });
-      assert.deepEqual(hostInfo, {host: {
-        hostUnitName: 'hostUnitName',
-        hostType: 'hostType',
-        hostCredentialType: 'credentialType',
-        hostCredentialNumber: 'credentialNumber'
-      }, sites: [{}]});
+      assert.deepEqual(hostInfo, {
+        host: {
+          hostUnitName: 'hostUnitName',
+          hostType: 'hostType',
+          hostCredentialType: 'credentialType',
+          hostCredentialNumber: 'credentialNumber'
+        },
+        sites: [{}]
+      });
     });
   });
 
@@ -51,12 +53,15 @@ describe('test/service/auditModel.test.js', () => {
     it('parameter >>> [{}]', () => {
       const auditModel = new AuditModel();
       const siteInfo = auditModel.parseSites([{}]);
-      assert.deepEqual(siteInfo, {host: {}, sites: [{
-        siteId: '',
-        siteName: '',
-        siteVerifiedDomain: '',
-        siteIndexUrl: ''
-      }]});
+      assert.deepEqual(siteInfo, {
+        host: {},
+        sites: [{
+          siteId: '',
+          siteName: '',
+          siteVerifiedDomain: '',
+          siteIndexUrl: ''
+        }]
+      });
     });
 
     it('parameter >>> normal', () => {
@@ -69,12 +74,15 @@ describe('test/service/auditModel.test.js', () => {
           indexUrl: 'indexUrl'
         }
       }]);
-      assert.deepEqual(siteInfo, {host: {}, sites: [{
-        siteId: 'id',
-        siteName: 'name',
-        siteVerifiedDomain: 'verifiedDomain',
-        siteIndexUrl: 'indexUrl'
-      }]});
+      assert.deepEqual(siteInfo, {
+        host: {},
+        sites: [{
+          siteId: 'id',
+          siteName: 'name',
+          siteVerifiedDomain: 'verifiedDomain',
+          siteIndexUrl: 'indexUrl'
+        }]
+      });
     });
   });
 });
