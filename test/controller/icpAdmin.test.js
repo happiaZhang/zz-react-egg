@@ -10,9 +10,10 @@ describe('test/controller/icpAdmin.test.js', () => {
       .get('/api/icp-admin/getAdminInfo')
       .expect(200)
       .expect(res => {
-        const {host, search} = res.body;
+        const {host, search, data} = res.body;
         assert(host === app.config.adminHost);
         assert(search === '?token=');
+        assert.deepEqual(data, {});
       });
   });
 
@@ -25,9 +26,10 @@ describe('test/controller/icpAdmin.test.js', () => {
       .get('/api/icp-admin/getTrialInfo?foo=bar')
       .expect(200)
       .expect(res => {
-        const {host, search} = res.body;
+        const {host, search, data} = res.body;
         assert(host === app.config.icpAdminHost);
         assert(search === '?foo=bar');
+        assert.deepEqual(data, {});
       });
   });
 

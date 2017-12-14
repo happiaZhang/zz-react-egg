@@ -27,7 +27,7 @@ module.exports = {
     if (result.status === 200) {
       content.data = result.data;
     } else {
-      content.code = result.data.errorCode || '500';
+      content.code = result.data.errorCode || 500;
       content.msg = result.data.errorMessage || 'internal server error';
     }
 
