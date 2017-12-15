@@ -132,4 +132,65 @@ describe('test/service/icpModel.test.js', () => {
       });
     });
   });
+
+  describe('parseMaterial()', () => {
+    it('parameter >>> undefined', () => {
+      const icpModel = new IcpModel();
+      icpModel.parseMaterial(undefined);
+      assert.deepEqual(icpModel, {host: {}, sites: [{}]});
+    });
+
+    it('parameter >>> {}', () => {
+      const icpModel = new IcpModel();
+      icpModel.parseMaterial({});
+      assert(icpModel.host);
+      assert(icpModel.sites);
+
+      const hostInfo = icpModel.host;
+      const siteInfo = icpModel.sites;
+      assert(Object.keys(hostInfo).length === icpModel.getHostPhoto().length);
+      assert(siteInfo.length === 1);
+      assert(Object.keys(siteInfo[0]).length === 0);
+
+      Object.keys(hostInfo).forEach(k => {
+        assert(hostInfo[k] === '');
+      });
+    });
+
+    it('parameter >>> normal', () => {
+      const icpModel = new IcpModel();
+      icpModel.sites.length = 0;
+      icpModel.sites.push({'site.id': 'id'});
+      icpModel.parseMaterial({
+        hostBusinessLicensePhotoPath: 'hostBusinessLicensePhotoPath',
+        webSiteManagerMaterialList: [{
+          id: 'id',
+          webSiteFilingVerifyPhotoPath: 'webSiteFilingVerifyPhotoPath'
+        }]
+      });
+
+      assert(icpModel.host);
+      assert(icpModel.sites);
+      const hostInfo = icpModel.host;
+      const siteInfo = icpModel.sites;
+      assert(Object.keys(hostInfo).length === icpModel.getHostPhoto().length);
+      Object.keys(hostInfo).forEach(k => {
+        k === 'host.hostBusinessLicensePhotoPath'
+          ? assert(hostInfo[k] === 'hostBusinessLicensePhotoPath')
+          : assert(hostInfo[k] === '');
+      });
+
+      assert(siteInfo.length === 1);
+      assert(Object.keys(siteInfo[0]).length === icpModel.getSitePhoto().length + 1);
+      Object.keys(siteInfo[0]).forEach(k => {
+        if (k === 'site.webSiteFilingVerifyPhotoPath') {
+          assert(siteInfo[0][k] === 'webSiteFilingVerifyPhotoPath');
+        } else if (k === 'site.id') {
+          assert(siteInfo[0][k] === 'id');
+        } else {
+          assert(siteInfo[0][k] === '');
+        }
+      });
+    });
+  });
 });

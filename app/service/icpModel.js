@@ -104,7 +104,7 @@ class IcpModel {
     });
 
     const {webSiteManagerMaterialList} = materialInfo;
-    webSiteManagerMaterialList.forEach(siteMaterial => {
+    webSiteManagerMaterialList && webSiteManagerMaterialList.forEach(siteMaterial => {
       const {id} = siteMaterial;
       const site = this.sites.find(s => (s['site.id'] === id));
 
