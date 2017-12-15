@@ -27,7 +27,7 @@ class VerifyModel {
 
     siteInfo.forEach(site => {
       const {listWebSiteManagerInfo} = site;
-      if (listWebSiteManagerInfo.length > 0) site.webSiteManagerInfo = listWebSiteManagerInfo[0];
+      if (listWebSiteManagerInfo && listWebSiteManagerInfo.length > 0) site.webSiteManagerInfo = listWebSiteManagerInfo[0];
 
       const obj = {};
       Object.keys(HOST_MAPPING).forEach(key => {
@@ -48,7 +48,7 @@ class VerifyModel {
 
     const icpModel = new IcpModel();
     const {webSiteManagerMaterialList} = materialInfo;
-    webSiteManagerMaterialList.forEach(siteMaterial => {
+    webSiteManagerMaterialList && webSiteManagerMaterialList.forEach(siteMaterial => {
       const {id} = siteMaterial;
       const site = this.sites.find(s => (s['site.id'] === id));
       site.webSiteManagerPhotoFrontPath = icpModel.convert(siteMaterial, 'webSiteManagerPhotoFrontPath');
