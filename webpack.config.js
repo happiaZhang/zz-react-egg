@@ -7,11 +7,26 @@ const OUTPUT_PATH = path.resolve(__dirname, './app/public/');
 const PUBLIC_PATH = '//10.209.242.72/bss-backoffice-icp-node/public/';
 const vendor = require('./vendor');
 const isProd = process.env.NODE_ENV === 'production';
+const genHtmlTemplate = (dir, chunks, filename) => {
+  if (!filename) filename = 'index';
+  return new HtmlWebpackPlugin({
+    template: dir,
+    filename: isProd ? `../view/${filename}.html` : `${filename}.html`,
+    inject: 'body',
+    chunks,
+    showErrors: false,
+    minify: {
+      removeComments: isProd, // 移除HTML中的注释
+      collapseWhitespace: isProd // 删除空白符与换行符
+    }
+  });
+};
 
 const opt = {
   entry: {
     vendor,
-    app: './app/web/index'
+    icp: './app/web/pages/icp/index',
+    acc: './app/web/pages/acc/index'
   },
   output: {
     path: OUTPUT_PATH, // 打包后的文件存放的地方
@@ -80,7 +95,11 @@ if (!isProd) {
   opt.devtool = 'eval-source-map';
   opt.devServer = {
     contentBase: OUTPUT_PATH,
-    historyApiFallback: true,
+    historyApiFallback: {
+      rewrites: [
+        {from: /^\/acc/, to: '/acc.html'}
+      ]
+    },
     port: 3000, // 端口
     inline: true,
     hot: true,
@@ -101,20 +120,13 @@ const _plugin = [
     }
   }),
   new webpack.optimize.OccurrenceOrderPlugin(),
-  new HtmlWebpackPlugin({
-    template: './app/web/index.html',
-    filename: isProd ? '../view/index.html' : 'index.html',
-    inject: 'body',
-    showErrors: false,
-    minify: {
-      removeComments: isProd, // 移除HTML中的注释
-      collapseWhitespace: isProd // 删除空白符与换行符
-    }
-  }),
+  genHtmlTemplate('./app/web/pages/icp/index.html', ['icp', 'common', 'vendor']),
+  genHtmlTemplate('./app/web/pages/acc/index.html', ['acc', 'common', 'vendor'], 'acc'),
   new ExtractTextPlugin(isProd ? 'css/[name].[chunkhash].css' : 'css/[name].css'),
   new webpack.HashedModuleIdsPlugin(),
   new webpack.optimize.CommonsChunkPlugin({
-    names: ['vendor', 'manifest']
+    names: ['common', 'vendor'],
+    minChunks: 2
   }),
   new ImageminPlugin({
     pngquant: {

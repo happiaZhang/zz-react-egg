@@ -58,3 +58,17 @@
   flex-flow: row nowrap;
   justify-content: flex-end;
 }
+
+.alert {
+  .modalHeader {
+    border-bottom-color: transparent;
+  }
+
+  .iconClose {
+    top: 5px;
+  }
+
+  .modalContent {
+    padding-top: 0;
+  }
+}

@@ -1,0 +1,40 @@
+.notification {
+  padding: 10px 0;
+  font-size: 0;
+  border: 1px solid transparent;
+  border-left-width: 5px;
+  .icon,
+  > span {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 14px;
+    color: #152935;
+    line-height: 18px;
+  }
+  .icon {
+    width: 16px;
+    height: 16px;
+    margin: 0 16px;
+  }
+}
+
+.info {
+  border-color: #5aaafa;
+  .icon {
+    fill: #5aaafa;
+  }
+}
+
+.success {
+  border-color: #5aa700;
+  .icon {
+    fill: #5aa700;
+  }
+}
+
+.error {
+  border-color: #e71d32;
+  .icon {
+    fill: #e71d32;
+  }
+}

@@ -4,6 +4,7 @@ import ButtonGroup from '../ButtonGroup';
 
 class Modal extends React.Component {
   static defaultProps = {
+    type: 'modal',
     title: '填写快递单号',
     showState: false,
     width: 500,
@@ -21,15 +22,18 @@ class Modal extends React.Component {
 
   // 页面渲染
   render() {
-    let {title, children, showState, width, footer} = this.props;
+    const {type, title, children, showState, width, footer} = this.props;
     if (!showState) return null;
-    const style = {width};
 
+    const isAlert = type === 'alert';
+    const style = {width};
+    let classNames = styles.modalContainer;
+    if (isAlert) classNames += ' ' + styles.alert;
     return (
       <div className={styles.modalWrap}>
-        <div className={styles.modalContainer} style={style}>
+        <div className={classNames} style={style}>
           <div className={styles.modalHeader}>
-            <h4>{title}</h4>
+            {isAlert ? null : <h4>{title}</h4>}
             <a className={styles.iconClose} onClick={this.handleCloseClick}>&times;</a>
           </div>
           <div className={styles.modalContent}>{children}</div>

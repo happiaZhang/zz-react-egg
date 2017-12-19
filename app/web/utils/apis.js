@@ -196,6 +196,25 @@ const getSiteAccesscancelledInfo = function(params) {
   return genPromise(payload, 'getSiteAccesscancelledInfo');
 };
 
+// 获取用户审核状态
+const getUserVerifyRecord = function(params) {
+  const queryString = genQueryString(params);
+  const payload = {
+    url: `/api/acc-admin/getUserVerifyRecord?${queryString}`
+  };
+  return genPromise(payload, 'getUserVerifyRecord');
+};
+
+// 设置用户审核状态
+const setUserVerifyRecord = function(data) {
+  const payload = {
+    url: '/api/acc-admin/setUserVerifyRecord',
+    method: 'POST',
+    data
+  };
+  return genPromise(payload, 'setUserVerifyRecord');
+};
+
 export default {
   getAdminInfo,
   getDispatch,
@@ -213,5 +232,7 @@ export default {
   getHostRevokeInfo,
   getSiteRevokeInfo,
   getSiteAccesscancelledInfo,
-  genModal
+  genModal,
+  getUserVerifyRecord,
+  setUserVerifyRecord
 };
