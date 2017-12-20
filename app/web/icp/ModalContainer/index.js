@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import * as types from '../constants';
+import * as types from '../../models/constants';
 
 class ModalContainer extends React.Component {
   constructor(props) {

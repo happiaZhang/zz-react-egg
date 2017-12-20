@@ -1,4 +1,4 @@
-import * as types from '../icp/constants';
+import * as types from './constants';
 export default [
   {
     key: 'loader.loading',

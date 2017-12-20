@@ -97,7 +97,7 @@ if (!isProd) {
     contentBase: OUTPUT_PATH,
     historyApiFallback: {
       rewrites: [
-        {from: /^\/acc/, to: '/acc.html'}
+        {from: /^\/icp\/acc/, to: '/acc.html'}
       ]
     },
     port: 3000, // 端口
@@ -120,8 +120,8 @@ const _plugin = [
     }
   }),
   new webpack.optimize.OccurrenceOrderPlugin(),
-  genHtmlTemplate('./app/web/pages/icp/index.html', ['icp', 'common', 'vendor']),
-  genHtmlTemplate('./app/web/pages/acc/index.html', ['acc', 'common', 'vendor'], 'acc'),
+  genHtmlTemplate('./app/web/icp/index.html', ['icp', 'common', 'vendor']),
+  genHtmlTemplate('./app/web/acc/index.html', ['acc', 'common', 'vendor'], 'acc'),
   new ExtractTextPlugin(isProd ? 'css/[name].[chunkhash].css' : 'css/[name].css'),
   new webpack.HashedModuleIdsPlugin(),
   new webpack.optimize.CommonsChunkPlugin({
