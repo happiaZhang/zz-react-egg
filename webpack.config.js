@@ -120,8 +120,8 @@ const _plugin = [
     }
   }),
   new webpack.optimize.OccurrenceOrderPlugin(),
-  genHtmlTemplate('./app/web/icp/index.html', ['icp', 'common', 'vendor']),
-  genHtmlTemplate('./app/web/acc/index.html', ['acc', 'common', 'vendor'], 'acc'),
+  genHtmlTemplate('./app/web/icp/index.html', ['icp', 'common', 'vendor', 'manifest']),
+  genHtmlTemplate('./app/web/acc/index.html', ['acc', 'common', 'vendor', 'manifest'], 'acc'),
   new ExtractTextPlugin(isProd ? 'css/[name].[chunkhash].css' : 'css/[name].css'),
   new webpack.HashedModuleIdsPlugin(),
   new webpack.optimize.CommonsChunkPlugin({
