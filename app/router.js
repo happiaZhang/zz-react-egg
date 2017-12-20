@@ -17,8 +17,8 @@ module.exports = app => {
   /**
    * 前端页面展示
    */
-  app.get(/^\/icp(?:\/|$)/, 'index.icpView');
   app.get(/^\/acc(?:\/|$)/, 'index.accView');
+  app.get('/*', 'index.icpView');
 
   /**
    * 健康机制

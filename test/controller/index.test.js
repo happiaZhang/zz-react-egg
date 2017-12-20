@@ -1,23 +1,23 @@
 const {app} = require('egg-mock/bootstrap');
 
 describe('test/controller/index.test.js', () => {
-  it('GET /icp', async() => {
+  it('GET /*', async() => {
     await app.httpRequest()
-      .get('/icp')
+      .get('/*')
       .expect(200)
       .expect(/<title>备案后台<\/title>/);
   });
 
-  it('GET /icp/query', async() => {
+  it('GET /query', async() => {
     await app.httpRequest()
-      .get('/icp/query')
+      .get('/query')
       .expect(200)
       .expect(/<title>备案后台<\/title>/);
   });
 
-  it('GET /icp/trial/detail/1', async() => {
+  it('GET /trial/detail/1', async() => {
     await app.httpRequest()
-      .get('/icp/trial/detail/1')
+      .get('/trial/detail/1')
       .expect(200)
       .expect(/<title>备案后台<\/title>/);
   });
