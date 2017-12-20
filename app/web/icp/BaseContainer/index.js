@@ -1,11 +1,12 @@
 import styles from './index.scss';
 import React from 'react';
-import MainHeader from '../MainHeader/index';
-import Select from '../../components/Select/index';
-import Search from '../../components/Search/index';
-import Pagination from '../../components/Pagination/index';
-import Table from '../../components/Table/index';
-import message from '../../components/Message/index';
+import MainHeader from '../MainHeader';
+import Select from '../../components/Select';
+import Search from '../../components/Search';
+import Pagination from '../../components/Pagination';
+import Table from '../../components/Table';
+import message from '../../components/Message';
+import ModalDelivery from '../ModalDelivery';
 import apis from '../../utils/apis';
 import validate from '../../utils/validate';
 import {FILING_STATUS, FILING_TYPE, genOperations, handleOperations} from '../../utils/constants';
@@ -187,7 +188,7 @@ class BaseContainer extends React.Component {
         show: true,
         data: {
           ...data,
-          name: 'ModalDelivery',
+          component: ModalDelivery,
           callback: this.loadTableData.bind(this)
         }
       });

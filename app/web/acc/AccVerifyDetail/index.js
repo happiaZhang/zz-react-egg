@@ -1,11 +1,12 @@
 import React from 'react';
-import Breadcrumb from '../../components/Breadcrumb/index';
-import Card from '../../components/Card/index';
-import Info from '../../components/Info/index';
-import MainHeader from '../../icp/MainHeader/index';
-import ButtonGroup from '../../components/ButtonGroup/index';
-import message from '../../components/Message/index';
-import Notification from '../../components/Notification/index';
+import Breadcrumb from '../../components/Breadcrumb';
+import Card from '../../components/Card';
+import Info from '../../components/Info';
+import MainHeader from '../../icp/MainHeader';
+import ButtonGroup from '../../components/ButtonGroup';
+import message from '../../components/Message';
+import Notification from '../../components/Notification';
+import ModalAlert from '../ModalAlert';
 import apis from '../../utils/apis';
 import datetime from '../../components/Datepicker/datetime';
 
@@ -89,7 +90,7 @@ class AccVerifyDetail extends React.Component {
     apis.genModal({
       show: true,
       data: {
-        name: 'ModalAlert',
+        component: ModalAlert,
         header: '确定要审批拒绝吗？',
         content: '审批拒绝后系统会自动发送一封邮件至用户的邮箱。邀请用户等万达云正式上线后再来使用。',
         callback: this.handleVerifyStatus(true)

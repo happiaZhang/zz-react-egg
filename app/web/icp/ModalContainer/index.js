@@ -1,7 +1,5 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import ModalDelivery from '../ModalDelivery/index';
-import ModalAlert from '../ModalAlert';
 import * as types from '../../utils/constants';
 
 class ModalContainer extends React.Component {
@@ -32,10 +30,9 @@ class ModalContainer extends React.Component {
   render() {
     const {show} = this.state;
     if (!show) return null;
-    const {name, ...other} = this.props.data;
+    const {component, ...other} = this.props.data;
     other.onClose = this.onClose;
-    if (name === 'ModalDelivery') return <ModalDelivery {...other} />;
-    if (name === 'ModalAlert') return <ModalAlert {...other} />;
+    return React.createElement(component, other);
   }
 }
 

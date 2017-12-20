@@ -1,6 +1,6 @@
 import styles from './index.scss';
 import React from 'react';
-import Modal from '../../components/Modal/index';
+import Modal from '../../components/Modal';
 
 class ModalAlert extends React.Component {
   onClose = () => {
