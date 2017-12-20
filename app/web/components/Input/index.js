@@ -26,9 +26,13 @@ class Input extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {warning} = nextProps;
+    const {warning, value} = nextProps;
     if (warning !== this.props.warning) {
       this.setState({warning});
+    }
+
+    if (value !== this.state.value) {
+      this.setState({value});
     }
   }
 

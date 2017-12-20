@@ -78,7 +78,7 @@ class AccVerify extends React.Component {
 
   //  改变每页显示数量
   changePageSize = (pageSize) => {
-    this.loadTableData({pageSize});
+    this.loadTableData({pageSize, pageNumber: 1});
   };
 
   //  改变页码
