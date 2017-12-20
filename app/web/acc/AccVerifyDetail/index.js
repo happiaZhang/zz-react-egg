@@ -103,7 +103,7 @@ class AccVerifyDetail extends React.Component {
     http.genModal({
       show: true,
       data: {
-        name: 'ModalAlert',
+        component: ModalAlert,
         header: '确定要审批通过吗？',
         content: '审批通过后系统会自动发送一封邀请邮件至用户的邮箱。',
         callback: this.handleVerifyStatus(false)

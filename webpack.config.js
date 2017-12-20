@@ -125,7 +125,7 @@ const _plugin = [
   new ExtractTextPlugin(isProd ? 'css/[name].[chunkhash].css' : 'css/[name].css'),
   new webpack.HashedModuleIdsPlugin(),
   new webpack.optimize.CommonsChunkPlugin({
-    names: ['common', 'vendor'],
+    names: ['common', 'vendor', 'manifest'],
     minChunks: 2
   }),
   new ImageminPlugin({
