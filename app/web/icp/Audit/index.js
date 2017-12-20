@@ -1,4 +1,4 @@
-import BaseContainer from '../BaseContainer/index';
+import BaseContainer from '../BaseContainer';
 
 class Audit extends BaseContainer {
   constructor(props) {

@@ -1,18 +1,18 @@
 import styles from './index.scss';
 import React from 'react';
-import Breadcrumb from '../../components/Breadcrumb/index';
+import Breadcrumb from '../../components/Breadcrumb';
 import MainHeader from '../MainHeader';
-import Anchor from '../../components/Anchor/index';
-import Card from '../../components/Card/index';
-import Info from '../../components/Info/index';
-import PhotoFrame from '../../components/PhotoFrame/index';
-import ButtonGroup from '../../components/ButtonGroup/index';
-import FormGroup from '../../components/FormGroup/index';
-import Input from '../../components/Input/index';
-import message from '../../components/Message/index';
-import apis from '../../utils/apis';
+import Anchor from '../../components/Anchor';
+import Card from '../../components/Card';
+import Info from '../../components/Info';
+import PhotoFrame from '../../components/PhotoFrame';
+import ButtonGroup from '../../components/ButtonGroup';
+import FormGroup from '../../components/FormGroup';
+import Input from '../../components/Input';
+import message from '../../components/Message';
+import api from '../api';
 import validate from '../../utils/validate';
-import {AUDIT_INDUSTRY} from '../../utils/constants';
+import {AUDIT_INDUSTRY} from '../constants';
 
 const HOST_INFO_LIST = [
   {key: 'host.hostUnitName', label: '主办单位或主办人名称'},
@@ -124,10 +124,10 @@ class TrialDetail extends React.Component {
       {text: '主体信息', to: 'host'},
       {text: '网站信息', to: 'website'}
     ];
-    this.initApi = apis.getTrialInfo;
+    this.initApi = api.getTrialInfo;
     this.host = [];
     this.site = {};
-    this.rejFunc = apis.setTrailStatus;
+    this.rejFunc = api.setTrailStatus;
   }
 
   // 首次挂载组件

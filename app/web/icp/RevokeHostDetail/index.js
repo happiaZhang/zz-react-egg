@@ -1,6 +1,6 @@
 import TrialDetail from '../TrialDetail/index';
 import message from '../../components/Message/index';
-import apis from '../../utils/apis';
+import api from '../api';
 
 class RevokeHostDetail extends TrialDetail {
   constructor(props) {
@@ -33,7 +33,7 @@ class RevokeHostDetail extends TrialDetail {
     if (this.name === 'RevokeAccessReject') data.filingStatus = 40004;
     if (this.name === 'RevokeAccessResolve') data.filingStatus = 40003;
 
-    apis.setFilingStatus(data).then(() => {
+    api.setFilingStatus(data).then(() => {
       message.success(this.setMsg(), 2, () => {
         this.switch2List();
       });

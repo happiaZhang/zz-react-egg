@@ -1,11 +1,11 @@
 import React from 'react';
-import Modal from '../../components/Modal/index';
-import FormGroup from '../../components/FormGroup/index';
-import Input from '../../components/Input/index';
-import Card from '../../components/Card/index';
-import Info from '../../components/Info/index';
-import message from '../../components/Message/index';
-import apis from '../../utils/apis';
+import Modal from '../../components/Modal';
+import FormGroup from '../../components/FormGroup';
+import Input from '../../components/Input';
+import Card from '../../components/Card';
+import Info from '../../components/Info';
+import message from '../../components/Message';
+import api from '../api';
 import validate from '../../utils/validate';
 
 const DELIVERY_INFO = [
@@ -34,7 +34,7 @@ class ModalDelivery extends React.Component {
   componentDidMount() {
     const {operId} = this.props;
     // 加载幕布邮寄信息
-    apis.getCurtainInfo({operId}).then((res) => {
+    api.getCurtainInfo({operId}).then((res) => {
       const {curtainMailDto} = res;
       this.setState({curtainMailDto, disabled: false});
     }).catch(error => {
@@ -58,7 +58,7 @@ class ModalDelivery extends React.Component {
   onConfirm = () => {
     const {callback} = this.props;
     if (this.isInvalid()) return;
-    apis.setCurtainDeliveryInfo(this.param).then(() => {
+    api.setCurtainDeliveryInfo(this.param).then(() => {
       this.onClose();
       message.success('快递单号已填写完成，请尽快寄送', 2, callback);
     }).catch(error => {

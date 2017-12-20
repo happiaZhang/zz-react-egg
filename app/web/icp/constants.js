@@ -1,6 +1,3 @@
-export const LOADING = 'loading';
-export const LOADED = 'loaded';
-export const MODAL = 'modal';
 export const FILING_TYPE = {
   1: '首次备案',
   2: '新增网站',

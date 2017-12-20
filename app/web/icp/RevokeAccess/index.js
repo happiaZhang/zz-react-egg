@@ -1,5 +1,5 @@
 import RevokeHost from '../RevokeHost/index';
-import apis from '../../utils/apis';
+import api from '../api';
 
 class RevokeAccess extends RevokeHost {
   constructor(props) {
@@ -7,7 +7,7 @@ class RevokeAccess extends RevokeHost {
     this.title = '取消接入';
     this.selectAll = [40001, 40002];
     this.selectOptions = this.genOptions();
-    this.loadFunc = apis.getSiteAccesscancelledInfo;
+    this.loadFunc = api.getSiteAccesscancelledInfo;
   }
 }
 

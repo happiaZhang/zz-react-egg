@@ -1,5 +1,5 @@
 import RevokeHost from '../RevokeHost';
-import apis from '../../utils/apis';
+import api from '../api';
 
 class RevokeSite extends RevokeHost {
   constructor(props) {
@@ -7,7 +7,7 @@ class RevokeSite extends RevokeHost {
     this.title = '注销网站';
     this.selectAll = [30001, 30002];
     this.selectOptions = this.genOptions();
-    this.loadFunc = apis.getSiteRevokeInfo;
+    this.loadFunc = api.getSiteRevokeInfo;
   }
 }
 

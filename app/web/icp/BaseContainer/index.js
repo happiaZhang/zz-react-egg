@@ -7,9 +7,10 @@ import Pagination from '../../components/Pagination';
 import Table from '../../components/Table';
 import message from '../../components/Message';
 import ModalDelivery from '../ModalDelivery';
-import apis from '../../utils/apis';
+import api from '../api';
+import http from '../../utils/http';
 import validate from '../../utils/validate';
-import {FILING_STATUS, FILING_TYPE, genOperations, handleOperations} from '../../utils/constants';
+import {FILING_STATUS, FILING_TYPE, genOperations, handleOperations} from '../constants';
 import datetime from '../../components/Datepicker/datetime';
 
 class BaseContainer extends React.Component {
@@ -29,7 +30,7 @@ class BaseContainer extends React.Component {
       startTime: '',
       endTime: ''
     };
-    this.loadFunc = apis.getInfoSummaryNonRevoked;
+    this.loadFunc = api.getInfoSummaryNonRevoked;
   }
 
   // 组件初次挂载
@@ -184,7 +185,7 @@ class BaseContainer extends React.Component {
   onRowOperation = (type, data) => {
     const {history} = this.props;
     if (type === 'DELIVERY') {
-      apis.genModal({
+      http.genModal({
         show: true,
         data: {
           ...data,
@@ -213,7 +214,7 @@ class BaseContainer extends React.Component {
 
     const msgSuccess = `${this.title}${isDone ? '已通过' : '已驳回'}`;
 
-    apis.setFilingStatus(data).then(() => {
+    api.setFilingStatus(data).then(() => {
       message.success(msgSuccess, 2, () => {
         this.loadTableData();
       });

@@ -1,6 +1,6 @@
 import BaseContainer from '../BaseContainer';
-import apis from '../../utils/apis';
-import {FILING_STATUS} from '../../utils/constants';
+import api from '../api';
+import {FILING_STATUS} from '../constants';
 import datetime from '../../components/Datepicker/datetime';
 
 class RevokeHost extends BaseContainer {
@@ -9,7 +9,7 @@ class RevokeHost extends BaseContainer {
     this.title = '注销主体';
     this.selectAll = [20001, 20002];
     this.selectOptions = this.genOptions();
-    this.loadFunc = apis.getHostRevokeInfo;
+    this.loadFunc = api.getHostRevokeInfo;
   }
 
   // 设置表头内容(overwrite)

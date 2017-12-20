@@ -1,4 +1,4 @@
-import RevokeHostDetail from '../RevokeHostDetail/index';
+import RevokeHostDetail from '../RevokeHostDetail';
 
 class RevokeAccessReject extends RevokeHostDetail {
   constructor(props) {

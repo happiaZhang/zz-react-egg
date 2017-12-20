@@ -7,7 +7,8 @@ import ButtonGroup from '../../components/ButtonGroup';
 import message from '../../components/Message';
 import Notification from '../../components/Notification';
 import ModalAlert from '../ModalAlert';
-import apis from '../../utils/apis';
+import api from '../api';
+import http from '../../utils/http';
 import datetime from '../../components/Datepicker/datetime';
 
 const ACCOUNT_INFO = [
@@ -38,7 +39,7 @@ class AccVerifyDetail extends React.Component {
 
   loadAccountInfo = () => {
     const PWID = this.getId();
-    apis.getUserVerifyRecord({PWID}).then(data => {
+    api.getUserVerifyRecord({PWID}).then(data => {
       const {elements} = data;
       if (elements.length > 0) this.setState({account: elements[0]});
     }).catch(err => {
@@ -87,7 +88,7 @@ class AccVerifyDetail extends React.Component {
   };
 
   onReject = () => {
-    apis.genModal({
+    http.genModal({
       show: true,
       data: {
         component: ModalAlert,
@@ -99,7 +100,7 @@ class AccVerifyDetail extends React.Component {
   };
 
   onPass = () => {
-    apis.genModal({
+    http.genModal({
       show: true,
       data: {
         name: 'ModalAlert',
@@ -114,10 +115,10 @@ class AccVerifyDetail extends React.Component {
     const PWID = this.getId();
     const verify = isReject ? 'REJECT' : 'PASS';
     return () => {
-      apis.setUserVerifyRecord({PWID, verify}).then(data => {
+      api.setUserVerifyRecord({PWID, verify}).then(data => {
         const {code} = data;
         if (code === '0') {
-          apis.genModal({show: false});
+          http.genModal({show: false});
           message.info('操作成功，邮件已发送', 2, () => {
             this.loadAccountInfo();
           });

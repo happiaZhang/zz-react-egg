@@ -6,7 +6,7 @@ import Search from '../../components/Search/index';
 import Pagination from '../../components/Pagination/index';
 import Table from '../../components/Table/index';
 import message from '../../components/Message/index';
-import apis from '../../utils/apis';
+import api from '../api';
 
 const VERIFY_STATUS = {
   PENDING: '待审批',
@@ -44,7 +44,7 @@ class AccVerify extends React.Component {
   loadTableData = (newState) => {
     const {verify, searchText, pageSize, pageNumber} = this.state;
     const params = {verify, searchText, pageSize, pageNumber, ...newState};
-    apis.getUserVerifyRecord(params).then(data => {
+    api.getUserVerifyRecord(params).then(data => {
       this.setState({
         ...params,
         ...data

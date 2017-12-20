@@ -22,6 +22,7 @@ import RevokeAccess from '../RevokeAccess';
 import RevokeAccessResolve from '../RevokeAccessResolve';
 import RevokeAccessReject from '../RevokeAccessReject';
 import Loading from '../Loading';
+import UserInfo from '../UserInfo';
 import ModalContainer from '../ModalContainer';
 import validate from '../../utils/validate';
 import {initScrElm, addScroll} from '../../utils/scroller';
@@ -95,6 +96,7 @@ class Root extends React.Component {
             {this.renderRoutes()}
           </div>
         </div>
+        <UserInfo />
         <ModalContainer />
       </div>
     );

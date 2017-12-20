@@ -1,12 +1,12 @@
 import styles from '../TrialDetail/index.scss';
 import React from 'react';
-import TrialDetail from '../TrialDetail/index';
-import Breadcrumb from '../../components/Breadcrumb/index';
-import MainHeader from '../MainHeader/index';
-import FormGroup from '../../components/FormGroup/index';
-import Input from '../../components/Input/index';
-import message from '../../components/Message/index';
-import apis from '../../utils/apis';
+import TrialDetail from '../TrialDetail';
+import Breadcrumb from '../../components/Breadcrumb';
+import MainHeader from '../MainHeader';
+import FormGroup from '../../components/FormGroup';
+import Input from '../../components/Input';
+import message from '../../components/Message';
+import api from '../api';
 import validate from '../../utils/validate';
 
 const HOST_INFO_LIST = [
@@ -45,7 +45,7 @@ class AuditResolve extends TrialDetail {
     this.route = [
       {key: 'audit', to: '/audit', text: '管局审核'}
     ];
-    this.initApi = apis.getAuditResolveInfo;
+    this.initApi = api.getAuditResolveInfo;
     this.host = {};
     this.siteIds = [];
   }
@@ -88,7 +88,7 @@ class AuditResolve extends TrialDetail {
 
     data.filingSiteNoDtoList = filingSiteNoDtoList;
 
-    apis.setFilingNo(data).then(() => {
+    api.setFilingNo(data).then(() => {
       message.success('备案号保存成功', 2, () => {
         this.switch2List();
       });

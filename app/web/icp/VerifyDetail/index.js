@@ -1,10 +1,10 @@
 import styles from '../TrialDetail/index.scss';
 import React from 'react';
 import TrialDetail from '../TrialDetail';
-import Breadcrumb from '../../components/Breadcrumb/index';
+import Breadcrumb from '../../components/Breadcrumb';
 import MainHeader from '../MainHeader';
-import message from '../../components/Message/index';
-import apis from '../../utils/apis';
+import message from '../../components/Message';
+import api from '../api';
 import validate from '../../utils/validate';
 
 const WEBSITE_PHOTOS = [
@@ -30,8 +30,8 @@ class VerifyDetail extends TrialDetail {
     super(props);
     this.name = 'VerifyDetail';
     this.route = [{key: 'verify', to: '/verify', text: '审核幕布照片'}];
-    this.initApi = apis.getVerifyInfo;
-    this.rejFunc = apis.setFilingStatus;
+    this.initApi = api.getVerifyInfo;
+    this.rejFunc = api.setFilingStatus;
   }
 
   // 设置备案状态 (overwrite)

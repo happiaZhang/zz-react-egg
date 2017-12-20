@@ -2,8 +2,7 @@ import styles from './index.scss';
 import React from 'react';
 import {connect} from 'react-redux';
 import message from '../../components/Message/index';
-import validate from '../../utils/validate';
-import apis from '../../utils/apis';
+import http from '../../utils/http';
 
 let DEFAULT_CONTENT = null;
 const DEFAULT_DURATION = 0;
@@ -14,7 +13,7 @@ class Loader extends React.Component {
     this.state = {
       showLoading: false
     };
-    apis.getDispatch(props.dispatch);
+    http.getDispatch(props.dispatch);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -54,19 +53,6 @@ class Loader extends React.Component {
 
   shouldComponentUpdate() {
     return false;
-  }
-
-  componentDidMount() {
-    const isDev = validate.isDev();
-    if (!isDev) {
-      // 获取管理员信息
-      apis.getAdminInfo().then(res => {
-        const {data} = res;
-        validate.setUserInfo(data);
-      }).catch(error => {
-        message.error(error);
-      });
-    }
   }
 
   render() {

@@ -1,4 +1,4 @@
-import TrialDetail from '../TrialDetail/index';
+import TrialDetail from '../TrialDetail';
 
 class AuditReject extends TrialDetail {
   constructor(props) {

@@ -8,8 +8,9 @@ import DateRange from '../../components/DateRange/index';
 import Input from '../../components/Input/index';
 import datetime from '../../components/Datepicker/datetime';
 import message from '../../components/Message/index';
-import {QUERY_TYPE, QUERY_STATUS, FILING_STATUS} from '../../utils/constants';
-import apis from '../../utils/apis';
+import {QUERY_TYPE, QUERY_STATUS, FILING_STATUS} from '../constants';
+import api from '../api';
+import saver from '../../utils/saver';
 import validate from '../../utils/validate';
 
 class Query extends BaseContainer {
@@ -23,7 +24,7 @@ class Query extends BaseContainer {
     this.selectAll = [];
     this.selectOptions = this.genOptions();
     this.setFilter = this.genFilter;
-    this.loadFunc = apis.getInfoSummaryRevoked;
+    this.loadFunc = api.getInfoSummaryRevoked;
     // 按钮状态
     this.btnState = {
       btns: [
@@ -50,17 +51,17 @@ class Query extends BaseContainer {
       case 3:
         this.selectAll = [];
         this.selectOptions = this.genOptions();
-        this.loadFunc = apis.getInfoSummaryRevoked;
+        this.loadFunc = api.getInfoSummaryRevoked;
         break;
       case 1:case 2:
         this.selectAll = [1, 2, 3];
         this.selectOptions = this.genOptions();
-        this.loadFunc = apis.getInfoSummaryRevoked;
+        this.loadFunc = api.getInfoSummaryRevoked;
         break;
       case 4:case 5:
         this.selectAll = this.genSelectAll();
         this.selectOptions = this.genOptions();
-        this.loadFunc = apis.getInfoSummaryNonRevoked;
+        this.loadFunc = api.getInfoSummaryNonRevoked;
         break;
     }
     let filingType = '';
@@ -122,8 +123,8 @@ class Query extends BaseContainer {
     const {totalSize} = this.state;
     this.exportParams.pageSize = totalSize;
     this.exportParams.pageNumber = 1;
-    apis.export2Excel(this.exportParams).then(data => {
-      validate.save2Xlsx(data, '备案查询');
+    api.export2Excel(this.exportParams).then(data => {
+      saver.save2Xlsx(data, '备案查询');
     }).catch(error => {
       message.error(error);
     });
