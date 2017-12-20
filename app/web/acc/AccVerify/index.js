@@ -99,7 +99,14 @@ class AccVerify extends React.Component {
       {text: '行业', value: 'industry'},
       {text: '绑定邮箱', value: 'email'},
       {text: '实名认证', value: 'ID_verify'},
-      {text: '状态', value: 'verifyName'},
+      {
+        text: '状态',
+        value: 'verifyName',
+        render: (value, item) => {
+          const {verify} = item;
+          return <div className={`${styles.verifyStatus} ${styles[verify]}`}>{item[value]}</div>;
+        }
+      },
       {text: '操作', value: 'OPERATION_COLUMN', width: 60}
     ];
   };

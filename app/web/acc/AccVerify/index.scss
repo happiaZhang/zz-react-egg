@@ -11,3 +11,37 @@
     justify-content: flex-start;
   }
 }
+
+.verifyStatus {
+  position: relative;
+  display: inline-block;
+  padding-left: 20px;
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    display: block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+}
+
+.PENDING {
+  &:before {
+    background-color: #8c9ba5;
+  }
+}
+
+.PASS {
+  &:before {
+    background-color: #5aa700;
+  }
+}
+
+.REJECT {
+  &:before {
+    background-color: #e71d32;
+  }
+}
