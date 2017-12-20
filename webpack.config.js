@@ -25,8 +25,8 @@ const genHtmlTemplate = (dir, chunks, filename) => {
 const opt = {
   entry: {
     vendor,
-    icp: './app/web/pages/icp/index',
-    acc: './app/web/pages/acc/index'
+    icp: './app/web/icp/index',
+    acc: './app/web/acc/index'
   },
   output: {
     path: OUTPUT_PATH, // 打包后的文件存放的地方
