@@ -7,7 +7,6 @@ module.exports = app => {
   return class IcpAdminController extends app.Controller {
     constructor(ctx) {
       super(ctx);
-      this.prefix = '/api/icp-admin';
       this.icpHost = this.config.icpAdminHost;
       this.adminHost = this.config.adminHost;
     }
@@ -17,7 +16,7 @@ module.exports = app => {
       const search = ctx.request.search;
       const method = ctx.method;
       const data = ctx.request.body;
-      const svcName = ctx.request.path.substr(this.prefix.length + 1);
+      const svcName = ctx.params[0];
       const isAdmin = svcName === 'getAdminInfo';
       ctx.body = await ctx.service.icpAdmin[svcName]({
         host: isAdmin ? this.adminHost : this.icpHost,

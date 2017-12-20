@@ -20,6 +20,7 @@ module.exports = appInfo => {
   // api host
   config.adminHost = 'admin-management-rest-svc:8080';
   config.icpAdminHost = 'icp-admin-svc:8080';
+  config.accAdminHost = 'wandayun-login-server-svc:8080';
 
   // middleware
   config.middleware = ['logger', 'isLogin', 'isPermission'];

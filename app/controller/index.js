@@ -5,10 +5,14 @@
  */
 module.exports = app => {
   return class IndexController extends app.Controller {
-    async indexView() {
+    async icpView() {
       const {ctx} = this;
-      // 生成视图
       await ctx.render('index');
+    }
+
+    async accView() {
+      const {ctx} = this;
+      await ctx.render('acc');
     }
   };
 };

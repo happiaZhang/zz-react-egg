@@ -7,12 +7,18 @@ module.exports = app => {
   /**
    * 备案后台管理
    */
-  app.all(/^\/api\/icp-admin(?:\/|$)/, 'icpAdmin.action');
+  app.all(/^\/api\/icp-admin\/([\w-.]+)$/, 'icpAdmin.action');
+
+  /**
+   * 账号后台管理
+   */
+  app.all(/^\/api\/acc-admin\/([\w-.]+)$/, 'accAdmin.action');
 
   /**
    * 前端页面展示
    */
-  app.get('/*', 'index.indexView');
+  app.get(/^\/icp(?:\/|$)/, 'index.icpView');
+  app.get(/^\/acc(?:\/|$)/, 'index.accView');
 
   /**
    * 健康机制

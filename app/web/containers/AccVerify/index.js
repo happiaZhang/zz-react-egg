@@ -128,7 +128,7 @@ class AccVerify extends React.Component {
 
     return (
       <div style={{minWidth: 520}}>
-        <MainHeader title={'内侧用户审核'} />
+        <MainHeader title={'内测用户审核'} />
         <div className={styles.tableOperation}>
           <div className={styles.left}>
             <Select
