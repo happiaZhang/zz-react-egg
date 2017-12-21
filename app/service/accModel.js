@@ -29,7 +29,7 @@ class AccModel {
   parse(data) {
     if (typeof data !== 'object') return this;
     const {elements_total: totalSize, elements} = data;
-    if (!totalSize || !elements) return this;
+    if (!elements) return this;
 
     const VERIFY_STATUS = this.getVerifyStatus();
     const ID_STATUS = this.getIdStatus();
